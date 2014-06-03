@@ -9,7 +9,6 @@
             "email": "joris@tactics.be"
         }
     ],
-    "minimum-stability": "dev",
     "repositories": [    
     {
       "type": "git",
