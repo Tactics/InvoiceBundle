@@ -10,6 +10,12 @@
         }
     ],
     "minimum-stability": "dev",
+    "repositories": [    
+    {
+      "type": "git",
+      "url": "git@github.com:Tactics/InvoiceLib"
+    }
+  ],
     "require": {
         "composer/installers": "~1.0",
 	"tactics/invoice-lib": "dev-master"
