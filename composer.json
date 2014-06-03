@@ -1,0 +1,16 @@
+{
+    "name": "tactics/tt-invoice-plugin",
+    "type": "symfony1-plugin",
+    "description": "invoice plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joris Hontelé",
+            "email": "joris@tactics.be"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
