@@ -2,7 +2,7 @@
     "name": "tactics/tt-invoice-plugin",
     "type": "symfony1-plugin",
     "description": "invoice plugin",
-    "license": "MIT",
+    "license": "",
     "authors": [
         {
             "name": "Joris Hontelé",
@@ -15,7 +15,7 @@
       "type": "git",
       "url": "git@github.com:Tactics/InvoiceLib"
     }
-  ],
+    ],
     "require": {
         "composer/installers": "~1.0",
 	"tactics/invoice-lib": "dev-master"
