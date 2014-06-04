@@ -1,7 +1,7 @@
 {
-    "name": "tactics/tt-invoice-plugin",
-    "type": "symfony1-plugin",
-    "description": "invoice plugin",
+    "name": "tactics/invoice-bundle",
+    "type": "symfony-bundle",
+    "description": "invoice bundle",
     "license": "",
     "authors": [
         {
