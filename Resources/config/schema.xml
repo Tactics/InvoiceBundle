@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="propel" package="vendor.tactics.invoice-bundle.Tactics.InvoiceBundle.lib.model" noxsd="true">    
+    <table name="invoice">
+        <column name="id" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
+        <column name="total" type="DECIMAL" size="10" scale="2" required="true"/>
+        <column name="vat" type="DECIMAL" size="10" scale="2" required="true"/>
+        <column name="date" type="DATE" required="true"/>
+        <column name="date_due" type="DATE" required="true"/>
+        <column name="date_paid" type="DATE"/>
+        <column name="status" type="VARCHAR" size="100"/>
+        <column name="amount_paid" type="decimal" size="10" scale="2" required="true" default="0"/>
+        <column name="structured_communication" type="VARCHAR" size="12"/>
+        <column name="currency" type="VARCHAR" size="3" required="true" default="EUR"/>        
+        <column name="created_at" type="TIMESTAMP"/>
+        <column name="updated_at" type="TIMESTAMP"/>
+        <column name="created_by" type="INTEGER"/>
+        <column name="updated_by" type="INTEGER"/>
+    </table>
+  
+    <table name="invoice_item">
+        <column name="id" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
+        <column name="invoice_id" type="INTEGER" required="true"/>
+        <column name="quantity" type="INTEGER" required="true"/>
+        <column name="unit_price" type="DECIMAL" size="10" scale="2" required="true"/>
+        <column name="price_ex_vat" type="DECIMAL" size="10" scale="2" required="true"/>
+        <column name="price_incl_vat" type="DECIMAL" size="10" scale="2" required="true"/>
+        <column name="description" type="VARCHAR" size="255" required="true"/>
+        <foreign-key name="invoice_item_invoice_1" foreignTable="invoice">
+            <reference local="invoice_id" foreign="id"/>
+        </foreign-key>
+        <index>
+            <index-column name="invoice_id"/>
+        </index>
+    </table>
+</database>
