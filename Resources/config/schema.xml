@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database defaultIdMethod="native" name="propel" package="vendor.tactics.invoice-bundle.Tactics.InvoiceBundle.lib.model" noxsd="true">    
-    <table name="invoice">
+    <table name="propel_invoice">
         <column name="id" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
+        <column name="number" type="INTEGER" required="true"/>
+        <column name="customer_id" type="INTEGER" required="true"/>       
+        <column name="customer_class" type="VARCHAR" size="255" required="true"/>
         <column name="total" type="DECIMAL" size="10" scale="2" required="true"/>
         <column name="vat" type="DECIMAL" size="10" scale="2" required="true"/>
         <column name="date" type="DATE" required="true"/>
@@ -17,15 +20,19 @@
         <column name="updated_by" type="INTEGER"/>
     </table>
   
-    <table name="invoice_item">
+    <table name="propel_invoice_item">
         <column name="id" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
         <column name="invoice_id" type="INTEGER" required="true"/>
-        <column name="quantity" type="INTEGER" required="true"/>
+        <column name="quantity" type="INTEGER" required="true" default="1"/>
         <column name="unit_price" type="DECIMAL" size="10" scale="2" required="true"/>
         <column name="price_ex_vat" type="DECIMAL" size="10" scale="2" required="true"/>
         <column name="price_incl_vat" type="DECIMAL" size="10" scale="2" required="true"/>
         <column name="description" type="VARCHAR" size="255" required="true"/>
-        <foreign-key name="invoice_item_invoice_1" foreignTable="invoice">
+        <column name="created_at" type="TIMESTAMP"/>
+        <column name="updated_at" type="TIMESTAMP"/>
+        <column name="created_by" type="INTEGER"/>
+        <column name="updated_by" type="INTEGER"/>
+        <foreign-key name="invoice_item_invoice_1" foreignTable="propel_invoice" onDelete="cascade">
             <reference local="invoice_id" foreign="id"/>
         </foreign-key>
         <index>
