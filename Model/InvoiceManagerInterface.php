@@ -1,7 +1,6 @@
 <?php
 
 namespace Tactics\InvoiceBundle\Model;
-use Tactics\InvoiceBundle\Model\Invoice;
 
 interface InvoiceManagerInterface
 {

@@ -19,7 +19,7 @@ class PropelInvoiceManager extends InvoiceManager
      */
     public function save(Invoice $invoice)
     {
-        $propelInvoice = $this->transformer->toOrm($invoice);
+        $propelInvoice = $this->transformer->toOrm($invoice);        
         $propelInvoice->save();
     }
     
@@ -30,7 +30,7 @@ class PropelInvoiceManager extends InvoiceManager
      */
     public function find($id)
     {
-        $propelInvoice = \InvoicePeer::retrieveByPK($id);        
+        $propelInvoice = \PropelInvoicePeer::retrieveByPK($id);        
         
         return $this->transformer->fromOrm($propelInvoice);
     }

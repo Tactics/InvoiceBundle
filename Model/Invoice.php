@@ -6,6 +6,10 @@ class Invoice
 {
     private static $fieldNames = array(
         'Id', 
+        'Number',
+        'CustomerId',
+        'CustomerClass',
+        'Customer',
         'Total', 
         'Vat', 
         'Date', 
@@ -19,9 +23,12 @@ class Invoice
         'UpdatedAt', 
         'CreatedBy', 
         'UpdatedBy'
-	);   
+	);
     
     protected $id;
+    protected $number;
+    protected $customer_id;
+    protected $customer_class;
     protected $total;	
 	protected $vat;	
 	protected $date;	
@@ -36,6 +43,8 @@ class Invoice
 	protected $created_by;	
 	protected $updated_by;
 	
+    protected $customer;
+    
 	protected $items = array();
     
     // getters
@@ -43,6 +52,26 @@ class Invoice
 	{
 		return $this->id;
 	}
+    
+    public function getNumber()
+    {
+        return $this->number;
+    }
+    
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+    
+    public function getCustomerId()
+    {
+        return $this->customer_id;
+    }
+    
+    public function getCustomerClass()
+    {
+        return $this->customer_class;
+    }      
 	
 	public function getTotal()
 	{
@@ -188,6 +217,11 @@ class Invoice
 	{
 		return $this->updated_by;
 	}
+    
+    public function getItems()
+    {
+        return $this->items;
+    }
 	
     // setters
 	public function setId($v)
@@ -200,6 +234,20 @@ class Invoice
 			$this->id = $v;			
 		}
 	} 
+    
+    public function setNumber($v)
+    {
+        if ($this->number !== $v) {
+			$this->number = $v;
+		}
+    }
+    
+    public function setCustomer(CustomerInterface $customer)
+    {
+        $this->customer = $customer;
+        $this->customer_id = $customer->getId();
+        $this->customer_class = get_class($customer);
+    }
 	
 	public function setTotal($v)
 	{
@@ -351,7 +399,14 @@ class Invoice
 		if ($this->updated_by !== $v) {
 			$this->updated_by = $v;
 		}
-	} 
+	}
+    
+    public function addItem(InvoiceItem $item)
+    {
+        $this->items[] = $item;
+        
+        $item->setInvoice($this);
+    }
     
     /**
      * 
@@ -359,23 +414,15 @@ class Invoice
      * @return Tactics\InvoiceBundle\Invoice
      */
     public function fromArray($arr)
-	{
-		$keys = self::$fieldNames;
-
-		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setTotal($arr[$keys[1]]);
-		if (array_key_exists($keys[2], $arr)) $this->setVat($arr[$keys[2]]);
-		if (array_key_exists($keys[3], $arr)) $this->setDate($arr[$keys[3]]);
-		if (array_key_exists($keys[4], $arr)) $this->setDateDue($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setDatePaid($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setStatus($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setAmountPaid($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setStructuredCommunication($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setCurrency($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setCreatedBy($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setUpdatedBy($arr[$keys[13]]);
+	{   
+        foreach (self::$fieldNames as $fieldName)
+        {            
+            if (array_key_exists($fieldName, $arr))
+            {
+                $setter = 'set' . $fieldName;
+                $this->$setter($arr[$fieldName]);
+            }
+        }
         
         return $this;
 	}
@@ -386,25 +433,14 @@ class Invoice
      */
     public function toArray()
 	{
-		$keys = self::$fieldNames;
+        $result = array();
         
-		$result = array(
-			$keys[0] => $this->getId(),
-			$keys[1] => $this->getTotal(),
-			$keys[2] => $this->getVat(),
-			$keys[3] => $this->getDate(),
-			$keys[4] => $this->getDateDue(),
-			$keys[5] => $this->getDatePaid(),
-			$keys[6] => $this->getStatus(),
-			$keys[7] => $this->getAmountPaid(),
-			$keys[8] => $this->getStructuredCommunication(),
-			$keys[9] => $this->getCurrency(),
-			$keys[10] => $this->getCreatedAt(),
-			$keys[11] => $this->getUpdatedAt(),
-			$keys[12] => $this->getCreatedBy(),
-			$keys[13] => $this->getUpdatedBy(),
-		);
-        
+        foreach (self::$fieldNames as $fieldName)
+        {
+            $getter = 'get' . $fieldName;        
+            $result[$fieldName] = $this->$getter();
+        }
+
 		return $result;
 	}
 }
