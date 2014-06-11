@@ -9,15 +9,8 @@
             "email": "joris@tactics.be"
         }
     ],
-    "repositories": [    
-    {
-      "type": "git",
-      "url": "git@github.com:Tactics/InvoiceLib"
-    }
-    ],
     "require": {
-        "composer/installers": "~1.0",
-	"tactics/invoice-lib": "dev-master"
+        "phpunit/phpunit" : "4.1.*"
     },
     "autoload": {
         "psr-0": { "Tactics\\InvoiceBundle": "" }
