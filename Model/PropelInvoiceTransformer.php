@@ -7,10 +7,10 @@ class PropelInvoiceTransformer implements InvoiceTransformerInterface
     public function toOrm(Invoice $invoice)
     {
         $invoiceArray = $invoice->toArray();
-        $this->convertCustomerObjectToIdAndClass($invoiceArray);
+        $customerArray = $this->objectToArray($invoice->getCustomer(), 'Customer');
         
         $propelInvoice = new \PropelInvoice();
-        $propelInvoice->fromArray($invoiceArray);
+        $propelInvoice->fromArray(array_merge($invoiceArray, $customerArray));
         
         foreach ($invoice->getItems() as $item)
         {
@@ -32,10 +32,12 @@ class PropelInvoiceTransformer implements InvoiceTransformerInterface
     public function fromOrm($propel_invoice)
     {
         $propelInvoiceArray = $propel_invoice->toArray();
-        $this->convertCustomerIdAndClassToObject($propelInvoiceArray);
         
         $invoice = new Invoice();
         $invoice->fromArray($propelInvoiceArray);
+        
+        $customer = $this->arrayToObject($propelInvoiceArray, 'Customer');
+        $invoice->setCustomer($customer);
         
         foreach ($propel_invoice->getPropelInvoiceItems() as $propelInvoiceItem)
         {
@@ -52,42 +54,40 @@ class PropelInvoiceTransformer implements InvoiceTransformerInterface
         return $invoice;
     }
     
+    
     /**
-     * Converts CustomerId and CustomerClass to Customer object
+     * Converts array with $className class and id to object
      * 
-     * @param array $propel_invoice
-     *
+     * @param array $array
+     * @param string $className
+     * 
      * @return mixed The object
      */
-    private function convertCustomerIdAndClassToObject(&$propel_invoice)
+    private function arrayToObject($array, $className)
     {
-        $customerClass = $propel_invoice['CustomerClass'];
-        $customerId = $propel_invoice['CustomerId'];
-
-        unset($propel_invoice['CustomerClass']);
-        unset($propel_invoice['CustomerId']);
-
-        if (!($customerClass && $customerId) || !method_exists($customerClass . 'Peer', 'retrieveByPK'))
+        $objectClass = isset($array[$className . 'Class']) ? $array[$className . 'Class'] : '';
+        $objectId = isset($array[$className . 'Id']) ? $array[$className . 'Id'] : '';
+        
+        if (!($objectClass && $objectId) || !method_exists($objectClass . 'Peer', 'retrieveByPK'))
         {
            return;
         }
 
-        $propel_invoice['Customer'] = call_user_func($customerClass . 'Peer::retrieveByPK', $customerId);
+        return call_user_func($objectClass . 'Peer::retrieveByPK', $objectId);
     }
     
     /**
-     * Converts Customer object to customer_id and customer_class
+     * Converts object to array with object id and class
      * 
-     * @param array $invoice
+     * @param mixed $object
      *
-     * @return mixed The object
+     * @return array The object
      */
-    private function convertCustomerObjectToIdAndClass(&$invoice)
+    private function objectToArray($object, $className)
     {
-        $customer = $invoice['Customer'];
-        unset($invoice['Customer']);
-        
-        $invoice['CustomerId'] = $customer ? $customer->getId() : null;
-        $invoice['CustomerClass'] = $customer ? get_class($customer) : null;        
+        return array(
+          $className . 'Id' => $object->getId(),
+          $className . 'Class' => get_class($object)
+        );
     }
 }

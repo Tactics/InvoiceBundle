@@ -15,8 +15,7 @@ class Invoice
         'Status', 
         'AmountPaid', 
         'StructuredCommunication', 
-        'Currency',         
-        'Customer',
+        'Currency',
 	);
     
     protected $id;
@@ -276,8 +275,9 @@ class Invoice
     public function addItem(InvoiceItem $item)
     {
         $this->items[] = $item;
-        
         $item->setInvoice($this);
+        
+        $this->calculateTotal();
     }
     
     /**
@@ -318,10 +318,13 @@ class Invoice
     
     public function calculateTotal()
     {
-        $total = 0;
+        $this->total = 0;
+        $this->vat = 0;
         foreach ($this->getItems() as $item)
         {
-            $total += $item->getPriceInclVat();
+            $item->calculatePrices();
+            $this->total += $item->getPriceExVat();
+            $this->vat += $item->getPriceInclVat() - $item->getPriceExVat();
         }
     }
 }

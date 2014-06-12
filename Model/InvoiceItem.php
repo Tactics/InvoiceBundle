@@ -14,7 +14,7 @@ class InvoiceItem
 	);
     
     protected $id;
-    protected $quantity;
+    protected $quantity = 1;
     protected $unit_price;    
     protected $price_ex_vat;
     protected $price_incl_vat;
@@ -41,7 +41,7 @@ class InvoiceItem
     
 	public function getPriceExVat()
 	{
-		return $this->price_ex_vat;
+        return $this->price_ex_vat;
 	}
 	
 	public function getPriceInclVat()
@@ -54,11 +54,19 @@ class InvoiceItem
 		return $this->description;
 	}
     
+    /**
+     * 
+     * @return Tactics\InvoiceBundle\Model\Invoice
+     */
     public function getInvoice()
 	{
 		return $this->invoice;
 	}
     
+    /**
+     * 
+     * @return Tactics\InvoiceBundle\Model\Vat
+     */
     public function getVat()
 	{
 		return $this->vat;
@@ -164,4 +172,12 @@ class InvoiceItem
         
         return $this;
 	}
+    
+    public function calculatePrices()
+    {
+        $vatPct = $this->getVat() ? $this->getVat()->getPercentage() : 0;
+        
+        $this->price_ex_vat = $this->quantity * $this->unit_price;
+        $this->price_incl_vat = $this->price_ex_vat * ((100 + $vatPct)/100);
+    }
 }
