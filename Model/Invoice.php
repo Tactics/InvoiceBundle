@@ -277,7 +277,7 @@ class Invoice
         $this->items[] = $item;
         $item->setInvoice($this);
         
-        $this->calculateTotal();
+        $this->calculateTotalAndVat();
     }
     
     /**
@@ -316,7 +316,7 @@ class Invoice
 		return $result;
 	}
     
-    public function calculateTotal()
+    public function calculateTotalAndVat()
     {
         $this->total = 0;
         $this->vat = 0;
