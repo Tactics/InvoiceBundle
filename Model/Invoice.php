@@ -6,10 +6,7 @@ class Invoice
 {
     private static $fieldNames = array(
         'Id', 
-        'Number',
-        'CustomerId',
-        'CustomerClass',
-        'Customer',
+        'Number',        
         'Total', 
         'Vat', 
         'Date', 
@@ -18,18 +15,13 @@ class Invoice
         'Status', 
         'AmountPaid', 
         'StructuredCommunication', 
-        'Currency', 
-        'CreatedAt', 
-        'UpdatedAt', 
-        'CreatedBy', 
-        'UpdatedBy'
+        'Currency',         
+        'Customer',
 	);
     
     protected $id;
-    protected $number;
-    protected $customer_id;
-    protected $customer_class;
-    protected $total;	
+    protected $number;   
+    protected $total = 0;	
 	protected $vat;	
 	protected $date;	
 	protected $date_due;	
@@ -37,11 +29,7 @@ class Invoice
 	protected $status;	
 	protected $amount_paid = 0;	
 	protected $structured_communication;	
-	protected $currency = 'EUR';	
-	protected $created_at;	
-	protected $updated_at;	
-	protected $created_by;	
-	protected $updated_by;
+	protected $currency = 'EUR';
 	
     protected $customer;
     
@@ -57,21 +45,6 @@ class Invoice
     {
         return $this->number;
     }
-    
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-    
-    public function getCustomerId()
-    {
-        return $this->customer_id;
-    }
-    
-    public function getCustomerClass()
-    {
-        return $this->customer_class;
-    }      
 	
 	public function getTotal()
 	{
@@ -165,58 +138,11 @@ class Invoice
 	{
 		return $this->currency;
 	}
-	
-	public function getCreatedAt($format = 'Y-m-d H:i:s')
-	{
-		if ($this->created_at === null || $this->created_at === '') {
-			return null;
-		} elseif (!is_int($this->created_at)) {
-			$ts = strtotime($this->created_at);
-			if ($ts === -1 || $ts === false) {
-                throw new PropelException("Unable to parse value of [created_at] as date/time value: " . var_export($this->created_at, true));
-			}
-		} else {
-			$ts = $this->created_at;
-		}
-		if ($format === null) {
-			return $ts;
-		} elseif (strpos($format, '%') !== false) {
-			return strftime($format, $ts);
-		} else {
-			return date($format, $ts);
-		}
-	}
-	
-	public function getUpdatedAt($format = 'Y-m-d H:i:s')
-	{
-		if ($this->updated_at === null || $this->updated_at === '') {
-			return null;
-		} elseif (!is_int($this->updated_at)) {
-			$ts = strtotime($this->updated_at);
-			if ($ts === -1 || $ts === false) {
-                throw new PropelException("Unable to parse value of [updated_at] as date/time value: " . var_export($this->updated_at, true));
-			}
-		} else {
-			$ts = $this->updated_at;
-		}
-		if ($format === null) {
-			return $ts;
-		} elseif (strpos($format, '%') !== false) {
-			return strftime($format, $ts);
-		} else {
-			return date($format, $ts);
-		}
-	}
-	
-	public function getCreatedBy()
-	{
-		return $this->created_by;
-	}
-	
-	public function getUpdatedBy()
-	{
-		return $this->updated_by;
-	}
+    
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
     
     public function getItems()
     {
@@ -240,13 +166,6 @@ class Invoice
         if ($this->number !== $v) {
 			$this->number = $v;
 		}
-    }
-    
-    public function setCustomer(CustomerInterface $customer)
-    {
-        $this->customer = $customer;
-        $this->customer_id = $customer->getId();
-        $this->customer_class = get_class($customer);
     }
 	
 	public function setTotal($v)
@@ -347,59 +266,12 @@ class Invoice
 		if ($this->currency !== $v || $v === 'EUR') {
 			$this->currency = $v;
 		}
-	} 
-	
-	public function setCreatedAt($v)
-	{
-		if ($v !== null && !is_int($v)) {
-			$ts = strtotime($v);
-			if ($ts === -1 || $ts === false) {
-                throw new PropelException("Unable to parse date/time value for [created_at] from input: " . var_export($v, true));
-			}
-		} else {
-			$ts = $v;
-		}
-		if ($this->created_at !== $ts) {
-			$this->created_at = $ts;
-		}
-	} 
-	
-	public function setUpdatedAt($v)
-	{
-		if ($v !== null && !is_int($v)) {
-			$ts = strtotime($v);
-			if ($ts === -1 || $ts === false) {
-                throw new PropelException("Unable to parse date/time value for [updated_at] from input: " . var_export($v, true));
-			}
-		} else {
-			$ts = $v;
-		}
-		if ($this->updated_at !== $ts) {
-			$this->updated_at = $ts;
-		}
-	} 
-	
-	public function setCreatedBy($v)
-	{
-		if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
-		}
-
-		if ($this->created_by !== $v) {
-			$this->created_by = $v;
-		}
-	} 
-	
-	public function setUpdatedBy($v)
-	{
-        if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
-		}
-
-		if ($this->updated_by !== $v) {
-			$this->updated_by = $v;
-		}
 	}
+    
+    public function setCustomer(CustomerInterface $customer)
+    {
+        $this->customer = $customer;        
+    }    
     
     public function addItem(InvoiceItem $item)
     {
@@ -443,4 +315,13 @@ class Invoice
 
 		return $result;
 	}
+    
+    public function calculateTotal()
+    {
+        $total = 0;
+        foreach ($this->getItems() as $item)
+        {
+            $total += $item->getPriceInclVat();
+        }
+    }
 }
