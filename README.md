@@ -1,2 +1,2 @@
-InvoicePlugin
+InvoiceBundle
 =============
