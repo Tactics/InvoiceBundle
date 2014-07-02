@@ -1,7 +1,7 @@
 {
-    "name": "tactics/invoice-bundle",
-    "type": "symfony-bundle",
-    "description": "invoice bundle",
+    "name": "tactics/invoice-lib",
+    "type": "library",
+    "description": "invoice library",
     "license": "",
     "authors": [
         {
@@ -13,7 +13,7 @@
         "phpunit/phpunit" : "4.1.*"
     },
     "autoload": {
-        "psr-0": { "Tactics\\InvoiceBundle": "" }
+        "psr-0": { "Tactics\\InvoiceLib": "" }
     },
-    "target-dir": "Tactics/InvoiceBundle"
+    "target-dir": "Tactics/InvoiceLib"
 }
