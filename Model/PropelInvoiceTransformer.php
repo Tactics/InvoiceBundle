@@ -18,10 +18,7 @@ class PropelInvoiceTransformer implements InvoiceTransformerInterface
             $propelInvoiceItem->fromArray($item->toArray());
             
             $vat = $item->getVat();
-            $propelVat = new \PropelVat();
-            $propelVat->fromArray($vat->toArray());
-            
-            $propelInvoiceItem->setPropelVat($propelVat);
+            $propelInvoiceItem->setPropelVat($this->vatToOrm($vat));
             
             $propelInvoice->addPropelInvoiceItem($propelInvoiceItem);
         }
@@ -44,14 +41,32 @@ class PropelInvoiceTransformer implements InvoiceTransformerInterface
             $item = new InvoiceItem();
             $item->fromArray($propelInvoiceItem->toArray());
             
-            $vat = new Vat();            
-            $vat->fromArray($propelInvoiceItem->getPropelVat()->toArray());
-            $item->setVat($vat);
+            $propelVat = $propelInvoiceItem->getPropelVat();
+            if ($propelVat)
+            {
+              $item->setVat($this->vatFromOrm($propelVat));
+            }
             
             $invoice->addItem($item);            
         }
         
         return $invoice;
+    }
+    
+    public function vatFromOrm($propel_vat)
+    {
+        $vat = new Vat();
+        $vat->fromArray($propel_vat->toArray());
+        
+        return $vat;
+    }
+    
+    public function vatToOrm(Vat $vat)
+    {
+        $propelVat = new \PropelVat();
+        $propelVat->fromArray($vat->toArray());
+        
+        return $propelVat;
     }
     
     
