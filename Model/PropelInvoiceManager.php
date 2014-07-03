@@ -19,14 +19,15 @@ class PropelInvoiceManager extends InvoiceManager
      */
     public function save(Invoice $invoice)
     {
-        $propelInvoice = $this->transformer->toOrm($invoice);        
+        $propelInvoice = $this->transformer->toOrm($invoice);
+        $propelInvoice->setNew(!$invoice->getId());
         $propelInvoice->save();
     }
     
     /**
      * 
      * @param int $id
-     * @return \Invoice
+     * @return Tactics\InvoiceBundle\Model\Invoice
      */
     public function find($id)
     {
@@ -43,5 +44,43 @@ class PropelInvoiceManager extends InvoiceManager
     {        
         $propelInvoice = $this->transformer->toOrm($invoice);
         $propelInvoice->delete();
+    }
+    
+    
+    /**
+     * 
+     * @param int $id
+     * @return Tactics\InvoiceBundle\Model\Vat
+     */
+    public function findVat($id)
+    {
+        $propelVat = \PropelVatPeer::retrieveByPK($id);        
+        
+        return $this->transformer->vatFromOrm($propelVat);
+    }
+    
+    public function saveVat(Vat $vat)
+    {
+        $propelVat = $this->transformer->vatToOrm($vat);
+        $propelVat->setNew(!$vat->getId());
+        $propelVat->save();
+    }
+    
+    
+    /**
+     * Geeft alle Vats terug
+     * 
+     * @return array
+     */
+    public function getAllVats() 
+    {
+      $propelVats = \PropelVatPeer::doSelect(new \Criteria());
+      $vats = array();
+      foreach ($propelVats as $propelVat)
+      {
+        $vats[] = $this->transformer->vatFromOrm($propelVat);
+      }
+      
+      return $vats;
     }
 }
