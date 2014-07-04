@@ -9,6 +9,7 @@ use ZendPdf\Color\Html;
 use ZendPdf\Image;
 use Tactics\InvoiceBundle\Model\Invoice;
 
+
 class PdfCreator
 {
   public static function generatePdf(Invoice $invoice)
@@ -42,10 +43,10 @@ class PdfCreator
     $pdf->pages[0]
       ->setFont( $font , 12 )
       ->setFillColor($cLightText)
-      ->drawText( 'Factuur ##', self::mmToPoints(13), 730 );
+      ->drawText( 'Factuur ' . $invoice->getNumber(), self::mmToPoints(13), 730 );
     $pdf->pages[0]
       ->setFont( $font, 10)
-      ->drawText( date('d/m/Y'), self::mmToPoints(13), 715 );
+      ->drawText( $invoice->getDate(), self::mmToPoints(13), 715 );
 
     // Onze gegevens
     $pdf->pages[0]
@@ -109,26 +110,66 @@ class PdfCreator
 
       $pdf->pages[0]
         ->setFillColor( $cText )
-        ->drawText( 'test', self::mmToPoints(13), 510 - (30 * $i) )
-        ->drawText( 'test', 210, 510 - (30 * $i) )
-        ->drawText( 'test', 240, 510 - (30 * $i) )
-        ->drawText( 'test', 300, 510 - (30 * $i) )
-        ->drawText( 'test', 370, 510 - (30 * $i) )
-        ->drawText( 'test', 450, 510 - (30 * $i) );
+        ->drawText( $item->getDescription(), self::mmToPoints(13), 510 - (30 * $i) )
+        ->drawText( $item->getQuantity(), 210, 510 - (30 * $i) )
+        ->drawText( $item->getUnitPrice(), 240, 510 - (30 * $i) )
+        ->drawText( $item->getPriceExVat(), 300, 510 - (30 * $i) )
+        ->drawText( $item->getVat() . '%', 370, 510 - (30 * $i) )
+        ->drawText( $item->getPriceInclVat(), 450, 510 - (30 * $i) );
       $i++;
     }
 
+    //Total
+    $pdf->pages[0]
+      ->drawLine( 340, 500 - (30 * $i), 510, 500 - (30 * $i) )
+      ->drawText( 'Totaal (Excl)', 340, 510 - (30 * $i) )
+      ->drawText( $invoice->getTotal(), 430, 510 - (30 * $i))
+      ->drawLine( 340, 470 - (30 * $i), 510, 470 - (30 * $i) )
+      ->drawText( 'BTW', 340, 480 - (30 * $i) )
+      ->drawText( $invoice->getVat(), 430, 480 - (30 * $i))
+      ->drawLine( 340, 420 - (30 * $i), 510, 420 - (30 * $i) )
+      ->setFont( $font, 12 )
+      ->drawText( 'Totaal (Incl)', 340, 430 - (30 * $i) )
+      ->drawText( $invoice->getTotal(), 430, 430 - (30 * $i));
 
-//    $pdf->save( 'example.pdf' );
+    ///////////
+    ////////// Footer:
+    /////////
+    $pdf->pages[0]
+      ->setFont( $font, 10 )
+      ->drawText( 'Opmerkingen', self::mmToPoints(13), 180 )
+      ->drawLine( 0, 170, 510, 170);
+
+    $para = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare tristique sem nec porta. In rutrum nibh nec vehicula ornare. Duis quis mollis urna. Nunc a porta ipsum. Sed nec mi nec justo sollicitudin malesuada. Donec diam libero, mollis a mauris vel, posuere porttitor elit. Curabitur aliquet tincidunt accumsan. Donec volutpat a erat et ultricies. Donec a imperdiet metus. Nam euismod convallis tincidunt. Nulla sem turpis, pretium et aliquet ac, hendrerit in diam. ';
+
+    self::drawTextArea($pdf, $para, self::mmToPoints(13), 150, 15, 110);
+
     return $pdf;
   }
 
-  private function pointsToMm( $points )
+///////////
+////////// Tools:
+/////////
+  // Create wrapped text.
+  private static function drawTextArea($pdf, $text, $pos_x, $pos_y, $height, $length = 0, $offset_x = 0, $offset_y = 0)
   {
-    return $points / 72 * 25.4;
+    $x = $pos_x + $offset_x;
+    $y = $pos_y + $offset_y;
+
+    if ($length != 0) {
+      $text = wordwrap($text, $length, "\n", false);
+    }
+    $token = strtok($text, "\n");
+
+    while ($token != false) {
+      $pdf->pages[0]->drawText($token, $x, $y);
+      $token = strtok("\n");
+      $y -= $height;
+    }
   }
 
-  private function mmToPoints( $mm )
+  //Converts mm to points for coordinates.
+  private static function mmToPoints( $mm )
   {
     return $mm / 25.4 * 72;
   }
