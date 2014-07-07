@@ -14,8 +14,11 @@ class PdfCreator
 {
   public static function generatePdf(Invoice $invoice)
   {
+    \Misc::use_helper('Helper', 'Number');
     $pdf = new PdfDocument();
     $pdf->pages[0] = new Page( Page::SIZE_A4 ); // print marge van 10/13 mm Max dimensions A4 = 210mm x 297mm / 595.28 Pts 841.89 Pts
+
+    $eindtotaal = 0;
 
     //standaard gebruikt font.
     $font = Font::fontWithName(Font::FONT_HELVETICA);
@@ -57,7 +60,7 @@ class PdfCreator
       ->setFont( $font , 10 )
       ->drawText( 'Kerkstraat 115', 300, 755 )
       ->drawText( '2940 Hoevenen', 300, 740 )
-      ->drawText ( 'BTW ############' , 300, 725);
+      ->drawText( 'BTW ############' , 300, 725);
 
     //Ontvanger
     $pdf->pages[0]
@@ -67,7 +70,7 @@ class PdfCreator
       ->setFont( $font , 10 )
       ->drawText( 'Lange Sterrestraat 53 Bus 11', 300, 640 )
       ->drawText( '2180 Ekeren', 300, 625 )
-      ->drawText ( '################' , 300, 610);
+      ->drawText( '################' , 300, 610);
 
     ///////////
     ////////// Items:
@@ -112,25 +115,26 @@ class PdfCreator
         ->setFillColor( $cText )
         ->drawText( $item->getDescription(), self::mmToPoints(13), 510 - (30 * $i) )
         ->drawText( $item->getQuantity(), 210, 510 - (30 * $i) )
-        ->drawText( $item->getUnitPrice(), 240, 510 - (30 * $i) )
-        ->drawText( $item->getPriceExVat(), 300, 510 - (30 * $i) )
+        ->drawText( format_currency($item->getUnitPrice()), 240, 510 - (30 * $i) )
+        ->drawText( format_currency($item->getPriceExVat()), 300, 510 - (30 * $i) )
         ->drawText( $item->getVat() . '%', 370, 510 - (30 * $i) )
-        ->drawText( $item->getPriceInclVat(), 450, 510 - (30 * $i) );
+        ->drawText( format_currency($item->getPriceInclVat()), 450, 510 - (30 * $i) );
       $i++;
     }
 
     //Total
+    $eindtotaal = $invoice->getTotal() + $invoice->getVat();
     $pdf->pages[0]
       ->drawLine( 340, 500 - (30 * $i), 510, 500 - (30 * $i) )
       ->drawText( 'Totaal (Excl)', 340, 510 - (30 * $i) )
-      ->drawText( $invoice->getTotal(), 430, 510 - (30 * $i))
+      ->drawText( format_currency($invoice->getTotal()), 430, 510 - (30 * $i)) // totaal zonder btw
       ->drawLine( 340, 470 - (30 * $i), 510, 470 - (30 * $i) )
       ->drawText( 'BTW', 340, 480 - (30 * $i) )
-      ->drawText( $invoice->getVat(), 430, 480 - (30 * $i))
+      ->drawText( format_currency($invoice->getVat()), 430, 480 - (30 * $i)) //totaal BTW
       ->drawLine( 340, 420 - (30 * $i), 510, 420 - (30 * $i) )
       ->setFont( $font, 12 )
       ->drawText( 'Totaal (Incl)', 340, 430 - (30 * $i) )
-      ->drawText( $invoice->getTotal(), 430, 430 - (30 * $i));
+      ->drawText( format_currency($eindtotaal), 430, 430 - (30 * $i)); //Eindtotaal
 
     ///////////
     ////////// Footer:
