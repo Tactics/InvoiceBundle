@@ -3,6 +3,7 @@
 namespace Tactics\InvoiceBundle\DependencyInjection;
 
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
@@ -14,6 +15,10 @@ use Symfony\Component\Config\FileLocator;
  */
 class InvoiceExtension extends Extension
 {
+    private $object_names = array(
+      'invoice', 'vat'
+    );
+    
     private static $ormTransformerMap = array(
       'propel' => array(
         'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
@@ -36,10 +41,13 @@ class InvoiceExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         
-        // set the manager classes based on the chosen orm
-        $container->setParameter('invoice_transformer.class', self::$ormTransformerMap[$config['orm']]['invoice']);
-        $container->setParameter('invoice_manager.class', self::$ormManagerMap[$config['orm']]['invoice']);
-        $container->setParameter('vat_transformer.class', self::$ormTransformerMap[$config['orm']]['vat']);
-        $container->setParameter('vat_manager.class', self::$ormManagerMap[$config['orm']]['vat']);
+        // set the dic parameters for each domain object
+        foreach ($this->object_names as $object_name)
+        {
+            $className = ucfirst(Container::camelize($object_name));
+            $container->setParameter("{$object_name}_class", "\Tactics\InvoiceBundle\Model\\{$className}");
+            $container->setParameter("{$object_name}_transformer.class", self::$ormTransformerMap[$config['orm']][$object_name]);
+            $container->setParameter("{$object_name}_manager.class", self::$ormManagerMap[$config['orm']][$object_name]);
+        }       
     }
 }

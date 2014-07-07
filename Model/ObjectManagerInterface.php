@@ -12,5 +12,7 @@ interface ObjectManagerInterface
     public function find($id);
     
     public function delete(TransformableInterface $domain_object);
+    
+    public function getDomainObject($orm_object);
 }
 
