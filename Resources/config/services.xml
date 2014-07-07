@@ -6,9 +6,14 @@
     
     <services>
         <service id="invoice_transformer" class="%invoice_transformer.class%"></service>
+        <service id="vat_transformer" class="%vat_transformer.class%"></service>
         
         <service id="invoice_manager" class="%invoice_manager.class%">
             <argument type="service" id="invoice_transformer"/>
+        </service>
+        
+        <service id="vat_manager" class="%vat_manager.class%">
+            <argument type="service" id="vat_transformer"/>
         </service>
         
     </services>

@@ -2,11 +2,11 @@
 
 namespace Tactics\InvoiceBundle\Model;
 
-abstract class InvoiceManager implements InvoiceManagerInterface
+abstract class ObjectManager implements ObjectManagerInterface
 {
     protected $transformer;
     
-    public function __construct(InvoiceTransformerInterface $transformer)
+    public function __construct(TransformerInterface $transformer)
     {
         $this->transformer = $transformer;        
     }

@@ -2,7 +2,7 @@
 
 namespace Tactics\InvoiceBundle\Model;
 
-class Invoice
+class Invoice implements TransformableInterface
 {
     private static $fieldNames = array(
         'Id', 

@@ -2,7 +2,7 @@
 
 namespace Tactics\InvoiceBundle\Model;
 
-class Vat
+class Vat implements TransformableInterface
 {
     private static $fieldNames = array(
         'Id', 

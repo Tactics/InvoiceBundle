@@ -1,10 +1,13 @@
 <?php
 
-namespace Tactics\InvoiceBundle\Model;
+namespace Tactics\InvoiceBundle\Propel;
 
-class PropelInvoiceTransformer implements InvoiceTransformerInterface
+use Tactics\InvoiceBundle\Model\TransformerInterface;
+use Tactics\InvoiceBundle\Model\TransformableInterface;
+
+class InvoiceTransformer implements TransformerInterface
 {
-    public function toOrm(Invoice $invoice)
+    public function toOrm(TransformableInterface $invoice)
     {
         $invoiceArray = $invoice->toArray();
         $customerArray = $this->objectToArray($invoice->getCustomer(), 'Customer');
@@ -52,23 +55,6 @@ class PropelInvoiceTransformer implements InvoiceTransformerInterface
         
         return $invoice;
     }
-    
-    public function vatFromOrm($propel_vat)
-    {
-        $vat = new Vat();
-        $vat->fromArray($propel_vat->toArray());
-        
-        return $vat;
-    }
-    
-    public function vatToOrm(Vat $vat)
-    {
-        $propelVat = new \PropelVat();
-        $propelVat->fromArray($vat->toArray());
-        
-        return $propelVat;
-    }
-    
     
     /**
      * Converts array with $className class and id to object

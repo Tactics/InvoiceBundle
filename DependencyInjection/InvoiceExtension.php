@@ -15,11 +15,17 @@ use Symfony\Component\Config\FileLocator;
 class InvoiceExtension extends Extension
 {
     private static $ormTransformerMap = array(
-      'propel' => 'Tactics\InvoiceBundle\Model\PropelInvoiceTransformer'
+      'propel' => array(
+        'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
+        'vat' => 'Tactics\InvoiceBundle\Propel\VatTransformer'
+       )
     );
     
     private static $ormManagerMap = array(
-      'propel' => 'Tactics\InvoiceBundle\Model\PropelInvoiceManager'
+      'propel' => array(
+        'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceManager',
+        'vat' => 'Tactics\InvoiceBundle\Propel\VatManager'
+      )
     );
     
     public function load(array $configs, ContainerBuilder $container)
@@ -30,8 +36,10 @@ class InvoiceExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         
-        // set the invoice manager class based on the chosen orm
-        $container->setParameter('invoice_transformer.class', self::$ormTransformerMap[$config['orm']]);
-        $container->setParameter('invoice_manager.class', self::$ormManagerMap[$config['orm']]);
+        // set the manager classes based on the chosen orm
+        $container->setParameter('invoice_transformer.class', self::$ormTransformerMap[$config['orm']]['invoice']);
+        $container->setParameter('invoice_manager.class', self::$ormManagerMap[$config['orm']]['invoice']);
+        $container->setParameter('vat_transformer.class', self::$ormTransformerMap[$config['orm']]['vat']);
+        $container->setParameter('vat_manager.class', self::$ormManagerMap[$config['orm']]['vat']);
     }
 }
