@@ -5,7 +5,7 @@ namespace Tactics\InvoiceBundle\Propel;
 use Tactics\InvoiceBundle\Model;
 use Tactics\InvoiceBundle\Model\TransformableInterface;
 
-abstract class ObjectManager extends Model\ObjectManager
+class ObjectManager extends Model\ObjectManager
 {
     /**
      * 
@@ -14,8 +14,8 @@ abstract class ObjectManager extends Model\ObjectManager
      */
     public function find($id)
     {
-        $className = substr($this->class, strrpos($this->class, '\\') + 1);
-        $peerClass = "\Propel{$className}Peer";        
+        $propelClassName = Helper::getPropelClassName($this->class);
+        $peerClass = "{$propelClassName}Peer";
         $ormObject = $peerClass::retrieveByPK($id);
         
         return $this->transformer->fromOrm($ormObject);

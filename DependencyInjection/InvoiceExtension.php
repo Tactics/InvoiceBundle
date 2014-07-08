@@ -22,14 +22,14 @@ class InvoiceExtension extends Extension
     private static $ormTransformerMap = array(
       'propel' => array(
         'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
-        'vat' => 'Tactics\InvoiceBundle\Propel\VatTransformer'
+        'vat' => 'Tactics\InvoiceBundle\Propel\Transformer'
        )
     );
     
     private static $ormManagerMap = array(
       'propel' => array(
-        'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceManager',
-        'vat' => 'Tactics\InvoiceBundle\Propel\VatManager'
+        'invoice' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
+        'vat' => 'Tactics\InvoiceBundle\Propel\ObjectManager'
       )
     );
     

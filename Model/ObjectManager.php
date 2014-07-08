@@ -12,21 +12,12 @@ abstract class ObjectManager implements ObjectManagerInterface
      * 
      * @param \Tactics\InvoiceBundle\Model\TransformerInterface $transformer
      */
-    public function __construct(TransformerInterface $transformer)
-    {
-        $this->transformer = $transformer;
-    }
-    
-    /**
-     * Sets the classname
-     * 
-     * @param string $class
-     */
-    public function setClass($class)
+    public function __construct($class, TransformerInterface $transformer)
     {
         $this->class = $class;
+        $this->transformer = $transformer;
     }
-    
+   
     /**
      * 
      * @return mixed

@@ -24,7 +24,7 @@ class PdfCreator
     $font = Font::fontWithName(Font::FONT_HELVETICA);
 
     //logo
-    $logo = Image::imageWithPath('images/logo-provant.png');
+    $logo = Image::imageWithPath('images/layout/apb_logo.png');
 
     ///////////
     ////////// Kleuren:

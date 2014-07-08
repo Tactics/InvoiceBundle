@@ -2,10 +2,9 @@
 
 namespace Tactics\InvoiceBundle\Propel;
 
-use Tactics\InvoiceBundle\Model\TransformerInterface;
 use Tactics\InvoiceBundle\Model\TransformableInterface;
 
-class InvoiceTransformer implements TransformerInterface
+class InvoiceTransformer extends Transformer
 {
     public function toOrm(TransformableInterface $invoice)
     {
@@ -15,13 +14,18 @@ class InvoiceTransformer implements TransformerInterface
         $propelInvoice = new \PropelInvoice();
         $propelInvoice->fromArray(array_merge($invoiceArray, $customerArray));
         
+        $vatTransformer = new Transformer('Vat');
         foreach ($invoice->getItems() as $item)
         {
             $propelInvoiceItem = new \PropelInvoiceItem();
             $propelInvoiceItem->fromArray($item->toArray());
-            
+                        
             $vat = $item->getVat();
-            $propelInvoiceItem->setPropelVat($this->vatToOrm($vat));
+            if ($vat)
+            {
+                $propelInvoiceItem->setPropelVat($vatTransformer->toOrm($vat));    
+            }
+            
             
             $propelInvoice->addPropelInvoiceItem($propelInvoiceItem);
         }
@@ -87,8 +91,8 @@ class InvoiceTransformer implements TransformerInterface
     private function objectToArray($object, $className)
     {
         return array(
-          $className . 'Id' => $object->getId(),
-          $className . 'Class' => get_class($object)
+          $className . 'Id' => isset($object) ? $object->getId() : null,
+          $className . 'Class' => isset($object) ? get_class($object) : null
         );
     }
 }

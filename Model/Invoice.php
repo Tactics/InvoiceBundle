@@ -7,7 +7,7 @@ class Invoice implements TransformableInterface
     private static $fieldNames = array(
         'Id', 
         'Number',        
-        'Total', 
+        'Total',
         'Vat', 
         'Date', 
         'DateDue', 
