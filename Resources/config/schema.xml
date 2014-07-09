@@ -56,4 +56,23 @@
         <column name="created_by" type="INTEGER"/>
         <column name="updated_by" type="INTEGER"/>
     </table>
+    
+    <table name="propel_accounting_scheme">
+        <column name="id" type="INTEGER" primaryKey="true" required="true" autoIncrement="true"/>
+        <column name="name" type="VARCHAR" size="100" required="true"/>
+        <column name="scheme_1_name" type="VARCHAR" size="100" required="false"/>
+        <column name="schema_1_active" type="BOOLEAN" required="true" default="false"/>
+        <column name="scheme_2_name" type="VARCHAR" size="100" required="false"/>
+        <column name="schema_2_active" type="BOOLEAN" required="true" default="false"/>
+        <column name="scheme_3_name" type="VARCHAR" size="100" required="false"/>
+        <column name="schema_3_active" type="BOOLEAN" required="true" default="false"/>
+        <column name="scheme_4_name" type="VARCHAR" size="100" required="false"/>
+        <column name="schema_4_active" type="BOOLEAN" required="true" default="false"/>
+        <column name="scheme_5_name" type="VARCHAR" size="100" required="false"/>
+        <column name="schema_5_active" type="BOOLEAN" required="true" default="false"/>
+        <column name="created_at" type="TIMESTAMP"/>
+        <column name="updated_at" type="TIMESTAMP"/>
+        <column name="created_by" type="INTEGER"/>
+        <column name="updated_by" type="INTEGER"/>
+    </table>
 </database>

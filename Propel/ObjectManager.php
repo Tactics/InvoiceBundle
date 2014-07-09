@@ -23,9 +23,9 @@ class ObjectManager extends Model\ObjectManager
     
     /**
      * 
-     * @param \Tactics\InvoiceBundle\Model\TransformableInterface $domain_object
+     * @param mixed $domain_object
      */
-    public function save(TransformableInterface $domain_object)
+    public function save($domain_object)
     {
         $ormObject = $this->transformer->toOrm($domain_object);
         $ormObject->setNew(!$domain_object->getId());
@@ -35,9 +35,9 @@ class ObjectManager extends Model\ObjectManager
     
     /**
      * 
-     * @param \Tactics\InvoiceBundle\Model\TransformableInterface $domain_object
+     * @param mixed $domain_object
      */
-    public function delete(TransformableInterface $domain_object)
+    public function delete($domain_object)
     {        
         $ormObject = $this->transformer->toOrm($domain_object);
         

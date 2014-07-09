@@ -5,15 +5,10 @@ namespace Tactics\InvoiceBundle\Model;
 class Address
 {
     private $street;
-
-    private $number;
-    
+    private $number;    
     private $bus;
-
     private $postal_code;
-
     private $city;
-
     private $country = 'BE';
 
     public function getStreet()

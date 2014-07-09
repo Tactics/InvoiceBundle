@@ -4,15 +4,6 @@ namespace Tactics\InvoiceBundle\Model;
 
 class InvoiceItem
 {    
-    private static $fieldNames = array(
-        'Id',
-        'Quantity',
-        'UnitPrice',        
-        'PriceExVat',
-        'PriceInclVat', 
-        'Description',        
-	);
-    
     protected $id;
     protected $quantity = 1;
     protected $unit_price;    
@@ -136,42 +127,6 @@ class InvoiceItem
     {
         $this->vat = $v;
     } 
-    
-    /**
-     * 
-     * @return array
-     */
-    public function toArray()
-	{
-        $result = array();
-        
-        foreach (self::$fieldNames as $fieldName)
-        {
-            $getter = 'get' . $fieldName;        
-            $result[$fieldName] = $this->$getter();
-        }
-
-		return $result;
-	}
-    
-    /**
-     * 
-     * @param array $arr
-     * @return Tactics\InvoiceBundle\Invoice
-     */
-    public function fromArray($arr)
-	{   
-        foreach (self::$fieldNames as $fieldName)
-        {            
-            if (array_key_exists($fieldName, $arr))
-            {
-                $setter = 'set' . $fieldName;
-                $this->$setter($arr[$fieldName]);
-            }
-        }
-        
-        return $this;
-	}
     
     public function calculatePrices()
     {

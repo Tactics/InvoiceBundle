@@ -2,22 +2,8 @@
 
 namespace Tactics\InvoiceBundle\Model;
 
-class Invoice implements TransformableInterface
+class Invoice
 {
-    private static $fieldNames = array(
-        'Id', 
-        'Number',        
-        'Total',
-        'Vat', 
-        'Date', 
-        'DateDue', 
-        'DatePaid', 
-        'Status', 
-        'AmountPaid', 
-        'StructuredCommunication', 
-        'Currency',
-	);
-    
     protected $id;
     protected $number;   
     protected $total = 0;	
@@ -278,43 +264,7 @@ class Invoice implements TransformableInterface
         $item->setInvoice($this);
         
         $this->calculateTotalAndVat();
-    }
-    
-    /**
-     * 
-     * @param array $arr
-     * @return Tactics\InvoiceBundle\Invoice
-     */
-    public function fromArray($arr)
-	{   
-        foreach (self::$fieldNames as $fieldName)
-        {            
-            if (array_key_exists($fieldName, $arr))
-            {
-                $setter = 'set' . $fieldName;
-                $this->$setter($arr[$fieldName]);
-            }
-        }
-        
-        return $this;
-	}
-    
-    /**
-     * 
-     * @return array
-     */
-    public function toArray()
-	{
-        $result = array();
-        
-        foreach (self::$fieldNames as $fieldName)
-        {
-            $getter = 'get' . $fieldName;        
-            $result[$fieldName] = $this->$getter();
-        }
-
-		return $result;
-	}
+    }    
     
     public function calculateTotalAndVat()
     {

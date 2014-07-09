@@ -16,20 +16,24 @@ use Symfony\Component\Config\FileLocator;
 class InvoiceExtension extends Extension
 {
     private $object_names = array(
-      'invoice', 'vat'
+      'invoice', 'invoice_item', 'vat', 'accounting_scheme'
     );
     
-    private static $ormTransformerMap = array(
+    private $ormTransformerMap = array(
       'propel' => array(
         'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
-        'vat' => 'Tactics\InvoiceBundle\Propel\Transformer'
+        'invoice_item' => 'Tactics\InvoiceBundle\Propel\InvoiceItemTransformer',
+        'vat' => 'Tactics\InvoiceBundle\Propel\Transformer',
+        'accounting_scheme' => 'Tactics\InvoiceBundle\Propel\Transformer'
        )
     );
     
-    private static $ormManagerMap = array(
+    private $ormManagerMap = array(
       'propel' => array(
         'invoice' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
-        'vat' => 'Tactics\InvoiceBundle\Propel\ObjectManager'
+        'invoice_item' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
+        'vat' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
+        'accounting_scheme' => 'Tactics\InvoiceBundle\Propel\ObjectManager'
       )
     );
     
@@ -46,8 +50,8 @@ class InvoiceExtension extends Extension
         {
             $className = ucfirst(Container::camelize($object_name));
             $container->setParameter("{$object_name}_class", "\Tactics\InvoiceBundle\Model\\{$className}");
-            $container->setParameter("{$object_name}_transformer.class", self::$ormTransformerMap[$config['orm']][$object_name]);
-            $container->setParameter("{$object_name}_manager.class", self::$ormManagerMap[$config['orm']][$object_name]);
+            $container->setParameter("{$object_name}_transformer.class", $this->ormTransformerMap[$config['orm']][$object_name]);
+            $container->setParameter("{$object_name}_manager.class", $this->ormManagerMap[$config['orm']][$object_name]);
         }       
     }
 }

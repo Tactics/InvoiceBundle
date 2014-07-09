@@ -2,97 +2,61 @@
 
 namespace Tactics\InvoiceBundle\Propel;
 
-use Tactics\InvoiceBundle\Model\TransformableInterface;
-
 class InvoiceTransformer extends Transformer
 {
-    public function toOrm(TransformableInterface $invoice)
+    private $item_transformer;
+        
+    /**
+     * Constructor
+     * 
+     * @param string $class
+     * @param Transformer $item_transformer
+     */
+    public function __construct($class, Transformer $item_transformer)
     {
-        $invoiceArray = $invoice->toArray();
-        $customerArray = $this->objectToArray($invoice->getCustomer(), 'Customer');
+        $this->item_transformer = $item_transformer;
         
-        $propelInvoice = new \PropelInvoice();
-        $propelInvoice->fromArray(array_merge($invoiceArray, $customerArray));
-        
-        $vatTransformer = new Transformer('Vat');
+        parent::__construct($class);
+    }
+    
+    /**
+     * Geeft PropelInvoice terug op basis van $invoice
+     * 
+     * @param Tactics\InvoiceBundle\Model\Invoice $invoice
+     * @return \PropelInvoice
+     */
+    public function toOrm($invoice)
+    {
+        $invoiceArray = $this->toArray($invoice);
+        $customerArray = Helper::objectToClassAndId($invoice->getCustomer(), 'Customer');
+        $propelInvoice = $this->ormObjectFromArray(array_merge($invoiceArray, $customerArray));
+                        
         foreach ($invoice->getItems() as $item)
         {
-            $propelInvoiceItem = new \PropelInvoiceItem();
-            $propelInvoiceItem->fromArray($item->toArray());
-                        
-            $vat = $item->getVat();
-            if ($vat)
-            {
-                $propelInvoiceItem->setPropelVat($vatTransformer->toOrm($vat));    
-            }
-            
-            
-            $propelInvoice->addPropelInvoiceItem($propelInvoiceItem);
+            $propelInvoice->addPropelInvoiceItem($this->item_transformer->toOrm($item));
         }
         
         return $propelInvoice;
     }
 
+    /**
+     * Geeft domain invoice terug op basis van $propel_invoice
+     * 
+     * @param \PropelInvoice $propel_invoice
+     * @return \Tactics\InvoiceBundle\Propel\Invoice
+     */
     public function fromOrm($propel_invoice)
     {
-        $propelInvoiceArray = $propel_invoice->toArray();
+        $invoice = parent::fromOrm($propel_invoice);
         
-        $invoice = new Invoice();
-        $invoice->fromArray($propelInvoiceArray);
-        
-        $customer = $this->arrayToObject($propelInvoiceArray, 'Customer');
+        $customer = Helper::classAndIdToObject($propel_invoice->toArray(), 'Customer');
         $invoice->setCustomer($customer);
         
-        foreach ($propel_invoice->getPropelInvoiceItems() as $propelInvoiceItem)
+        foreach ($propel_invoice->getPropelInvoiceItems() as $propel_invoice_item)
         {
-            $item = new InvoiceItem();
-            $item->fromArray($propelInvoiceItem->toArray());
-            
-            $propelVat = $propelInvoiceItem->getPropelVat();
-            if ($propelVat)
-            {
-              $item->setVat($this->vatFromOrm($propelVat));
-            }
-            
-            $invoice->addItem($item);            
+            $invoice->addItem($this->item_transformer->fromOrm($propel_invoice_item));
         }
         
         return $invoice;
-    }
-    
-    /**
-     * Converts array with $className class and id to object
-     * 
-     * @param array $array
-     * @param string $className
-     * 
-     * @return mixed The object
-     */
-    private function arrayToObject($array, $className)
-    {
-        $objectClass = isset($array[$className . 'Class']) ? $array[$className . 'Class'] : '';
-        $objectId = isset($array[$className . 'Id']) ? $array[$className . 'Id'] : '';
-        
-        if (!($objectClass && $objectId) || !method_exists($objectClass . 'Peer', 'retrieveByPK'))
-        {
-           return;
-        }
-
-        return call_user_func($objectClass . 'Peer::retrieveByPK', $objectId);
-    }
-    
-    /**
-     * Converts object to array with object id and class
-     * 
-     * @param mixed $object
-     *
-     * @return array The object
-     */
-    private function objectToArray($object, $className)
-    {
-        return array(
-          $className . 'Id' => isset($object) ? $object->getId() : null,
-          $className . 'Class' => isset($object) ? get_class($object) : null
-        );
     }
 }

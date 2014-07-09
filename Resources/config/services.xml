@@ -7,11 +7,22 @@
     <services>
         <service id="invoice_transformer" class="%invoice_transformer.class%">
             <argument>%invoice_class%</argument>
+            <argument type="service" id="invoice_item_transformer"/>
         </service>
+        
+        <service id="invoice_item_transformer" class="%invoice_item_transformer.class%">
+            <argument>%invoice_item_class%</argument>
+            <argument type="service" id="vat_transformer"/>
+        </service>
+        
         <service id="vat_transformer" class="%vat_transformer.class%">
             <argument>%vat_class%</argument>
         </service>
         
+        <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%">
+            <argument>%accounting_scheme_class%</argument>
+        </service>  
+              
         <service id="invoice_manager" class="%invoice_manager.class%">            
             <argument>%invoice_class%</argument>
             <argument type="service" id="invoice_transformer"/>
@@ -20,6 +31,11 @@
         <service id="vat_manager" class="%vat_manager.class%">
             <argument>%vat_class%</argument>
             <argument type="service" id="vat_transformer"/>            
+        </service>
+        
+        <service id="accounting_scheme_manager" class="%accounting_scheme_manager.class%">
+            <argument>%accounting_scheme_class%</argument>
+            <argument type="service" id="accounting_scheme_transformer"/>            
         </service>
         
     </services>
