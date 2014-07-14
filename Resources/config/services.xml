@@ -5,37 +5,42 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">    
     
     <services>
-        <service id="invoice_transformer" class="%invoice_transformer.class%">
-            <argument>%invoice_class%</argument>
-            <argument type="service" id="invoice_item_transformer"/>
+        <service id="vat_transformer" class="%vat_transformer.class%">
+            <argument>%vat_class%</argument>
+        </service>
+        <service id="vat_manager" class="%vat_manager.class%">
+            <argument>%vat_class%</argument>
+            <argument type="service" id="vat_transformer"/>            
         </service>
         
         <service id="invoice_item_transformer" class="%invoice_item_transformer.class%">
             <argument>%invoice_item_class%</argument>
             <argument type="service" id="vat_transformer"/>
         </service>
-        
-        <service id="vat_transformer" class="%vat_transformer.class%">
-            <argument>%vat_class%</argument>
+        <service id="invoice_transformer" class="%invoice_transformer.class%">
+            <argument>%invoice_class%</argument>
+            <argument type="service" id="invoice_item_transformer"/>
         </service>
-        
-        <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%">
-            <argument>%accounting_scheme_class%</argument>
-        </service>  
-              
         <service id="invoice_manager" class="%invoice_manager.class%">            
             <argument>%invoice_class%</argument>
             <argument type="service" id="invoice_transformer"/>
         </service>
         
-        <service id="vat_manager" class="%vat_manager.class%">
-            <argument>%vat_class%</argument>
-            <argument type="service" id="vat_transformer"/>            
+        <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%">
+            <argument>%accounting_scheme_class%</argument>
         </service>
-        
         <service id="accounting_scheme_manager" class="%accounting_scheme_manager.class%">
             <argument>%accounting_scheme_class%</argument>
             <argument type="service" id="accounting_scheme_transformer"/>            
+        </service>
+        
+        <service id="gl_account_transformer" class="%gl_account_transformer.class%">
+            <argument>%gl_account_class%</argument>
+            <argument type="service" id="accounting_scheme_transformer"/>
+        </service>
+        <service id="gl_account_manager" class="%gl_account_manager.class%">
+            <argument>%accounting_scheme_class%</argument>
+            <argument type="service" id="gl_account_transformer"/>            
         </service>
         
     </services>

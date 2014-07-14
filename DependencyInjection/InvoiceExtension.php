@@ -16,25 +16,26 @@ use Symfony\Component\Config\FileLocator;
 class InvoiceExtension extends Extension
 {
     private $object_names = array(
-      'invoice', 'invoice_item', 'vat', 'accounting_scheme'
+        'invoice',
+        'invoice_item',
+        'vat',
+        'accounting_scheme',
+        'gl_account'
     );
     
     private $ormTransformerMap = array(
-      'propel' => array(
-        'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
-        'invoice_item' => 'Tactics\InvoiceBundle\Propel\InvoiceItemTransformer',
-        'vat' => 'Tactics\InvoiceBundle\Propel\Transformer',
-        'accounting_scheme' => 'Tactics\InvoiceBundle\Propel\Transformer'
-       )
+        'propel' => array(
+            'default' => 'Tactics\InvoiceBundle\Propel\Transformer',
+            'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
+            'invoice_item' => 'Tactics\InvoiceBundle\Propel\InvoiceItemTransformer',
+            'gl_account' => 'Tactics\InvoiceBundle\Propel\GlAccountTransformer'
+        )
     );
     
     private $ormManagerMap = array(
-      'propel' => array(
-        'invoice' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
-        'invoice_item' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
-        'vat' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
-        'accounting_scheme' => 'Tactics\InvoiceBundle\Propel\ObjectManager'
-      )
+        'propel' => array(
+            'default' => 'Tactics\InvoiceBundle\Propel\ObjectManager'
+        )
     );
     
     public function load(array $configs, ContainerBuilder $container)
@@ -48,10 +49,18 @@ class InvoiceExtension extends Extension
         // set the dic parameters for each domain object
         foreach ($this->object_names as $object_name)
         {
+            $transformerClass = isset($this->ormTransformerMap[$config['orm']][$object_name])
+              ? $this->ormTransformerMap[$config['orm']][$object_name]
+              : $this->ormTransformerMap[$config['orm']]['default'];
+            
+            $managerClass = isset($this->ormManagerMap[$config['orm']][$object_name])
+              ? $this->ormManagerMap[$config['orm']][$object_name]
+              : $this->ormManagerMap[$config['orm']]['default'];
+            
             $className = ucfirst(Container::camelize($object_name));
             $container->setParameter("{$object_name}_class", "\Tactics\InvoiceBundle\Model\\{$className}");
-            $container->setParameter("{$object_name}_transformer.class", $this->ormTransformerMap[$config['orm']][$object_name]);
-            $container->setParameter("{$object_name}_manager.class", $this->ormManagerMap[$config['orm']][$object_name]);
+            $container->setParameter("{$object_name}_transformer.class", $transformerClass);
+            $container->setParameter("{$object_name}_manager.class", $managerClass);
         }       
     }
 }
