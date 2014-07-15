@@ -50,7 +50,10 @@ class InvoiceTransformer extends Transformer
         $invoice = parent::fromOrm($propel_invoice);
         
         $customer = Helper::classAndIdToObject($propel_invoice->toArray(), 'Customer');
-        $invoice->setCustomer($customer);
+        if ($customer)
+        {
+          $invoice->setCustomer($customer);
+        }        
         
         foreach ($propel_invoice->getPropelInvoiceItems() as $propel_invoice_item)
         {

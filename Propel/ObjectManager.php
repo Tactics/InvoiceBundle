@@ -3,7 +3,6 @@
 namespace Tactics\InvoiceBundle\Propel;
 
 use Tactics\InvoiceBundle\Model;
-use Tactics\InvoiceBundle\Model\TransformableInterface;
 
 class ObjectManager extends Model\ObjectManager
 {

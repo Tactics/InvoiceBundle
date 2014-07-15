@@ -5,7 +5,7 @@ namespace Tactics\InvoiceBundle\Model;
 class Invoice
 {
     protected $id;
-    protected $number;   
+    protected $number;
     protected $total = 0;	
 	protected $vat;	
 	protected $date;	

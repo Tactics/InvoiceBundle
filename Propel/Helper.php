@@ -57,7 +57,7 @@ class Helper
         
         if (!($objectClass && $objectId) || !method_exists($objectClass . 'Peer', 'retrieveByPK'))
         {
-           return;
+           return null;
         }
 
         return call_user_func($objectClass . 'Peer::retrieveByPK', $objectId);
