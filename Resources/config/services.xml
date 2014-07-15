@@ -39,7 +39,7 @@
             <argument type="service" id="accounting_scheme_transformer"/>
         </service>
         <service id="gl_account_manager" class="%gl_account_manager.class%">
-            <argument>%accounting_scheme_class%</argument>
+            <argument>%gl_account_class%</argument>
             <argument type="service" id="gl_account_transformer"/>            
         </service>
         
