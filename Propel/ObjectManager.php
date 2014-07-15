@@ -42,5 +42,28 @@ class ObjectManager extends Model\ObjectManager
         
         return $ormObject->delete();
     }
+    
+    /**
+     * 
+     * @param array $search_fields [field_name] => value pairs
+     * @return array with domain objects, indexed by id
+     */
+    public function search($search_fields)
+    {
+        $propelClassName = Helper::getPropelClassName($this->class);
+        $peerClass = "{$propelClassName}Peer";        
+        $c = new \Criteria();
+        foreach ($search_fields as $field_name => $value)
+        {
+            $colName = $peerClass::translateFieldName($field_name, \BasePeer::TYPE_FIELDNAME, \BasePeer::TYPE_COLNAME);
+            $c->add($colName, $value);
+        }
+        $ormObjects = $peerClass::doSelect($c);
+        
+        return array_combine(
+          array_map(create_function('$object', 'return $object->getId();'), $ormObjects),
+          array_map(array($this->transformer, 'fromOrm'), $ormObjects)
+        );        
+    }
 }
 
