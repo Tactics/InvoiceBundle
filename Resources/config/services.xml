@@ -34,13 +34,13 @@
             <argument type="service" id="accounting_scheme_transformer"/>            
         </service>
         
-        <service id="gl_account_transformer" class="%gl_account_transformer.class%">
-            <argument>%gl_account_class%</argument>
+        <service id="account_transformer" class="%account_transformer.class%">
+            <argument>%account_class%</argument>
             <argument type="service" id="accounting_scheme_transformer"/>
         </service>
-        <service id="gl_account_manager" class="%gl_account_manager.class%">
-            <argument>%gl_account_class%</argument>
-            <argument type="service" id="gl_account_transformer"/>            
+        <service id="account_manager" class="%account_manager.class%">
+            <argument>%account_class%</argument>
+            <argument type="service" id="account_transformer"/>            
         </service>
         
     </services>

@@ -2,7 +2,7 @@
 
 namespace Tactics\InvoiceBundle\Model;
 
-class GlAccount
+class Account
 {
     protected $id;
     protected $name;

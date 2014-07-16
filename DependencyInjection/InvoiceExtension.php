@@ -20,7 +20,7 @@ class InvoiceExtension extends Extension
         'invoice_item',
         'vat',
         'accounting_scheme',
-        'gl_account'
+        'account'
     );
     
     private $ormTransformerMap = array(
@@ -28,7 +28,7 @@ class InvoiceExtension extends Extension
             'default' => 'Tactics\InvoiceBundle\Propel\Transformer',
             'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
             'invoice_item' => 'Tactics\InvoiceBundle\Propel\InvoiceItemTransformer',
-            'gl_account' => 'Tactics\InvoiceBundle\Propel\GlAccountTransformer'
+            'account' => 'Tactics\InvoiceBundle\Propel\AccountTransformer'
         )
     );
     
