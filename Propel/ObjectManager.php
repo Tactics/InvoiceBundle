@@ -46,10 +46,13 @@ class ObjectManager extends Model\ObjectManager
     /**
      * 
      * @param array $search_fields [field_name] => value pairs
-     * @return array with domain objects, indexed by id
+     * @param string $sort_by field_name to sort on
+     * @param bool $sort_asc default true sort asc or desc
+     * @return array an array with sorted domain objects, indexed by id
      */
-    public function search($search_fields)
+    public function search($search_fields = array(), $sort_by = 'id', $sort_asc = true)
     {
+        // creating the propel criteria
         $propelClassName = Helper::getPropelClassName($this->class);
         $peerClass = "{$propelClassName}Peer";        
         $c = new \Criteria();
@@ -58,11 +61,17 @@ class ObjectManager extends Model\ObjectManager
             $colName = $peerClass::translateFieldName($field_name, \BasePeer::TYPE_FIELDNAME, \BasePeer::TYPE_COLNAME);
             $c->add($colName, $value);
         }
+        
+        // sorting
+        $sortMethod = 'add' . ($sort_asc ? 'Asc' : 'Desc') . 'endingOrderByColumn';
+        $sortByColName = $peerClass::translateFieldName($sort_by, \BasePeer::TYPE_FIELDNAME, \BasePeer::TYPE_COLNAME);
+        $c->$sortMethod($sortByColName);
+        
         $ormObjects = $peerClass::doSelect($c);
         
         return array_combine(
-          array_map(create_function('$object', 'return $object->getId();'), $ormObjects),
-          array_map(array($this->transformer, 'fromOrm'), $ormObjects)
+            array_map(create_function('$object', 'return $object->getId();'), $ormObjects),
+            array_map(array($this->transformer, 'fromOrm'), $ormObjects)
         );        
     }
 }
