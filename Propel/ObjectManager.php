@@ -13,6 +13,11 @@ class ObjectManager extends Model\ObjectManager
      */
     public function find($id)
     {
+        if (!$id)
+        {
+            return null;
+        }
+        
         $propelClassName = Helper::getPropelClassName($this->class);
         $peerClass = "{$propelClassName}Peer";
         $ormObject = $peerClass::retrieveByPK($id);

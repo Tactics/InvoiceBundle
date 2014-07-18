@@ -19,12 +19,16 @@ class Transformer extends Model\Transformer
     /**
      * Geeft een orm object terug op basis van een domain object
      * 
-     * @param mixed $domain_object The domain object
+     * @param mixed $domain_object The domain object or an array representing the domain object
      * @return mixed The propel object
      */
     public function toOrm($domain_object)
     {
-        return $this->ormObjectFromArray($this->toArray($domain_object));
+        $domainObjectArr = is_array($domain_object)
+          ? $domain_object
+          : $this->toArray($domain_object);
+        
+        return $this->ormObjectFromArray($domainObjectArr);
     }
 
     /**
@@ -35,6 +39,11 @@ class Transformer extends Model\Transformer
      */
     public function fromOrm($orm_object)
     {
+        if (!method_exists($orm_object, 'toArray'))
+        {
+            return null;
+        }
+        
         return $this->domainObjectFromArray($orm_object->toArray());
     }
     

@@ -27,9 +27,10 @@ class InvoiceTransformer extends Transformer
      */
     public function toOrm($invoice)
     {
-        $invoiceArray = $this->toArray($invoice);
-        $customerArray = Helper::objectToClassAndId($invoice->getCustomer(), 'Customer');
-        $propelInvoice = $this->ormObjectFromArray(array_merge($invoiceArray, $customerArray));
+        $propelInvoice = $this->toOrm(array_merge(
+            $this->toArray($invoice),
+            Helper::objectToClassAndId($invoice->getCustomer(), 'Customer')
+        ));
                         
         foreach ($invoice->getItems() as $item)
         {

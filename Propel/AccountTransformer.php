@@ -42,11 +42,16 @@ class AccountTransformer extends Transformer
     /**
      * Geeft domain account terug op basis van $propel_account
      * 
-     * @param \ProprlAccount $propel_account
+     * @param \PropelAccount $propel_account
      * @return \Tactics\InvoiceBundle\Propel\Account
      */
     public function fromOrm($propel_account)
     {
+        if (!$propel_account)
+        {
+            return null;
+        }
+        
         $account = parent::fromOrm($propel_account);
         
         if ($propel_account->getPropelAccountingScheme())

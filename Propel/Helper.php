@@ -36,7 +36,7 @@ class Helper
         foreach ($properties as $rflProp)
         {
             $propertyNames[\BasePeer::TYPE_FIELDNAME][] = $rflProp->name;
-            $propertyNames[\BasePeer::TYPE_PHPNAME][] = ucfirst(Container::camelize($rflProp->name));
+            $propertyNames[\BasePeer::TYPE_PHPNAME][] = self::camelize($rflProp->name, true);
         }
         
         return $propertyNames;
@@ -50,7 +50,7 @@ class Helper
      * 
      * @return mixed The object
      */
-    public static function classAndIdToObject($array, $className)
+    public static function classAndIdToObject($array, $className = 'Object')
     {
         $objectClass = isset($array[$className . 'Class']) ? $array[$className . 'Class'] : '';
         $objectId = isset($array[$className . 'Id']) ? $array[$className . 'Id'] : '';
@@ -76,6 +76,19 @@ class Helper
           $className . 'Id' => isset($object) ? $object->getId() : null,
           $className . 'Class' => isset($object) ? get_class($object) : null
         );
+    }
+    
+    /**
+     * 
+     * @param string $param
+     * @param bool $ucfirst default false
+     * @return string
+     */
+    public static function camelize($param, $ucfirst = false)
+    {
+        $camelized = Container::camelize($param);
+        
+        return $ucfirst ? ucfirst($camelized) : $camelized;
     }
 }
 
