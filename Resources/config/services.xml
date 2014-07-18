@@ -43,5 +43,15 @@
             <argument type="service" id="account_transformer"/>            
         </service>
         
+        <service id="product_configuration_transformer" class="%product_configuration_transformer.class%">
+            <argument>%product_configuration_class%</argument>
+            <argument type="service" id="vat_transformer"/>
+            <argument type="service" id="account_transformer"/>
+        </service>
+        <service id="product_configuration_manager" class="%product_configuration_manager.class%">
+            <argument>%product_configuration_class%</argument>
+            <argument type="service" id="product_configuration_transformer"/>            
+        </service>
+        
     </services>
 </container>
