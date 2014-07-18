@@ -57,6 +57,43 @@ class ObjectManager extends Model\ObjectManager
      */
     public function search($search_fields = array(), $sort_by = 'id', $sort_asc = true)
     {
+        $c = $this->createSearchCriteria($search_fields, $sort_by, $sort_asc);
+        
+        $propelClassName = Helper::getPropelClassName($this->class);
+        $peerClass = "{$propelClassName}Peer";
+        $ormObjects = $peerClass::doSelect($c);
+        
+        return array_combine(
+            array_map(create_function('$object', 'return $object->getId();'), $ormObjects),
+            array_map(array($this->transformer, 'fromOrm'), $ormObjects)
+        );        
+    }
+    
+    /**
+     * 
+     * @param array $search_fields [field_name] => value pairs  
+     * @return mixed a domain object
+     */
+    public function searchOne($search_fields = array())
+    {        
+        $c = $this->createSearchCriteria($search_fields);
+        
+        $propelClassName = Helper::getPropelClassName($this->class);
+        $peerClass = "{$propelClassName}Peer";
+        $propelObject = $peerClass::doSelectOne($c);
+        
+        return $propelObject ? $this->transformer->fromOrm($propelObject) : null;
+    }
+    
+    /**
+     * 
+     * @param array $search_fields [field_name] => value pairs
+     * @param string $sort_by field_name to sort on
+     * @param bool $sort_asc default true sort asc or desc
+     * @return \Criteria
+     */
+    private function createSearchCriteria($search_fields = array(), $sort_by = 'id', $sort_asc = true)
+    {
         // creating the propel criteria
         $propelClassName = Helper::getPropelClassName($this->class);
         $peerClass = "{$propelClassName}Peer";        
@@ -72,12 +109,7 @@ class ObjectManager extends Model\ObjectManager
         $sortByColName = $peerClass::translateFieldName($sort_by, \BasePeer::TYPE_FIELDNAME, \BasePeer::TYPE_COLNAME);
         $c->$sortMethod($sortByColName);
         
-        $ormObjects = $peerClass::doSelect($c);
-        
-        return array_combine(
-            array_map(create_function('$object', 'return $object->getId();'), $ormObjects),
-            array_map(array($this->transformer, 'fromOrm'), $ormObjects)
-        );        
+        return $c;
     }
 }
 
