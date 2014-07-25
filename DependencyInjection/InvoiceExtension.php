@@ -36,7 +36,8 @@ class InvoiceExtension extends Extension
     
     private $ormManagerMap = array(
         'propel' => array(
-            'default' => 'Tactics\InvoiceBundle\Propel\ObjectManager'
+            'default' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
+            'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceManager'
         )
     );
     
