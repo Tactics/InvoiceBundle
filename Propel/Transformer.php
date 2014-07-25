@@ -29,7 +29,7 @@ class Transformer extends Model\Transformer
           : $this->toArray($domain_object);
         
         $ormObject = $this->ormObjectFromArray($domainObjectArr);
-        $ormObject->setNew($domain_object->getNew());
+        $ormObject->setNew($domainObjectArr['New']);
         
         return $ormObject;
     }
