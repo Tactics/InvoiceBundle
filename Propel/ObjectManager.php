@@ -14,6 +14,24 @@ class ObjectManager extends Model\ObjectManager
         parent::__construct($class, $transformer);
         
         $this->propel_classname = Helper::getPropelClassName($this->class);
+        $this->initPkPhpName();
+    }
+    
+    private function initPkPhpName()
+    {
+        $tableName = eval("return " . $this->propel_classname . "Peer::TABLE_NAME;");
+  		$tmpBuilder = eval("return new " . $this->propel_classname . "MapBuilder();");
+  		$tmpBuilder->doBuild();
+  		$table_map = $tmpBuilder->getDatabaseMap()->getTable($tableName);
+
+  		foreach($table_map->getColumns() as $column)
+        {
+  			if ($column->isPrimaryKey())
+            {
+                $this->pk_php_name = $column->getPhpName();
+                break;
+            }
+  		}
     }
     
     /**
@@ -63,7 +81,7 @@ class ObjectManager extends Model\ObjectManager
      * @param bool $sort_asc default true sort asc or desc
      * @return array an array with sorted domain objects, indexed by id
      */
-    public function search($search_fields = array(), $sort_by = 'id', $sort_asc = true)
+    public function search($search_fields = array(), $sort_by = null, $sort_asc = true)
     {
         $c = $this->createSearchCriteria($search_fields, $sort_by, $sort_asc);
         
@@ -71,9 +89,9 @@ class ObjectManager extends Model\ObjectManager
         $ormObjects = $peerClass::doSelect($c);
         
         return array_combine(
-            array_map(create_function('$object', 'return $object->getId();'), $ormObjects),
+            array_map(create_function('$object', "return \$object->get{$this->pk_php_name}();"), $ormObjects),
             array_map(array($this->transformer, 'fromOrm'), $ormObjects)
-        );        
+        );
     }
     
     /**
@@ -99,7 +117,7 @@ class ObjectManager extends Model\ObjectManager
      * @param bool $sort_asc default true sort asc or desc
      * @return \Criteria
      */
-    private function createSearchCriteria($search_fields = array(), $sort_by = 'id', $sort_asc = true)
+    private function createSearchCriteria($search_fields = array(), $sort_by = null, $sort_asc = true)
     {
         // creating the propel criteria
         $propelClassName = Helper::getPropelClassName($this->class);
@@ -113,6 +131,10 @@ class ObjectManager extends Model\ObjectManager
         
         // sorting
         $sortMethod = 'add' . ($sort_asc ? 'Asc' : 'Desc') . 'endingOrderByColumn';
+        if (!$sort_by)
+        {
+            $sort_by = $peerClass::translateFieldName($this->pk_php_name, \BasePeer::TYPE_PHPNAME, \BasePeer::TYPE_FIELDNAME);
+        }
         $sortByColName = $peerClass::translateFieldName($sort_by, \BasePeer::TYPE_FIELDNAME, \BasePeer::TYPE_COLNAME);
         $c->$sortMethod($sortByColName);
         
