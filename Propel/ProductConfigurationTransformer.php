@@ -59,10 +59,9 @@ class ProductConfigurationTransformer extends Transformer
             $account = $product_configuration->$getter();
             if ($account)
             {
-                $setter = "setPropelAccountRelatedBy{$ucfirstCamelizedAccountName}Id";
+                $setter = "setPropelAccountRelatedBy{$ucfirstCamelizedAccountName}Code";
                 $propelConfig->$setter($this->account_transformer->toOrm($account));
             }
-            
         }
         
         return $propelConfig;
@@ -90,7 +89,7 @@ class ProductConfigurationTransformer extends Transformer
         foreach ($this->account_names as $account_name)
         {
             $ucfirstCamelizedAccountName = Helper::camelize($account_name, true);
-            $propelGetter = "getPropelAccountRelatedBy{$ucfirstCamelizedAccountName}Id";
+            $propelGetter = "getPropelAccountRelatedBy{$ucfirstCamelizedAccountName}Code";
             $domainSetter = "set{$ucfirstCamelizedAccountName}";
             $account = $propel_product_configuration->$propelGetter();                        
             $productConfig->$domainSetter($this->account_transformer->fromOrm($account));
