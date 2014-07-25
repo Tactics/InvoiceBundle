@@ -6,23 +6,50 @@ use Tactics\InvoiceBundle\Model;
 
 class ObjectManager extends Model\ObjectManager
 {
+    private $propel_classname;
+    private $pk_php_name;
+    
+    public function __construct($class, Model\TransformerInterface $transformer)
+    {
+        parent::__construct($class, $transformer);
+        
+        $this->propel_classname = Helper::getPropelClassName($this->class);
+        $this->initPkPhpName();        
+    }
+    
+    private function initPkPhpName()
+    {
+        $tableName = eval("return " . $this->propel_classname . "Peer::TABLE_NAME;");
+  		$tmpBuilder = eval("return new " . $this->propel_classname . "MapBuilder();");
+  		$tmpBuilder->doBuild();
+  		$table_map = $tmpBuilder->getDatabaseMap()->getTable($tableName);
+
+  		foreach($table_map->getColumns() as $column)
+        {
+  			if ($column->isPrimaryKey())
+            {
+                $this->pk_php_name = $column->getPhpName();
+  				break;
+  			}
+  		}
+    }
+    
     /**
      * 
-     * @param type $id
+     * @param mixed $pk a primary key value
      * @return mixed
      */
-    public function find($id)
+    public function find($pk)
     {
-        if (!$id)
+        if (!$pk)
         {
             return null;
         }
         
-        $propelClassName = Helper::getPropelClassName($this->class);
-        $peerClass = "{$propelClassName}Peer";
-        $ormObject = $peerClass::retrieveByPK($id);
+        $peerClass = "{$this->propel_classname}Peer";
+        $ormObject = $peerClass::retrieveByPK($pk);
         
-        return $this->transformer->fromOrm($ormObject);
+        return $ormObject ? $this->transformer->fromOrm($ormObject) : null;
     }
     
     /**
@@ -32,9 +59,16 @@ class ObjectManager extends Model\ObjectManager
     public function save($domain_object)
     {
         $ormObject = $this->transformer->toOrm($domain_object);
-        $ormObject->setNew(!$domain_object->getId());
+        $ormObject->setNew($this->isNew($domain_object));
         
         return $ormObject->save();
+    }
+    
+    private function isNew($domain_object)
+    {
+        $pkGetter = 'get' . $this->pk_php_name;
+        
+        return $this->find($domain_object->$pkGetter()) === null;
     }
     
     /**
@@ -59,8 +93,7 @@ class ObjectManager extends Model\ObjectManager
     {
         $c = $this->createSearchCriteria($search_fields, $sort_by, $sort_asc);
         
-        $propelClassName = Helper::getPropelClassName($this->class);
-        $peerClass = "{$propelClassName}Peer";
+        $peerClass = "{$this->propel_classname}Peer";
         $ormObjects = $peerClass::doSelect($c);
         
         return array_combine(

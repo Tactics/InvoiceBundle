@@ -4,15 +4,15 @@ namespace Tactics\InvoiceBundle\Model;
 
 class Vat
 {
-    protected $id;
+    protected $code;
     protected $name;
     protected $percentage;
     
     
     // getters
-    public function getId()
+    public function getCode()
 	{
-		return $this->id;
+		return $this->code;
 	}
 	
 	public function getName()
@@ -26,14 +26,14 @@ class Vat
 	}
     
     // setters
-    public function setId($v)
+    public function setCode($v)
 	{
-        if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
+        if ($v !== null && !is_string($v)) {
+			$v = (string) $v; 
 		}
 
-		if ($this->id !== $v) {
-			$this->id = $v;
+		if ($this->code !== $v) {
+			$this->code = $v;
 		}
 	} 
 	

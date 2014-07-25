@@ -90,7 +90,6 @@ class Transformer extends Model\Transformer
         $propelClassName = Helper::getPropelClassName($this->class);
         $propelObject = new $propelClassName();
         $propelObject->fromArray($arr);
-        $propelObject->setNew(!$propelObject->getId());
         
         return $propelObject;
     }
