@@ -12,7 +12,7 @@ use Tactics\InvoiceBundle\Model\Invoice;
 
 class PdfCreator
 {
-  public static function generatePdf(Invoice $invoice)
+  public function createPdf(Invoice $invoice)
   {
     \Misc::use_helper('Helper', 'Number');
     $pdf = new PdfDocument();
@@ -40,16 +40,16 @@ class PdfCreator
     /////////
     //logo
     $pdf->pages[0]
-      ->drawImage( $logo, self::mmToPoints(13), 750, 189, 802);
+      ->drawImage( $logo, $this->mmToPoints(13), 750, 189, 802);
 
     // Factuur + Factuur datum
     $pdf->pages[0]
       ->setFont( $font , 12 )
       ->setFillColor($cLightText)
-      ->drawText( 'Factuur ' . $invoice->getNumber(), self::mmToPoints(13), 730 );
+      ->drawText( 'Factuur ' . $invoice->getNumber(), $this->mmToPoints(13), 730 );
     $pdf->pages[0]
       ->setFont( $font, 10)
-      ->drawText( $invoice->getDate(), self::mmToPoints(13), 715 );
+      ->drawText( $invoice->getDate(), $this->mmToPoints(13), 715 );
 
     // Onze gegevens
     $pdf->pages[0]
@@ -85,7 +85,7 @@ class PdfCreator
       ->setFillColor( $cWhite )
       ->setLineColor( $cLightText )
       ->setLineWidth( 0.5 )
-      ->drawText( 'Omschrijving ' , self::mmToPoints(13) , 546 )
+      ->drawText( 'Omschrijving ' , $this->mmToPoints(13) , 546 )
       ->drawLine( 200, 530, 200, 570 )
       ->drawText( '#', 210, 546 )
       ->drawLine( 230, 530, 230, 570 )
@@ -113,7 +113,7 @@ class PdfCreator
 
       $pdf->pages[0]
         ->setFillColor( $cText )
-        ->drawText( $item->getDescription(), self::mmToPoints(13), 510 - (30 * $i) )
+        ->drawText( $item->getDescription(), $this->mmToPoints(13), 510 - (30 * $i) )
         ->drawText( $item->getQuantity(), 210, 510 - (30 * $i) )
         ->drawText( format_currency($item->getUnitPrice()), 240, 510 - (30 * $i) )
         ->drawText( format_currency($item->getPriceExVat()), 300, 510 - (30 * $i) )
@@ -141,12 +141,12 @@ class PdfCreator
     /////////
     $pdf->pages[0]
       ->setFont( $font, 10 )
-      ->drawText( 'Opmerkingen', self::mmToPoints(13), 180 )
+      ->drawText( 'Opmerkingen', $this->mmToPoints(13), 180 )
       ->drawLine( 0, 170, 510, 170);
 
     $para = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare tristique sem nec porta. In rutrum nibh nec vehicula ornare. Duis quis mollis urna. Nunc a porta ipsum. Sed nec mi nec justo sollicitudin malesuada. Donec diam libero, mollis a mauris vel, posuere porttitor elit. Curabitur aliquet tincidunt accumsan. Donec volutpat a erat et ultricies. Donec a imperdiet metus. Nam euismod convallis tincidunt. Nulla sem turpis, pretium et aliquet ac, hendrerit in diam. ';
 
-    self::drawTextArea($pdf, $para, self::mmToPoints(13), 150, 15, 110);
+    $this->drawTextArea($pdf, $para, $this->mmToPoints(13), 150, 15, 110);
 
     return $pdf;
   }
@@ -155,7 +155,7 @@ class PdfCreator
 ////////// Tools:
 /////////
   // Create wrapped text.
-  private static function drawTextArea($pdf, $text, $pos_x, $pos_y, $height, $length = 0, $offset_x = 0, $offset_y = 0)
+  private function drawTextArea($pdf, $text, $pos_x, $pos_y, $height, $length = 0, $offset_x = 0, $offset_y = 0)
   {
     $x = $pos_x + $offset_x;
     $y = $pos_y + $offset_y;
@@ -173,7 +173,7 @@ class PdfCreator
   }
 
   //Converts mm to points for coordinates.
-  private static function mmToPoints( $mm )
+  private function mmToPoints( $mm )
   {
     return $mm / 25.4 * 72;
   }
