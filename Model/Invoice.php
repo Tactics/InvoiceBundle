@@ -20,6 +20,8 @@ class Invoice
     
 	protected $items = array();
     
+    use \Tactics\InvoiceBundle\Model\NewTrait;
+    
     // getters
     public function getId()
 	{

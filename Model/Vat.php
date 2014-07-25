@@ -8,6 +8,7 @@ class Vat
     protected $name;
     protected $percentage;
     
+    use \Tactics\InvoiceBundle\Model\NewTrait;    
     
     // getters
     public function getCode()

@@ -25,8 +25,10 @@ abstract class ObjectManager implements ObjectManagerInterface
     public function create()
     {
         $class = $this->class;
+        $object = new $class();
+        $object->setNew(true);
         
-        return new $class();
+        return $object;
     }
     
     /**

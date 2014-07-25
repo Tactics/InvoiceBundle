@@ -28,7 +28,10 @@ class Transformer extends Model\Transformer
           ? $domain_object
           : $this->toArray($domain_object);
         
-        return $this->ormObjectFromArray($domainObjectArr);
+        $ormObject = $this->ormObjectFromArray($domainObjectArr);
+        $ormObject->setNew($domain_object->getNew());
+        
+        return $ormObject;
     }
 
     /**
@@ -44,7 +47,10 @@ class Transformer extends Model\Transformer
             return null;
         }
         
-        return $this->domainObjectFromArray($orm_object->toArray());
+        $domainObject = $this->domainObjectFromArray($orm_object->toArray());
+        $domainObject->setNew($orm_object->isNew());
+        
+        return $domainObject;
     }
     
     /**

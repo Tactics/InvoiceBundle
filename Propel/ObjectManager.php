@@ -14,24 +14,6 @@ class ObjectManager extends Model\ObjectManager
         parent::__construct($class, $transformer);
         
         $this->propel_classname = Helper::getPropelClassName($this->class);
-        $this->initPkPhpName();        
-    }
-    
-    private function initPkPhpName()
-    {
-        $tableName = eval("return " . $this->propel_classname . "Peer::TABLE_NAME;");
-  		$tmpBuilder = eval("return new " . $this->propel_classname . "MapBuilder();");
-  		$tmpBuilder->doBuild();
-  		$table_map = $tmpBuilder->getDatabaseMap()->getTable($tableName);
-
-  		foreach($table_map->getColumns() as $column)
-        {
-  			if ($column->isPrimaryKey())
-            {
-                $this->pk_php_name = $column->getPhpName();
-  				break;
-  			}
-  		}
     }
     
     /**
@@ -59,16 +41,8 @@ class ObjectManager extends Model\ObjectManager
     public function save($domain_object)
     {
         $ormObject = $this->transformer->toOrm($domain_object);
-        $ormObject->setNew($this->isNew($domain_object));
         
         return $ormObject->save();
-    }
-    
-    private function isNew($domain_object)
-    {
-        $pkGetter = 'get' . $this->pk_php_name;
-        
-        return $this->find($domain_object->$pkGetter()) === null;
     }
     
     /**

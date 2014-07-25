@@ -14,6 +14,8 @@ class InvoiceItem
     protected $invoice;
     protected $vat;
     
+    use \Tactics\InvoiceBundle\Model\NewTrait;
+    
     // getters	
 	public function getId()
 	{

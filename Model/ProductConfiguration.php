@@ -13,6 +13,8 @@ class ProductConfiguration
     protected $analytical_3_account = null;
     protected $analytical_4_account = null;
     protected $analytical_5_account = null;
+    
+    use \Tactics\InvoiceBundle\Model\NewTrait;
   
     //setters
     public function getId()

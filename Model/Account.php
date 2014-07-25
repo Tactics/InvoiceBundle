@@ -4,17 +4,19 @@ namespace Tactics\InvoiceBundle\Model;
 
 class Account
 {
-    protected $id;
+    protected $code;
     protected $name;
     protected $type;
     protected $scheme_nr;
     
     protected $accounting_scheme;
     
+    use \Tactics\InvoiceBundle\Model\NewTrait;
+    
     // getters
-    public function getId()
+    public function getCode()
 	{
-        return $this->id;
+        return $this->code;
 	}
 	
 	public function getSchemeId()
@@ -43,14 +45,14 @@ class Account
     }
     
     // setters
-    public function setId($v)
+    public function setCode($v)
 	{
-        if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
+         if ($v !== null && !is_string($v)) {
+			$v = (string) $v; 
 		}
 
-		if ($this->id !== $v) {
-			$this->id = $v;            
+		if ($this->code !== $v) {
+			$this->code = $v;            
         }
     }
 	
