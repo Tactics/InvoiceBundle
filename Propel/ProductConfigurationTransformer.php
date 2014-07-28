@@ -2,8 +2,6 @@
 
 namespace Tactics\InvoiceBundle\Propel;
 
-use Symfony\Component\DependencyInjection\Container;
-
 class ProductConfigurationTransformer extends Transformer
 {
     private $vat_transformer;
@@ -54,7 +52,7 @@ class ProductConfigurationTransformer extends Transformer
         
         foreach ($this->account_names as $account_name)
         {            
-            $ucfirstCamelizedAccountName = ucfirst(Container::camelize($account_name));
+            $ucfirstCamelizedAccountName = Helper::camelize($account_name, true);
             $getter = "get{$ucfirstCamelizedAccountName}";
             $account = $product_configuration->$getter();
             if ($account)
