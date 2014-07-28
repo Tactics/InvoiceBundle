@@ -4,7 +4,17 @@ namespace Tactics\InvoiceBundle\Propel;
 
 class InvoiceItemTransformer extends Transformer
 {
-    private $vat_transformer;    
+    private $vat_transformer;
+    private $account_transformer;
+    
+    private $account_names = array(
+        'gl_account',
+        'analytical_1_account',
+        'analytical_2_account',
+        'analytical_3_account',
+        'analytical_4_account',
+        'analytical_5_account'
+    );
         
     /**
      * Constructor
@@ -12,9 +22,10 @@ class InvoiceItemTransformer extends Transformer
      * @param string $class
      * @param Transformer $vat_transformer
      */
-    public function __construct($class, Transformer $vat_transformer)
+    public function __construct($class, Transformer $vat_transformer, Transformer $account_transformer)
     {
-        $this->vat_transformer = $vat_transformer;        
+        $this->vat_transformer = $vat_transformer;
+        $this->account_transformer = $account_transformer;
         
         parent::__construct($class);
     }
@@ -29,12 +40,23 @@ class InvoiceItemTransformer extends Transformer
     {
         $propelInvoiceItem = parent::toOrm($invoice_item);
         
-        if ($invoice_item->getVat())
+        $vat = $invoice_item->getVat();
+        if ($vat)
         {
-            $vat = $invoice_item->getVat();
-            $propelVat = $this->vat_transformer->toOrm($vat);
-            $propelInvoiceItem->setPropelVat($propelVat); 
-        }            
+            $propelInvoiceItem->setPropelVat($this->vat_transformer->toOrm($vat));
+        }
+        
+        foreach ($this->account_names as $account_name)
+        {            
+            $ucfirstCamelizedAccountName = Helper::camelize($account_name, true);
+            $getter = "get{$ucfirstCamelizedAccountName}";
+            $account = $invoice_item->$getter();
+            if ($account)
+            {
+                $setter = "setPropelAccountRelatedBy{$ucfirstCamelizedAccountName}Code";
+                $propelInvoiceItem->$setter($this->account_transformer->toOrm($account));
+            }
+        }
 
         return $propelInvoiceItem;
     }
@@ -49,12 +71,18 @@ class InvoiceItemTransformer extends Transformer
     {
         $item = parent::fromOrm($propel_invoice_item);
         
-        if ($propel_invoice_item->getPropelVat())
+        // set vat
+        $item->setVat($this->vat_transformer->fromOrm($propel_invoice_item->getPropelVat()));
+        
+        // set accounts
+        foreach ($this->account_names as $account_name)
         {
-            $propelVat = $propel_invoice_item->getPropelVat();
-            $vat = $this->vat_transformer->fromOrm($propelVat);
-            $item->setVat($vat);
-        }           
+            $ucfirstCamelizedAccountName = Helper::camelize($account_name, true);
+            $propelGetter = "getPropelAccountRelatedBy{$ucfirstCamelizedAccountName}Code";
+            $domainSetter = "set{$ucfirstCamelizedAccountName}";
+            $account = $propel_invoice_item->$propelGetter();                        
+            $item->$domainSetter($this->account_transformer->fromOrm($account));
+        }
         
         return $item;
     }      

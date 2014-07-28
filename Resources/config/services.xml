@@ -16,6 +16,11 @@
         <service id="invoice_item_transformer" class="%invoice_item_transformer.class%">
             <argument>%invoice_item_class%</argument>
             <argument type="service" id="vat_transformer"/>
+            <argument type="service" id="account_transformer"/>
+        </service>
+        <service id="invoice_item_manager" class="%invoice_item_manager.class%">
+            <argument>%invoice_item_class%</argument>
+            <argument type="service" id="invoice_item_transformer"/>
         </service>
         <service id="invoice_transformer" class="%invoice_transformer.class%">
             <argument>%invoice_class%</argument>
