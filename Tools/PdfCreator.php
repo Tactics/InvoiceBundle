@@ -24,7 +24,10 @@ class PdfCreator
     $font = Font::fontWithName(Font::FONT_HELVETICA);
 
     //logo
-    $logo = Image::imageWithPath('images/layout/apb_logo.png');
+    $logo = Image::imageWithPath('ttInvoice/images/provant-logo.png');
+
+    //Currency, euro standaard
+    $currency = $invoice->getCurrency() ? $invoice->getCurrency() : 'EUR';
 
     ///////////
     ////////// Kleuren:
@@ -40,22 +43,22 @@ class PdfCreator
     /////////
     //logo
     $pdf->pages[0]
-      ->drawImage( $logo, $this->mmToPoints(13), 750, 189, 802);
+      ->drawImage( $logo, $this->mmToPoints(13), 750, $this->mmToPoints(13) + 190, 813);
 
     // Factuur + Factuur datum
     $pdf->pages[0]
       ->setFont( $font , 12 )
       ->setFillColor($cLightText)
-      ->drawText( 'Factuur ' . $invoice->getNumber(), $this->mmToPoints(13), 730 );
+      ->drawText( 'Factuur ' . $invoice->getNumber(), $this->mmToPoints(16), 730 );
     $pdf->pages[0]
       ->setFont( $font, 10)
-      ->drawText( $invoice->getDate(), $this->mmToPoints(13), 715 );
+      ->drawText( $invoice->getDate('d-m-Y'), $this->mmToPoints(16), 715 );
 
     // Onze gegevens
     $pdf->pages[0]
       ->setFillColor($cText)
       ->setFont( $font , 14 )
-      ->drawText( 'Inovant', 300, 780 );
+      ->drawText( 'APBS', 300, 780 );
     $pdf->pages[0]
       ->setFont( $font , 10 )
       ->drawText( 'Kerkstraat 115', 300, 755 )
@@ -63,14 +66,15 @@ class PdfCreator
       ->drawText( 'BTW ############' , 300, 725);
 
     //Ontvanger
+    $costumer = $invoice->getCustomer();
     $pdf->pages[0]
       ->setFont( $font , 14 )
-      ->drawText( 'Benjamin Boutmans', 300, 665 );
+      ->drawText( $costumer->getAchternaam() . ' ' . $costumer->getVoornaam(), 300, 665 );
     $pdf->pages[0]
       ->setFont( $font , 10 )
-      ->drawText( 'Lange Sterrestraat 53 Bus 11', 300, 640 )
-      ->drawText( '2180 Ekeren', 300, 625 )
-      ->drawText( '################' , 300, 610);
+      ->drawText( $costumer->getStraat() . ' ' . $costumer->getNummer() . ' ' . $costumer->getBus(), 300, 640 )
+      ->drawText( $costumer->getPostcode() . ' ' . $costumer->getGemeente() . ' ' . $costumer->getLandId(), 300, 625 )
+      ->drawText( $costumer->getRekeningnummerIban() , 300, 610);
 
     ///////////
     ////////// Items:
@@ -79,23 +83,23 @@ class PdfCreator
     $pdf->pages[0]
       ->setLineColor( $cDraw )
       ->setFillColor( $cDraw )
-      ->drawRectangle( 0, 530, 510, 570 );
+      ->drawRectangle( 0, 540, 510, 570 );
     $pdf->pages[0]
       ->setFont( $font, 10 )
       ->setFillColor( $cWhite )
       ->setLineColor( $cLightText )
       ->setLineWidth( 0.5 )
-      ->drawText( 'Omschrijving ' , $this->mmToPoints(13) , 546 )
-      ->drawLine( 200, 530, 200, 570 )
-      ->drawText( '#', 210, 546 )
-      ->drawLine( 230, 530, 230, 570 )
-      ->drawText( 'Prijs/stuk' , 240, 546 )
-      ->drawLine( 290 , 530, 290, 570 )
-      ->drawText( 'Prijs (Excl)' , 300, 546 )
-      ->drawLine( 360, 530, 360, 570 )
-      ->drawText( 'BTW (%)', 370, 546 )
-      ->drawLine( 420, 530, 420, 570 )
-      ->drawText( 'Prijs (Incl)', 450, 546 );
+      ->drawText( 'Omschrijving ' , $this->mmToPoints(13) , 550 )
+      ->drawLine( 200, 540, 200, 570 )
+      ->drawText( '#', 210, 550 )
+      ->drawLine( 230, 540, 230, 570 )
+      ->drawText( 'Prijs/stuk' , 240, 550 )
+      ->drawLine( 290 , 540, 290, 570 )
+      ->drawText( 'Prijs (Excl)' , 300, 550 )
+      ->drawLine( 360, 540, 360, 570 )
+      ->drawText( 'BTW (%)', 370, 550 )
+      ->drawLine( 420, 540, 420, 570 )
+      ->drawText( 'Prijs (Incl)', 450, 550 );
 
     //Items
     $i = 0;
@@ -103,38 +107,38 @@ class PdfCreator
     foreach($items as $item)
     {
       $pdf->pages[0]
-        ->drawLine( 200, 500 - (30 * $i), 200, 530 - (30 * $i) )
-        ->drawLine( 230, 500 - (30 * $i), 230, 530 - (30 * $i) )
-        ->drawLine( 290, 500 - (30 * $i), 290, 530 - (30 * $i) )
-        ->drawLine( 360, 500 - (30 * $i), 360, 530 - (30 * $i) )
-        ->drawLine( 420, 500 - (30 * $i), 420, 530 - (30 * $i) )
-        ->drawLine( 510, 500 - (30 * $i), 510, 530 - (30 * $i) )
-        ->drawLine( 0, 500 - (30 * $i), 510, 500 - (30 * $i) );
+        ->drawLine( 200, 510 - (30 * $i), 200, 540 - (30 * $i) )
+        ->drawLine( 230, 510 - (30 * $i), 230, 540 - (30 * $i) )
+        ->drawLine( 290, 510 - (30 * $i), 290, 540 - (30 * $i) )
+        ->drawLine( 360, 510 - (30 * $i), 360, 540 - (30 * $i) )
+        ->drawLine( 420, 510 - (30 * $i), 420, 540 - (30 * $i) )
+        ->drawLine( 510, 510 - (30 * $i), 510, 540 - (30 * $i) )
+        ->drawLine( 0, 510 - (30 * $i), 510, 510 - (30 * $i) );
 
       $pdf->pages[0]
         ->setFillColor( $cText )
-        ->drawText( $item->getDescription(), $this->mmToPoints(13), 510 - (30 * $i) )
-        ->drawText( $item->getQuantity(), 210, 510 - (30 * $i) )
-        ->drawText( format_currency($item->getUnitPrice()), 240, 510 - (30 * $i) )
-        ->drawText( format_currency($item->getPriceExVat()), 300, 510 - (30 * $i) )
-        ->drawText( $item->getVat() . '%', 370, 510 - (30 * $i) )
-        ->drawText( format_currency($item->getPriceInclVat()), 450, 510 - (30 * $i) );
+        ->drawText( $item->getDescription(), $this->mmToPoints(13), 520 - (30 * $i) )
+        ->drawText( $item->getQuantity(), 210, 520 - (30 * $i) )
+        ->drawText( format_currency($item->getUnitPrice(), $currency), 240, 520 - (30 * $i), 'UTF-8' )
+        ->drawText( format_currency($item->getPriceExVat(), $currency), 300, 520 - (30 * $i), 'UTF-8' )
+        ->drawText( $item->getVat()->getPercentage() . '%', 370, 520 - (30 * $i) )
+        ->drawText( format_currency($item->getPriceInclVat(), $currency), 450, 520 - (30 * $i), 'UTF-8' );
       $i++;
     }
 
     //Total
     $eindtotaal = $invoice->getTotal() + $invoice->getVat();
     $pdf->pages[0]
-      ->drawLine( 340, 500 - (30 * $i), 510, 500 - (30 * $i) )
-      ->drawText( 'Totaal (Excl)', 340, 510 - (30 * $i) )
-      ->drawText( format_currency($invoice->getTotal()), 430, 510 - (30 * $i)) // totaal zonder btw
-      ->drawLine( 340, 470 - (30 * $i), 510, 470 - (30 * $i) )
-      ->drawText( 'BTW', 340, 480 - (30 * $i) )
-      ->drawText( format_currency($invoice->getVat()), 430, 480 - (30 * $i)) //totaal BTW
-      ->drawLine( 340, 420 - (30 * $i), 510, 420 - (30 * $i) )
+      ->drawLine( 340, 510 - (30 * $i), 510, 510 - (30 * $i) )
+      ->drawText( 'Totaal (Excl)', 340, 520 - (30 * $i) )
+      ->drawText( format_currency($invoice->getTotal(), $currency), 440, 520 - (30 * $i), 'UTF-8' ) // totaal zonder btw
+      ->drawLine( 340, 480 - (30 * $i), 510, 480 - (30 * $i) )
+      ->drawText( 'BTW', 340, 490 - (30 * $i) )
+      ->drawText( format_currency($invoice->getVat(), $currency), 440, 490 - (30 * $i), 'UTF-8' ) //totaal BTW
+      ->drawLine( 340, 430 - (30 * $i), 510, 430 - (30 * $i) )
       ->setFont( $font, 12 )
-      ->drawText( 'Totaal (Incl)', 340, 430 - (30 * $i) )
-      ->drawText( format_currency($eindtotaal), 430, 430 - (30 * $i)); //Eindtotaal
+      ->drawText( 'Totaal (Incl)', 340, 440 - (30 * $i) )
+      ->drawText( format_currency($eindtotaal, $currency), 440, 440 - (30 * $i), 'UTF-8' ); //Eindtotaal
 
     ///////////
     ////////// Footer:
