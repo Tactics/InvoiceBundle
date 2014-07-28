@@ -22,6 +22,8 @@ class InvoiceManager extends ObjectManager
             $invoice->setCustomer($object->getCustomer());
         }
         
+        $invoice->setDate(time());
+        
         return $invoice;
     }
     
