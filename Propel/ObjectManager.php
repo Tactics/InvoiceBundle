@@ -59,8 +59,15 @@ class ObjectManager extends Model\ObjectManager
     public function save($domain_object)
     {
         $ormObject = $this->transformer->toOrm($domain_object);
+        $result = $ormObject->save();
         
-        return $ormObject->save();
+        // setting the id and new to false
+        $pkSetter = 'set' . $this->pk_php_name;
+        $pkGetter = 'get' . $this->pk_php_name;
+        $domain_object->$pkSetter($ormObject->$pkGetter());
+        $domain_object->setNew(false);
+        
+        return $result;
     }
     
     /**
