@@ -279,4 +279,9 @@ class Invoice
             $this->vat += $item->getPriceInclVat() - $item->getPriceExVat();
         }
     }
+    
+    public function __toString()
+    {
+        return sprintf('Factuur %06u', $this->getNumber());
+    }
 }
