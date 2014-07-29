@@ -69,7 +69,7 @@ class PdfCreator
     $costumer = $invoice->getCustomer();
     $pdf->pages[0]
       ->setFont( $font , 14 )
-      ->drawText( $costumer->getAchternaam() . ' ' . $costumer->getVoornaam(), 300, 665 );
+      ->drawText( $costumer->getNaam(), 300, 665 );
     $pdf->pages[0]
       ->setFont( $font , 10 )
       ->drawText( $costumer->getStraat() . ' ' . $costumer->getNummer() . ' ' . $costumer->getBus(), 300, 640 )
