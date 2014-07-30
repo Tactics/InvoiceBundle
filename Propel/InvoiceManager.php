@@ -9,6 +9,13 @@ use Tactics\InvoiceBundle\Tools\PdfCreator;
 
 class InvoiceManager extends ObjectManager
 {
+    /**
+     * 
+     * @param \Tactics\InvoiceBundle\Model\InvoiceableInterface $object
+     * @return Tactics\InvoiceBundle\Model\Invoice
+     * 
+     * @todo set date_due according to some business logic
+     */
     public function create(InvoiceableInterface $object = null)
     {
         $invoice = parent::create();
@@ -23,7 +30,8 @@ class InvoiceManager extends ObjectManager
         }
         
         $invoice->setDate(time());
-        
+        $invoice->setDateDue(strtotime('+30 days'));
+                
         return $invoice;
     }
     
