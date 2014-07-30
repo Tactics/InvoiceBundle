@@ -21,7 +21,8 @@ class InvoiceExtension extends Extension
         'vat',
         'accounting_scheme',
         'account',
-        'product_configuration'
+        'product_configuration',
+        'journal'
     );
     
     private $ormTransformerMap = array(

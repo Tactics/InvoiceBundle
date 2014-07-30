@@ -58,5 +58,14 @@
             <argument type="service" id="product_configuration_transformer"/>            
         </service>
         
+        <service id="journal_transformer" class="%journal_transformer.class%">
+            <argument>%journal_class%</argument>
+            <argument type="service" id="accounting_scheme_transformer"/>
+        </service>
+        <service id="journal_manager" class="%journal_manager.class%">
+            <argument>%journal_class%</argument>
+            <argument type="service" id="journal_transformer"/>            
+        </service>
+        
     </services>
 </container>
