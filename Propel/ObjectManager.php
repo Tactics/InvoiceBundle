@@ -106,9 +106,9 @@ class ObjectManager extends Model\ObjectManager
      * @param array $search_fields [field_name] => value pairs  
      * @return mixed a domain object
      */
-    public function searchOne($search_fields = array())
+    public function searchOne($search_fields = array(), $sort_by = null, $sort_asc = true)
     {        
-        $c = $this->createSearchCriteria($search_fields);
+        $c = $this->createSearchCriteria($search_fields, $sort_by, $sort_asc);
         
         $propelClassName = Helper::getPropelClassName($this->class);
         $peerClass = "{$propelClassName}Peer";
