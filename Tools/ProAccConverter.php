@@ -29,7 +29,7 @@ class ProAccConverter
             $lines[] = array_merge($blancos, array(
               'A' => $cnt === 0 ? '1' : '3',
               'B' => $this->getKlantcode(),
-              'C' => '123', // unknown
+              'C' => $this->invoice->getJournalCode(),
               'D' => $this->invoice->getNumber(),
               'E' => $this->invoice->getDate('d/m/Y'),
               'F' => '1403', // 2014 kwartaal 3???

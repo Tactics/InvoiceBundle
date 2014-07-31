@@ -6,6 +6,7 @@ class Invoice
 {
     protected $id;
     protected $number;
+    protected $journal_code;
     protected $total = 0;	
 	protected $vat;	
 	protected $date;	
@@ -31,6 +32,11 @@ class Invoice
     public function getNumber()
     {
         return $this->number;
+    }
+    
+    public function getJournalCode()
+    {
+        return $this->journal_code;
     }
 	
 	public function getTotal()
@@ -254,6 +260,11 @@ class Invoice
 			$this->currency = $v;
 		}
 	}
+    
+    public function setJournalCode($journal_code)
+    {
+        $this->journal_code = $journal_code;
+    }
     
     public function setCustomer(CustomerInterface $customer)
     {
