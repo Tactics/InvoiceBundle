@@ -7,6 +7,7 @@ class Vat
     protected $code;
     protected $name;
     protected $percentage;
+    protected $scheme_id;
     
     use \Tactics\InvoiceBundle\Model\NewTrait;    
     
@@ -25,6 +26,11 @@ class Vat
 	{
 		return $this->percentage;
 	}
+    
+    public function getSchemeId()
+    {
+        return $this->scheme_id;
+    }
     
     // setters
     public function setCode($v)
@@ -59,6 +65,11 @@ class Vat
 			$this->percentage = $v;
 		}
 	}
+    
+    public function setSchemeId($v)
+    {
+        $this->scheme_id = $v;
+    }
     
     public function __toString() 
     {

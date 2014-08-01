@@ -6,7 +6,7 @@ class Journal
 {
     protected $code;    
     protected $name;
-//    protected $accounting_scheme;
+    protected $scheme_id;
     
     use \Tactics\InvoiceBundle\Model\NewTrait;
 
@@ -21,10 +21,10 @@ class Journal
         return $this->name;
     }
     
-//    public function getAccountingScheme()
-//    {
-//        return $this->accounting_scheme;
-//    }
+    public function getSchemeId()
+    {
+        return $this->scheme_id;
+    }
   
     // setters
     public function setCode($v)
@@ -45,14 +45,14 @@ class Journal
 		$this->name = $v;
 	}
     
-//    public function setAccountingScheme($v)
-//	{
-//        $this->accounting_scheme = $v;
-//	}
+    public function setSchemeId($v)
+	{
+        $this->scheme_id = $v;
+	}
     
     public function __toString()
     {
-        return $this->getName();
+        return $this->getCode() . ': ' . $this->getName();
     }
 }
 
