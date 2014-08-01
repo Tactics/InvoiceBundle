@@ -5,15 +5,22 @@ namespace Tactics\InvoiceBundle\Model;
 interface InvoiceableInterface
 {
     /**
+     * @return array containing Tactics\InvoiceBundle\Model\InvoiceItem
+     */
+    public function getInvoiceItems();
+    
+    /**
      * @return Tactics\InvoiceBundle\Model\CustomerInterface
      */
     public function getCustomer();
     
-   
     /**
-     * @return array 
+     * @return string
      */
-    public function getInvoiceItems();
+    public function getJournalCode();
     
-    //public function setInvoiceId();
+    /**
+     * 
+     */
+    public function setInvoiceId($id);
 }
