@@ -96,7 +96,7 @@ class Account
     
     public function __toString()
     {
-        return $this->getName();
+        return $this->getCode() . ': ' . $this->getName();
     }
 }
 
