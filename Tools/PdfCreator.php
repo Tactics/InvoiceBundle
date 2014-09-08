@@ -58,12 +58,14 @@ class PdfCreator
     $pdf->pages[0]
       ->setFillColor($cText)
       ->setFont( $font , 14 )
-      ->drawText( 'APBS', 300, 780 );
+      ->drawText( 'APB SPORT', 300, 780 );
     $pdf->pages[0]
       ->setFont( $font , 10 )
-      ->drawText( 'Kerkstraat 115', 300, 755 )
-      ->drawText( '2940 Hoevenen', 300, 740 )
-      ->drawText( 'BTW ############' , 300, 725);
+      ->drawText( 'Boomgaardstraat 22 - 2600 Berchem', 300, 755 )
+      ->drawText( 'Tel. 03 2406270 Fax. 032406299', 300, 740 )
+      ->drawText( 'BTW BE 0820.377.203' , 300, 725)
+      ->drawText( 'Bank 731-0077943-27' , 300, 710)
+      ->drawText( 'IBAN BE48 7310 0779 4327 BIC KREDBEBB' , 300, 695);
 
     //Ontvanger
     $costumer = $invoice->getCustomer();
@@ -74,7 +76,7 @@ class PdfCreator
       ->setFont( $font , 10 )
       ->drawText( $costumer->getStraat() . ' ' . $costumer->getNummer() . ' ' . $costumer->getBus(), 300, 640 )
       ->drawText( $costumer->getPostcode() . ' ' . $costumer->getGemeente() . ' ' . $costumer->getLandId(), 300, 625 )
-      ->drawText( $costumer->getRekeningnummerIban() , 300, 610);
+      ->drawText( 'IBAN ' . $costumer->getRekeningnummerIban() , 300, 610);
 
     ///////////
     ////////// Items:
