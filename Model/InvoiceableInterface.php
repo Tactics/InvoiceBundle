@@ -22,5 +22,5 @@ interface InvoiceableInterface
     /**
      * 
      */
-    public function setInvoiceId($id);
+    //public function addInvoice($invoice);
 }
