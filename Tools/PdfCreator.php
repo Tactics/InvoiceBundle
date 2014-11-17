@@ -65,11 +65,11 @@ class PdfCreator
     $costumer = $invoice->getCustomer();
     $pdf->pages[0]
       ->setFont( $font , 14 )
-      ->drawText( $costumer->getNaam(), 350, 730 );
+      ->drawText( $costumer->getNaam(), 350, 730, 'UTF-8' );
     $pdf->pages[0]
       ->setFont( $font , 10 )
-      ->drawText( $costumer->getStraat() . ' ' . $costumer->getNummer() . ' ' . $costumer->getBus(), 350, 685 )
-      ->drawText( $costumer->getPostcode() . ' ' . $costumer->getGemeente() . ' ' . $costumer->getLandId(), 350, 674 );
+      ->drawText( $costumer->getStraat() . ' ' . $costumer->getNummer() . ' ' . $costumer->getBus(), 350, 685, 'UTF-8' )
+      ->drawText( $costumer->getPostcode() . ' ' . $costumer->getGemeente() . ' ' . $costumer->getLandId(), 350, 674, 'UTF-8' );
 
     // Factuur gegevens
     $pdf->pages[0]
@@ -93,7 +93,7 @@ class PdfCreator
       $pdf->pages[0]
         ->setFont( $font, 10 )
         ->setFillColor( $cText )
-        ->drawText( $item->getDescription(), 50, 540 - (11 * $i) )
+        ->drawText( $item->getDescription(), 50, 540 - (11 * $i), 'UTF-8' )
         ->drawText( $item->getQuantity(), 250, 540 - (11 * $i) )
         ->drawText( format_currency($item->getUnitPrice(), $currency), 340, 540 - (11 * $i), 'UTF-8' )
         ->drawText( format_currency($item->getPriceExVat(), $currency), 410, 540 - (11 * $i), 'UTF-8' )
@@ -136,7 +136,7 @@ class PdfCreator
       ->drawText( format_currency($btw21, $currency), 330, 365, 'UTF-8' )
       ->drawText( format_currency($invoice->getVat(), $currency), 490, 365, 'UTF-8' ) //totaal BTW
       ->drawText( format_currency($eindtotaal, $currency), 490, 346, 'UTF-8' ) //Eindtotaal
-      ->drawText( $invoice->getDateDue('d-m-Y'), 120, 346 ) // vervaldag
+      ->drawText( 'Te betalen voor ' . $invoice->getDateDue('d/m/Y'), 120, 346 ) // vervaldag
       ->drawText( $this->createStructuredMessage($invoice->getStructuredCommunication()), 120 ,310 ); // gestructureerde mededeling
 
     ///////////
@@ -145,9 +145,9 @@ class PdfCreator
     $pdf->pages[0]
       ->setFont( $font, 10 )
       ->drawText( format_currency($eindtotaal), 500, 215, 'UTF-8' ) //totaalbedrag
-      ->drawText( $costumer->getNaam(), 130, 170 ) //ontvanger
-      ->drawText( $costumer->getStraat() . ' ' . $costumer->getNummer() . ' ' . $costumer->getBus(), 130, 159 )
-      ->drawText( $costumer->getPostcode() . ' ' . $costumer->getGemeente() . ' ' . $costumer->getLandId(), 130, 148 )
+      ->drawText( $costumer->getNaam(), 130, 170, 'UTF-8' ) //ontvanger
+      ->drawText( $costumer->getStraat() . ' ' . $costumer->getNummer() . ' ' . $costumer->getBus(), 130, 159, 'UTF-8' )
+      ->drawText( $costumer->getPostcode() . ' ' . $costumer->getGemeente() . ' ' . $costumer->getLandId(), 130, 148, 'UTF-8' )
       ->setFont( $overschrijvingsFont, 12 )
       ->drawText( 'B E 4 8 7 3 1 0 0 7 7 9 4 3 2 7' , 104, 121 ) // IBAN Provincie
       ->drawText( 'K R E D B E B B' , 104, 98 ) // BIC Provincie
