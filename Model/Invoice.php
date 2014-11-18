@@ -141,6 +141,11 @@ class Invoice
     {
         return $this->items;
     }
+    
+    public function clearItems()
+    {
+        $this->items = array();
+    }
 	
     // setters
 	public function setId($v)
