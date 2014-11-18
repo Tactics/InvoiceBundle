@@ -16,13 +16,13 @@ class InvoiceManager extends ObjectManager
      * 
      * @todo setNumber in transactie gieten? dagboek + code moet unique zijn => indien error opnieuw proberen
      */
-    public function create(InvoiceableInterface $object = null)
+    public function create(InvoiceableInterface $object = null, $options = array())
     {
         $invoice = parent::create();
         
         if ($object)
         {
-            foreach ($object->getInvoiceItems() as $item)
+            foreach ($object->getInvoiceItems($options) as $item)
             {
                 $invoice->addItem($item);
             }
