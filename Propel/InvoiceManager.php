@@ -39,6 +39,12 @@ class InvoiceManager extends ObjectManager
         return $invoice;
     }
     
+    /**
+     * Creates PDF
+     * 
+     * @param Invoice $invoice
+     * @return type
+     */
     public function createPdf(Invoice $invoice)
     {
         $pdfCreator = new PdfCreator();
@@ -46,6 +52,12 @@ class InvoiceManager extends ObjectManager
         return $pdfCreator->createPdf($invoice);
     }
     
+    /**
+     * Generates invoice number
+     * 
+     * @param type $invoice
+     * @return type
+     */
     private function generateNumber($invoice)
     {
         $lastInvoice = $this->searchOne(
@@ -60,6 +72,8 @@ class InvoiceManager extends ObjectManager
     }
     
     /**
+     * Generates structured communication message
+     * 
      * @param \Tactics\InvoiceBundle\Model\Invoice $invoice
      * @return string structured communication
      * @throws sfException
