@@ -28,8 +28,7 @@ class ObjectManager extends Model\ObjectManager
         {
   			if ($column->isPrimaryKey())
             {
-                $this->pk_php_name = $column->getPhpName();
-                break;
+                $this->pk_php_name[] = $column->getPhpName();
             }
   		}
     }
@@ -46,8 +45,13 @@ class ObjectManager extends Model\ObjectManager
             return null;
         }
         
+        if (is_array($pk))
+        {
+            $pk = implode(',', $pk);
+        }
+        
         $peerClass = "{$this->propel_classname}Peer";
-        $ormObject = $peerClass::retrieveByPK($pk);
+        $ormObject = eval("return $peerClass::retrieveByPK($pk);");
         
         return $ormObject ? $this->transformer->fromOrm($ormObject) : null;
     }
@@ -62,9 +66,13 @@ class ObjectManager extends Model\ObjectManager
         $result = $ormObject->save();
         
         // setting the id and new to false
-        $pkSetter = 'set' . $this->pk_php_name;
-        $pkGetter = 'get' . $this->pk_php_name;
-        $domain_object->$pkSetter($ormObject->$pkGetter());
+        foreach ($this->pk_php_name as $pk_name)
+        {
+            $pkSetter = 'set' . $pk_name;
+            $pkGetter = 'get' . $pk_name;
+            $domain_object->$pkSetter($ormObject->$pkGetter());
+        }
+        
         $domain_object->setNew(false);
         
         return $result;
@@ -96,7 +104,7 @@ class ObjectManager extends Model\ObjectManager
         $ormObjects = $peerClass::doSelect($c);
         
         return array_combine(
-            array_map(create_function('$object', "return \$object->get{$this->pk_php_name}();"), $ormObjects),
+            array_map(create_function('$object', "return \$object->get{$this->pk_php_name[0]}();"), $ormObjects),
             array_map(array($this->transformer, 'fromOrm'), $ormObjects)
         );
     }
@@ -140,7 +148,7 @@ class ObjectManager extends Model\ObjectManager
         $sortMethod = 'add' . ($sort_asc ? 'Asc' : 'Desc') . 'endingOrderByColumn';
         if (!$sort_by)
         {
-            $sort_by = $peerClass::translateFieldName($this->pk_php_name, \BasePeer::TYPE_PHPNAME, \BasePeer::TYPE_FIELDNAME);
+            $sort_by = $peerClass::translateFieldName($this->pk_php_name[0], \BasePeer::TYPE_PHPNAME, \BasePeer::TYPE_FIELDNAME);
         }
         $sortByColName = $peerClass::translateFieldName($sort_by, \BasePeer::TYPE_FIELDNAME, \BasePeer::TYPE_COLNAME);
         $c->$sortMethod($sortByColName);
