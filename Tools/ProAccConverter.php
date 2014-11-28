@@ -49,7 +49,7 @@ class ProAccConverter
               'AC' => number_format($item->getPriceExVat(), 2, ',', ''),
               'AD' => number_format($item->getPriceExVat(), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
               'AE' => number_format($item->getVat()->getPercentage(), 2, ',', ''),
-              'AG' => substr($item->getGlAccount()->getName(), 0, 25),
+              'AG' => substr($item->getDescription(), 0, 25), // omschrijving, voor inovant moet hier de opleidingscode inkomen
               'AI' => $item->getAnalytical2Account() ? $item->getAnalytical2Account()->getCode() : '',
               'AK' => '',
               'AL' => $this->invoice->getDatePaid() ? '1' : '0',
@@ -73,12 +73,13 @@ class ProAccConverter
      * Geeft de klantcode terug
      * 
      * @return string
+     * @todo: proacc_number ophalen/genereren van nieuwe
      */
     private function getKlantcode()
     {
         $prefix = get_class($this->invoice->getCustomer()) === 'Organisatie' ? 'O' : 'P';
         
-        return sprintf("$prefix%06u", $this->invoice->getCustomer()->getId());
+        return sprintf("$prefix%07u", $this->invoice->getCustomer()->getId());
     }
     
     /**
