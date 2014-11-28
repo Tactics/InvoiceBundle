@@ -5,6 +5,7 @@ namespace Tactics\InvoiceBundle\Model;
 class InvoiceItem
 {    
     protected $id;
+    protected $scheme_id;
     protected $quantity = 1;
     protected $unit_price;    
     protected $price_ex_vat;
@@ -24,6 +25,11 @@ class InvoiceItem
     
     // getters	
 	public function getId()
+	{
+		return $this->id;
+    }
+    
+    public function getSchemeId()
 	{
 		return $this->id;
 	}	
@@ -111,6 +117,11 @@ class InvoiceItem
 		if ($this->id !== $v) {
 			$this->id = $v;			
 		}
+	}
+    
+    public function setSchemeId($scheme_id)
+    {
+        $this->scheme_id = $scheme_id;
 	}
 	
 	public function setQuantity($v)

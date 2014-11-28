@@ -5,6 +5,7 @@ namespace Tactics\InvoiceBundle\Model;
 class ProductConfiguration
 {
     protected $id;
+    protected $scheme_id;
     protected $product;
     protected $vat;
     protected $gl_account;
@@ -18,6 +19,11 @@ class ProductConfiguration
   
     //setters
     public function getId()
+	{
+		return $this->id;
+	}
+    
+    public function getSchemeId()
 	{
 		return $this->id;
 	}
@@ -71,6 +77,11 @@ class ProductConfiguration
 
 		$this->id = $v;
 	}
+    
+    public function setSchemeId($scheme_id)
+    {
+        $this->scheme_id = $scheme_id;
+    }
     
     public function setProduct($product)
     {

@@ -5,6 +5,7 @@ namespace Tactics\InvoiceBundle\Model;
 class Invoice
 {
     protected $id;
+    protected $scheme_id;
     protected $number;
     protected $journal_code;
     protected $total = 0;	
@@ -25,6 +26,11 @@ class Invoice
     
     // getters
     public function getId()
+	{
+		return $this->id;
+	}
+    
+    public function getSchemeId()
 	{
 		return $this->id;
 	}
@@ -158,6 +164,11 @@ class Invoice
 			$this->id = $v;			
 		}
 	} 
+    
+    public function setSchemeId($scheme_id)
+    {
+        $this->scheme_id = $scheme_id;
+    }
     
     public function setNumber($v)
     {
