@@ -15,11 +15,6 @@ interface InvoiceableInterface
     public function getCustomer();
     
     /**
-     * @return string
-     */
-    public function getJournalCode();
-    
-    /**
      * 
      */
     //public function addInvoice($invoice);

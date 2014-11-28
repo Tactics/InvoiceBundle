@@ -11,12 +11,14 @@ use Tactics\InvoiceBundle\Tools\PdfCreator;
 class InvoiceManager extends ObjectManager
 {
     private $number_generator;
+    private $journal_generator;
     
-    public function __construct($class, Model\TransformerInterface $transformer, $number_generator)
+    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator)
     {
         parent::__construct($class, $transformer);
         
         $this->number_generator = $number_generator;
+        $this->journal_generator = $journal_generator;
     }
     
     /**
@@ -37,7 +39,7 @@ class InvoiceManager extends ObjectManager
                 $invoice->addItem($item);
             }
             $invoice->setCustomer($object->getCustomer());
-            $invoice->setJournalCode($object->getJournalCode());
+            $invoice->setJournalCode($this->journal_generator->generate($invoice));
         }
         
         $invoice->setDate(time());

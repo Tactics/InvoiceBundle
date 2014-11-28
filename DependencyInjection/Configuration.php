@@ -43,6 +43,10 @@ class Configuration implements ConfigurationInterface
                   ->info('class that generates the invoice numbers')                    
                   ->defaultValue('Tactics\InvoiceBundle\Tools\NumberGenerator')
                 ->end()
+                ->scalarNode('journal_generator')
+                  ->info('class that generates the journal numbers')                    
+                  ->defaultValue('Tactics\InvoiceBundle\Tools\JournalGenerator')
+                ->end()
             ->end()
         ;
     }
