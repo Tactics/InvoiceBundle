@@ -2,6 +2,7 @@
 
 namespace Tactics\InvoiceBundle\Propel;
 
+use Tactics\InvoiceBundle\Model;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Model\InvoiceableInterface;
 use Tactics\InvoiceBundle\Model\Invoice;
@@ -9,6 +10,15 @@ use Tactics\InvoiceBundle\Tools\PdfCreator;
 
 class InvoiceManager extends ObjectManager
 {
+    private $number_generator;
+    
+    public function __construct($class, Model\TransformerInterface $transformer, $number_generator)
+    {
+        parent::__construct($class, $transformer);
+        
+        $this->number_generator = $number_generator;
+    }
+    
     /**
      * 
      * @param \Tactics\InvoiceBundle\Model\InvoiceableInterface $object
@@ -68,7 +78,10 @@ class InvoiceManager extends ObjectManager
             false // descending
         );
         
-        return $lastInvoice ? $lastInvoice->getNumber() + 1 : 1;
+        $lastNumber = isset($lastInvoice) ? $lastInvoice->getNumber() : null;
+        $nextNumber = $this->number_generator->generateNumber($invoice, $lastNumber);
+        
+        return $nextNumber;
     }
     
     /**
@@ -80,9 +93,7 @@ class InvoiceManager extends ObjectManager
      */
     private function generateStructuredCommunication(Invoice $invoice)
     {
-        $strCom = substr($invoice->getJournalCode(), 0, 1);  // first digit = journal code
-        $strCom .= date('y'); // last 2 numbers of full year
-        $strCom .= sprintf("%07u",  $invoice->getNumber()); // zero padded invoice number        
+        $strCom = sprintf("%07s00%1u", $invoice->getNumber(), $invoice->getJournalCode());
 
         if (strlen($strCom) != 10) {
             throw new \sfException('There was a problem generating the structured communication: ' . $strCom);

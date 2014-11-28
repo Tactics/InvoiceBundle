@@ -39,6 +39,10 @@ class Configuration implements ConfigurationInterface
                   ->info('Configure the orm: propel|doctrine (todo)')                    
                   ->defaultValue('propel')
                 ->end()
+                ->scalarNode('number_generator')
+                  ->info('class that generates the invoice numbers')                    
+                  ->defaultValue('Tactics\InvoiceBundle\Tools\NumberGenerator')
+                ->end()
             ->end()
         ;
     }

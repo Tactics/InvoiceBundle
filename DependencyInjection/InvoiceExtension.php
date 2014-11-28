@@ -50,6 +50,8 @@ class InvoiceExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         
+        $container->setParameter('invoice_number_generator.class', $config['number_generator']);
+        
         // set the dic parameters for each domain object
         foreach ($this->object_names as $object_name)
         {

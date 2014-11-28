@@ -5,6 +5,8 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">    
     
     <services>
+        <service id="invoice_number_generator" class="%invoice_number_generator.class%"/>
+        
         <service id="vat_transformer" class="%vat_transformer.class%">
             <argument>%vat_class%</argument>
         </service>
@@ -29,6 +31,7 @@
         <service id="invoice_manager" class="%invoice_manager.class%">            
             <argument>%invoice_class%</argument>
             <argument type="service" id="invoice_transformer"/>
+            <argument type="service" id="invoice_number_generator"/>
         </service>
         
         <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%">
