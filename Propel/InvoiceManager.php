@@ -12,13 +12,15 @@ class InvoiceManager extends ObjectManager
 {
     private $number_generator;
     private $journal_generator;
+    private $pdf_generator;
     
-    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator)
+    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator, $pdf_generator)
     {
         parent::__construct($class, $transformer);
         
         $this->number_generator = $number_generator;
         $this->journal_generator = $journal_generator;
+        $this->pdf_generator = $pdf_generator;
     }
     
     /**
@@ -59,9 +61,11 @@ class InvoiceManager extends ObjectManager
      */
     public function createPdf(Invoice $invoice)
     {
-        $pdfCreator = new PdfCreator();
-        
-        return $pdfCreator->createPdf($invoice);
+//        $pdf_generatore->generatePdf($invoice);
+//        $pdfCreator = new PdfCreator();
+//
+//        return $pdfCreator->createPdf($invoice);
+        return $this->pdf_generator->generatePdf($invoice);
     }
     
     /**

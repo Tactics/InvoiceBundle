@@ -47,6 +47,9 @@ class Configuration implements ConfigurationInterface
                   ->info('class that generates the journal numbers')                    
                   ->defaultValue('Tactics\InvoiceBundle\Tools\JournalGenerator')
                 ->end()
+                ->scalarNode('pdf_generator')
+                ->info('class that generates the invoice pdf')
+                ->end()
             ->end()
         ;
     }

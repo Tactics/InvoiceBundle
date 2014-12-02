@@ -52,6 +52,7 @@ class InvoiceExtension extends Extension
         
         $container->setParameter('invoice_number_generator.class', $config['number_generator']);
         $container->setParameter('invoice_journal_generator.class', $config['journal_generator']);
+        $container->setParameter('pdf_generator.class', $config['pdf_generator']);
         
         // set the dic parameters for each domain object
         foreach ($this->object_names as $object_name)

@@ -7,6 +7,7 @@
     <services>
         <service id="invoice_number_generator" class="%invoice_number_generator.class%"/>
         <service id="invoice_journal_generator" class="%invoice_journal_generator.class%"/>
+        <service id="pdf_generator" class="%pdf_generator.class%"/>
         
         <service id="vat_transformer" class="%vat_transformer.class%">
             <argument>%vat_class%</argument>
@@ -34,6 +35,7 @@
             <argument type="service" id="invoice_transformer"/>
             <argument type="service" id="invoice_number_generator"/>
             <argument type="service" id="invoice_journal_generator"/>
+            <argument type="service" id="pdf_generator"/>
         </service>
         
         <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%">
