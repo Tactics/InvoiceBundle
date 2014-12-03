@@ -47,8 +47,8 @@ class ProductConfigurationTransformer extends Transformer
         $vat = $product_configuration->getVat();
         if ($vat)
         {
-            $propelConfig->setPropelVat($this->vat_transformer->toOrm($vat));
-        }        
+            $propelConfig->setVatCode($vat->getCode());
+        }
         
         foreach ($this->account_names as $account_name)
         {            
