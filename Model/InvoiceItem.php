@@ -11,6 +11,7 @@ class InvoiceItem
     protected $price_ex_vat;
     protected $price_incl_vat;
     protected $description;    
+    protected $group_description;
     
     protected $invoice;
     protected $vat;
@@ -58,6 +59,11 @@ class InvoiceItem
 	{
 		return $this->description;
 	}
+
+  public function getGroupDescription()
+  {
+    return $this->group_description;
+  }
     
     /**
      * 
@@ -165,7 +171,14 @@ class InvoiceItem
 		if ($this->description !== $v) {
 			$this->description = $v;
 		}
-	}    
+	}
+
+    public function setGroupDescription($v)
+    {
+        if ($this->group_description !== $v) {
+          $this->group_description = $v;
+        }
+    }
     
     public function setInvoice($v)
     {
