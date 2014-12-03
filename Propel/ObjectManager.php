@@ -47,11 +47,11 @@ class ObjectManager extends Model\ObjectManager
         
         if (is_array($pk))
         {
-            $pk = implode(',', $pk);
+            $pk = implode("', '", $pk);
         }
         
         $peerClass = "{$this->propel_classname}Peer";
-        $ormObject = eval("return $peerClass::retrieveByPK($pk);");
+        $ormObject = eval("return $peerClass::retrieveByPK('$pk');");
         
         return $ormObject ? $this->transformer->fromOrm($ormObject) : null;
     }
