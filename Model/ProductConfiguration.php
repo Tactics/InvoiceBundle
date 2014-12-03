@@ -25,7 +25,7 @@ class ProductConfiguration
     
     public function getSchemeId()
 	{
-		return $this->id;
+		return $this->scheme_id;
 	}
     
     public function getProduct()

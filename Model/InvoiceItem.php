@@ -32,7 +32,7 @@ class InvoiceItem
     
     public function getSchemeId()
 	{
-		return $this->id;
+		return $this->scheme_id;
 	}	
 	
 	public function getQuantity()
