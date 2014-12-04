@@ -40,18 +40,10 @@ class ObjectManager extends Model\ObjectManager
      */
     public function find($pk)
     {
-        if (!$pk)
-        {
-            return null;
-        }
-        
-        if (is_array($pk))
-        {
-            $pk = implode("', '", $pk);
-        }
+        $pk = is_array($pk) ? $pk : array($pk);
         
         $peerClass = "{$this->propel_classname}Peer";
-        $ormObject = eval("return $peerClass::retrieveByPK('$pk');");
+        $ormObject = call_user_func_array("$peerClass::retrieveByPK", $pk);
         
         return $ormObject ? $this->transformer->fromOrm($ormObject) : null;
     }
