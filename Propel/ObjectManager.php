@@ -41,6 +41,9 @@ class ObjectManager extends Model\ObjectManager
     public function find($pk)
     {
         $pk = is_array($pk) ? $pk : array($pk);
+        // fix zodat scheme_id altijd meegegeven kan worden als 2e PK
+        $numberOfPks = count($this->pk_php_name);
+        $pk = array_slice($pk, 0, $numberOfPks);
         
         $peerClass = "{$this->propel_classname}Peer";
         $ormObject = call_user_func_array("$peerClass::retrieveByPK", $pk);
