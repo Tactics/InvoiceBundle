@@ -9,28 +9,32 @@
         <service id="invoice_journal_generator" class="%invoice_journal_generator.class%"/>
         <service id="pdf_generator" class="%pdf_generator.class%"/>
         
-        <service id="vat_transformer" class="%vat_transformer.class%">
+        <service id="vat_transformer" class="%vat_transformer.class%" public="false">
             <argument>%vat_class%</argument>
         </service>
+        
         <service id="vat_manager" class="%vat_manager.class%">
             <argument>%vat_class%</argument>
             <argument type="service" id="vat_transformer"/>            
         </service>
         
-        <service id="invoice_item_transformer" class="%invoice_item_transformer.class%">
+        <service id="invoice_item_transformer" class="%invoice_item_transformer.class%" public="false">
             <argument>%invoice_item_class%</argument>
             <argument type="service" id="vat_transformer"/>
             <argument type="service" id="account_transformer"/>
         </service>
+        
         <service id="invoice_item_manager" class="%invoice_item_manager.class%">
             <argument>%invoice_item_class%</argument>
             <argument type="service" id="invoice_item_transformer"/>
         </service>
-        <service id="invoice_transformer" class="%invoice_transformer.class%">
+        
+        <service id="invoice_transformer" class="%invoice_transformer.class%" public="false">
             <argument>%invoice_class%</argument>
             <argument type="service" id="invoice_item_transformer"/>
         </service>
-        <service id="invoice_manager" class="%invoice_manager.class%">            
+        
+        <service id="invoice_manager" class="%invoice_manager.class%">
             <argument>%invoice_class%</argument>
             <argument type="service" id="invoice_transformer"/>
             <argument type="service" id="invoice_number_generator"/>
@@ -38,37 +42,41 @@
             <argument type="service" id="pdf_generator"/>
         </service>
         
-        <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%">
+        <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%" public="false">
             <argument>%accounting_scheme_class%</argument>
         </service>
+        
         <service id="accounting_scheme_manager" class="%accounting_scheme_manager.class%">
             <argument>%accounting_scheme_class%</argument>
             <argument type="service" id="accounting_scheme_transformer"/>            
         </service>
         
-        <service id="account_transformer" class="%account_transformer.class%">
+        <service id="account_transformer" class="%account_transformer.class%" public="false">
             <argument>%account_class%</argument>
             <argument type="service" id="accounting_scheme_transformer"/>
         </service>
+        
         <service id="account_manager" class="%account_manager.class%">
             <argument>%account_class%</argument>
             <argument type="service" id="account_transformer"/>            
         </service>
         
-        <service id="product_configuration_transformer" class="%product_configuration_transformer.class%">
+        <service id="product_configuration_transformer" class="%product_configuration_transformer.class%" public="false">
             <argument>%product_configuration_class%</argument>
             <argument type="service" id="vat_transformer"/>
             <argument type="service" id="account_transformer"/>
         </service>
+        
         <service id="product_configuration_manager" class="%product_configuration_manager.class%">
             <argument>%product_configuration_class%</argument>
             <argument type="service" id="product_configuration_transformer"/>            
         </service>
         
-        <service id="journal_transformer" class="%journal_transformer.class%">
+        <service id="journal_transformer" class="%journal_transformer.class%" public="false">
             <argument>%journal_class%</argument>
             <argument type="service" id="accounting_scheme_transformer"/>
         </service>
+        
         <service id="journal_manager" class="%journal_manager.class%">
             <argument>%journal_class%</argument>
             <argument type="service" id="journal_transformer"/>            
