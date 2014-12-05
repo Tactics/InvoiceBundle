@@ -10,6 +10,7 @@ abstract class ObjectManager implements ObjectManagerInterface
     /**
      * constructor
      * 
+     * @param string $class a model class name
      * @param \Tactics\InvoiceBundle\Model\TransformerInterface $transformer
      */
     public function __construct($class, TransformerInterface $transformer)

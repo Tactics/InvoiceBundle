@@ -72,7 +72,7 @@ class Transformer extends Model\Transformer
     }
     
     /**
-     * Geet object array terug
+     * Geeft object array terug
      * 
      * @param mixed $domain_object The domain object
      * @return array [php_fieldname] => fieldvalue
@@ -140,6 +140,12 @@ class Transformer extends Model\Transformer
         return $domainObject;
 	}
     
+    /**
+     * Geeft orm object terug uit cache
+     * 
+     * @param type $domainObject
+     * @return mixed The orm object
+     */
     public function getOrmObjectForDomainObject($domainObject)
     {
         if (isset($this->ormObjects[spl_object_hash($domainObject)]))

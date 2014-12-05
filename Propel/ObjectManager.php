@@ -3,13 +3,19 @@
 namespace Tactics\InvoiceBundle\Propel;
 
 use Tactics\InvoiceBundle\Model;
+use Tactics\InvoiceBundle\Model\TransformerInterface;
 
 class ObjectManager extends Model\ObjectManager
 {
     private $propel_classname;
     private $pk_php_name;
     
-    public function __construct($class, Model\TransformerInterface $transformer)
+    /**
+     * 
+     * @param string $class a model class name
+     * @param TransformerInterface $transformer
+     */
+    public function __construct($class, TransformerInterface $transformer)
     {
         parent::__construct($class, $transformer);
         
@@ -17,6 +23,9 @@ class ObjectManager extends Model\ObjectManager
         $this->initPkPhpName();
     }
     
+    /**
+     * finds the primary keys fields of the related propel class
+     */
     private function initPkPhpName()
     {
         $tableName = eval("return " . $this->propel_classname . "Peer::TABLE_NAME;");
@@ -36,7 +45,7 @@ class ObjectManager extends Model\ObjectManager
     /**
      * 
      * @param mixed $pk a primary key value
-     * @return mixed
+     * @return mixed $domainObject
      */
     public function find($pk)
     {
@@ -62,7 +71,7 @@ class ObjectManager extends Model\ObjectManager
         $ormObject = $this->transformer->toOrm($domainObject);
         $result = $ormObject->save();
         
-        // setting the id and new to false
+        // setting the id
         foreach ($this->pk_php_name as $pkName)
         {
             $pkSetter = 'set' . $pkName;
