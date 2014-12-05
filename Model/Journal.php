@@ -7,8 +7,6 @@ class Journal
     protected $code;    
     protected $name;
     protected $scheme_id;
-    
-    use \Tactics\InvoiceBundle\Model\NewTrait;
 
     // getters
     public function getCode()

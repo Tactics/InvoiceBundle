@@ -8,6 +8,9 @@ use Tactics\InvoiceBundle\Propel\Helper;
 class Transformer extends Model\Transformer
 {
     private $properties = array();
+
+    private $domainObjects = array();
+    private $ormObjects = array();
     
     public function __construct($class)
     {
@@ -19,17 +22,26 @@ class Transformer extends Model\Transformer
     /**
      * Geeft een orm object terug op basis van een domain object
      * 
-     * @param mixed $domain_object The domain object or an array representing the domain object
+     * @param mixed $domainObject The domain object or an array representing the domain object
      * @return mixed The propel object
      */
-    public function toOrm($domain_object)
+    public function toOrm($domainObject)
     {
-        $domainObjectArr = is_array($domain_object)
-          ? $domain_object
-          : $this->toArray($domain_object);
-        
-        $ormObject = $this->ormObjectFromArray($domainObjectArr);
-        $ormObject->setNew($domainObjectArr['New']);
+        $ormObject = $this->getOrmObjectForDomainObject($domainObject);
+              
+        if ($ormObject)
+        {
+            $ormObject->fromArray($this->toArray($domainObject));
+        }
+        else
+        {
+            $ormObject = $this->createNewOrmObjectFromDomainObject($domainObject);
+            
+            $ormObjectHash = spl_object_hash($ormObject);
+            
+            $this->domainObjects[$ormObjectHash] = $domainObject;
+            $this->ormObjects[spl_object_hash($domainObject)] = $ormObject;
+        }
         
         return $ormObject;
     }
@@ -37,18 +49,24 @@ class Transformer extends Model\Transformer
     /**
      * Geeft een domain object terug op basis van een orm object
      * 
-     * @param mixed $orm_object The propel object
+     * @param mixed $ormObject The propel object
      * @return mixed The domain object
      */
-    public function fromOrm($orm_object)
+    public function fromOrm($ormObject)
     {
-        if (!method_exists($orm_object, 'toArray'))
+        $ormObjectHash = spl_object_hash($ormObject);
+    
+        if (isset($this->domainObjects[$ormObjectHash]))
         {
-            return null;
+            $domainObject = $this->domainObjects[$ormObjectHash];
         }
-        
-        $domainObject = $this->domainObjectFromArray($orm_object->toArray());
-        $domainObject->setNew($orm_object->isNew());
+        else
+        {
+            $domainObject = $this->domainObjectFromArray($ormObject->toArray());
+            
+            $this->domainObjects[$ormObjectHash] = $domainObject;
+            $this->ormObjects[spl_object_hash($domainObject)] = $ormObject;
+        }
         
         return $domainObject;
     }
@@ -88,16 +106,17 @@ class Transformer extends Model\Transformer
     /**
      * Geeft Propel object terug op basis van gegeven array
      * 
-     * @param array $arr
+     * @param mixed $domainObject
      * @return mixed The propel object
      */
-    protected function ormObjectFromArray($arr)
+    protected function createNewOrmObjectFromDomainObject($domainObject)
     {
         $propelClassName = Helper::getPropelClassName($this->class);
-        $propelObject = new $propelClassName();
-        $propelObject->fromArray($arr);
+        $ormObject = new $propelClassName();
+        $ormObject->fromArray($this->toArray($domainObject));
+        $ormObject->setNew(true);
         
-        return $propelObject;
+        return $ormObject;
     }
     
     /**
@@ -120,5 +139,15 @@ class Transformer extends Model\Transformer
         
         return $domainObject;
 	}
+    
+    public function getOrmObjectForDomainObject($domainObject)
+    {
+        if (isset($this->ormObjects[spl_object_hash($domainObject)]))
+        {
+            return $this->ormObjects[spl_object_hash($domainObject)];
+        }
+        
+        return null;
+    }
 }
 

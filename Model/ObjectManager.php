@@ -26,7 +26,6 @@ abstract class ObjectManager implements ObjectManagerInterface
     {
         $class = $this->class;
         $object = new $class();
-        $object->setNew(true);
         
         return $object;
     }

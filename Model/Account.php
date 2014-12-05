@@ -11,8 +11,6 @@ class Account
     
     protected $accounting_scheme;
     
-    use \Tactics\InvoiceBundle\Model\NewTrait;
-    
     // getters
     public function getCode()
 	{

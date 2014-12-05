@@ -19,8 +19,6 @@ class AccountingScheme
     protected $scheme_5_name;
     protected $scheme_5_active = false;
     
-    use \Tactics\InvoiceBundle\Model\NewTrait;
-    
     // getters
     public function getId()
 	{

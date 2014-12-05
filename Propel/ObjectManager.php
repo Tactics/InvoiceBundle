@@ -48,27 +48,27 @@ class ObjectManager extends Model\ObjectManager
         $peerClass = "{$this->propel_classname}Peer";
         $ormObject = call_user_func_array("$peerClass::retrieveByPK", $pk);
         
-        return $ormObject ? $this->transformer->fromOrm($ormObject) : null;
+        $domainObject = $ormObject ? $this->transformer->fromOrm($ormObject) : null;
+        
+        return $domainObject;
     }
     
     /**
      * 
-     * @param mixed $domain_object
+     * @param mixed $domainObject
      */
-    public function save($domain_object)
+    public function save($domainObject)
     {
-        $ormObject = $this->transformer->toOrm($domain_object);
+        $ormObject = $this->transformer->toOrm($domainObject);
         $result = $ormObject->save();
         
         // setting the id and new to false
-        foreach ($this->pk_php_name as $pk_name)
+        foreach ($this->pk_php_name as $pkName)
         {
-            $pkSetter = 'set' . $pk_name;
-            $pkGetter = 'get' . $pk_name;
-            $domain_object->$pkSetter($ormObject->$pkGetter());
+            $pkSetter = 'set' . $pkName;
+            $pkGetter = 'get' . $pkName;
+            $domainObject->$pkSetter($ormObject->$pkGetter());
         }
-        
-        $domain_object->setNew(false);
         
         return $result;
     }
@@ -77,9 +77,13 @@ class ObjectManager extends Model\ObjectManager
      * 
      * @param mixed $domain_object
      */
-    public function delete($domain_object)
-    {        
-        $ormObject = $this->transformer->toOrm($domain_object);
+    public function delete($domainObject)
+    {   
+        $ormObject = $this->transformer->getOrmObjectForDomainObject($domainObject);
+        
+        if (! $ormObject) {
+            throw new \Exception('Cannot map domain object to orm object');
+        }
         
         return $ormObject->delete();
     }
