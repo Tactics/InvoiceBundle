@@ -82,5 +82,15 @@
             <argument type="service" id="journal_transformer"/>            
         </service>
         
+        <service id="scheme_customer_info_transformer" class="%scheme_customer_info_transformer.class%" public="false">
+            <argument>%scheme_customer_info_class%</argument>
+            <argument type="service" id="accounting_scheme_transformer"/>
+        </service>
+        
+        <service id="scheme_customer_info_manager" class="%scheme_customer_info_manager.class%">
+            <argument>%scheme_customer_info_class%</argument>
+            <argument type="service" id="scheme_customer_info_transformer"/>        
+        </service>
+        
     </services>
 </container>
