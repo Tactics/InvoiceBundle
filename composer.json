@@ -10,6 +10,7 @@
         }
     ],
     "require": {
+        "tactics/formgoodness-bundle" : "1.0.*",
         "phpunit/phpunit" : "4.1.*"
     },
     "autoload": {
