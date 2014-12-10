@@ -22,7 +22,8 @@ class InvoiceExtension extends Extension
         'accounting_scheme',
         'account',
         'product_configuration',
-        'journal'
+        'journal',
+        'scheme_customer_info'
     );
     
     private $ormTransformerMap = array(
@@ -31,7 +32,8 @@ class InvoiceExtension extends Extension
             'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
             'invoice_item' => 'Tactics\InvoiceBundle\Propel\InvoiceItemTransformer',
             'account' => 'Tactics\InvoiceBundle\Propel\AccountTransformer',
-            'product_configuration' => 'Tactics\InvoiceBundle\Propel\ProductConfigurationTransformer'
+            'product_configuration' => 'Tactics\InvoiceBundle\Propel\ProductConfigurationTransformer',
+            'scheme_customer_info' => 'Tactics\InvoiceBundle\Propel\SchemeCustomerInfoTransformer'
         )
     );
     
