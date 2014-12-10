@@ -17,11 +17,6 @@ class Account
         return $this->code;
 	}
 	
-	public function getSchemeId()
-	{
-        return $this->scheme_id;
-	}
-	
 	public function getName()
 	{
         return $this->name;
