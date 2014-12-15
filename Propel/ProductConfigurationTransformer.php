@@ -39,10 +39,10 @@ class ProductConfigurationTransformer extends Transformer
      */
     public function toOrm($product_configuration)
     {
-        $propelInvoice = parent::toOrm($product_configuration);
+        $propelConfig = parent::toOrm($product_configuration);
         
-        $propelInvoice->setProductClass(get_class($product_configuration->getProduct()));
-        $propelInvoice->setProductId($product_configuration->getProduct()->getId());
+        $propelConfig->setProductClass(get_class($product_configuration->getProduct()));
+        $propelConfig->setProductId($product_configuration->getProduct()->getId());
         
         $vat = $product_configuration->getVat();
         if ($vat)
