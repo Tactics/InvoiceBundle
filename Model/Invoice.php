@@ -9,7 +9,7 @@ class Invoice
     protected $number;
     protected $journal_code;
     protected $total = 0;	
-	protected $vat;	
+	protected $vat = 0;	
 	protected $date;	
 	protected $date_due;	
 	protected $date_paid;	
