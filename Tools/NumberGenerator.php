@@ -1,18 +1,19 @@
 <?php
 namespace Tactics\InvoiceBundle\Tools;
 
+use Tactics\InvoiceBundle\Tools\NumberGeneratorInterface;
 use Tactics\InvoiceBundle\Model\Invoice;
 
-class NumberGenerator
+class NumberGenerator implements NumberGeneratorInterface
 {
     /**
      * Generates invoice number for given $invoice, base on $last_number
      * 
      * @param Invoice $invoice
      * @param string $last_number
-     * @return string
+     * @return int
      */
-    public function generateNumber(Invoice $invoice, $last_number)
+    public function generate(Invoice $invoice, $last_number)
     {     
         return (int) $last_number + 1;
     }

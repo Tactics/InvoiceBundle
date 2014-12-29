@@ -6,7 +6,6 @@ use Tactics\InvoiceBundle\Model;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Model\InvoiceableInterface;
 use Tactics\InvoiceBundle\Model\Invoice;
-use Tactics\InvoiceBundle\Tools\PdfCreator;
 
 class InvoiceManager extends ObjectManager
 {
@@ -61,11 +60,7 @@ class InvoiceManager extends ObjectManager
      */
     public function createPdf(Invoice $invoice)
     {
-//        $pdf_generatore->generatePdf($invoice);
-//        $pdfCreator = new PdfCreator();
-//
-//        return $pdfCreator->createPdf($invoice);
-        return $this->pdf_generator->generatePdf($invoice);
+        return $this->pdf_generator->generate($invoice);
     }
     
     /**
@@ -76,6 +71,7 @@ class InvoiceManager extends ObjectManager
      */
     private function generateNumber($invoice)
     {
+        // retrieve last invoice from same journal
         $lastInvoice = $this->searchOne(
             array(
                 'journal_code' => $invoice->getJournalCode()
@@ -85,7 +81,7 @@ class InvoiceManager extends ObjectManager
         );
         
         $lastNumber = isset($lastInvoice) ? $lastInvoice->getNumber() : null;
-        $nextNumber = $this->number_generator->generateNumber($invoice, $lastNumber);
+        $nextNumber = $this->number_generator->generate($invoice, $lastNumber);
         
         return $nextNumber;
     }
