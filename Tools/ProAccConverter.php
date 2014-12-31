@@ -4,9 +4,22 @@ namespace Tactics\InvoiceBundle\Tools;
 
 use Tactics\InvoiceBundle\Model\Invoice;
 use Tactics\InvoiceBundle\Model\InvoiceItem;
+use Tactics\InvoiceBundle\Propel\ObjectManager;
 
 class ProAccConverter
 {
+    private $customerSchemeMgr;
+
+    /**
+     * constructor
+     *
+     * @param ObjectManager $customerSchemeMgr
+     */
+    public function __construct(ObjectManager $customerSchemeMgr)
+    {
+        $this->customerSchemeMgr = $customerSchemeMgr;
+    }
+
     private $invoice;
     
     /**
@@ -77,9 +90,10 @@ class ProAccConverter
      */
     private function getKlantcode()
     {
-        $prefix = get_class($this->invoice->getCustomer()) === 'Organisatie' ? 'O' : 'P';
+        $customer = $this->invoice->getCustomer();
+        $scheme = $this->customerSchemeMgr->searchOne(array('name' => 'proacc_nummer', 'customer_id' => $customer->getId(), 'customer_class' => get_class($customer)));
         
-        return sprintf("$prefix%07u", $this->invoice->getCustomer()->getId());
+        return $scheme->getValue();
     }
     
     /**
