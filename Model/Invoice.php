@@ -4,6 +4,10 @@ namespace Tactics\InvoiceBundle\Model;
 
 class Invoice
 {
+	const STATUS_NIEUW = 'nieuw';
+	const STATUS_DEELS_BETAALD = 'deels betaald';
+	const STATUS_BETAALD = 'betaald';
+
     protected $id;
     protected $scheme_id;
     protected $number;
