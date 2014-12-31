@@ -91,6 +91,10 @@
             <argument>%scheme_customer_info_class%</argument>
             <argument type="service" id="scheme_customer_info_transformer"/>        
         </service>
+
+        <service id="proacc_importer" class="Tactics\InvoiceBundle\Tools\ProAccImporter">
+            <argument type="service" id="invoice_manager"/>
+        </service>
         
     </services>
 </container>
