@@ -313,4 +313,9 @@ class Invoice
     {
         return sprintf('Factuur %06u', $this->getNumber());
     }
+
+	public function getOutstandingAmount()
+	{
+		return bcsub($this->getTotal(), $this->getAmountPaid(), 2);
+	}
 }
