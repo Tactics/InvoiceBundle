@@ -4,11 +4,6 @@ namespace Tactics\InvoiceBundle\Model;
 
 class Invoice
 {
-		const STATUS_NIEUW = 'nieuw';
-		const STATUS_DEELS_BETAALD = 'deels betaald';
-		const STATUS_BETAALD = 'betaald';
-		const STATUS_DEFINITIEF = 'definitief';
-
     protected $id;
     protected $scheme_id;
     protected $number;
@@ -18,7 +13,6 @@ class Invoice
 		protected $date;
 		protected $date_due;
 		protected $date_paid;
-		protected $status;
 		protected $amount_paid = 0;
 		protected $structured_communication;
 		protected $currency = 'EUR';
@@ -26,8 +20,21 @@ class Invoice
     protected $customer;
     
 		protected $items = array();
+
+		protected $send;
+		protected $exported;
     
     // getters
+		public function getSend()
+		{
+				return $this->send;
+		}
+
+		public function getExported()
+		{
+				return $this->exported;
+		}
+
     public function getId()
 		{
 				return $this->id;
@@ -121,11 +128,6 @@ class Invoice
 				}
 		}
 
-		public function getStatus()
-		{
-				return $this->status;
-		}
-
 		public function getAmountPaid()
 		{
 				return $this->amount_paid;
@@ -157,6 +159,20 @@ class Invoice
     }
 	
     // setters
+		public function setSend($v)
+		{
+				if ($this->send !== $v) {
+						$this->send = $v;
+				}
+		}
+
+		public function setExported($v)
+		{
+				if ($this->exported !== $v) {
+						$this->exported = $v;
+				}
+		}
+
 		public function setId($v)
 		{
 				if ($v !== null && !is_int($v) && is_numeric($v)) {
@@ -164,7 +180,7 @@ class Invoice
 				}
 
 				if ($this->id !== $v) {
-					$this->id = $v;
+						$this->id = $v;
 				}
 		}
     
@@ -176,21 +192,21 @@ class Invoice
     public function setNumber($v)
     {
         if ($this->number !== $v) {
-					$this->number = $v;
+						$this->number = $v;
 				}
     }
 	
 		public function setTotal($v)
 		{
 				if ($this->total !== $v) {
-					$this->total = $v;
+						$this->total = $v;
 				}
 		}
 	
 		public function setVat($v)
 		{
 				if ($this->vat !== $v) {
-					$this->vat = $v;
+						$this->vat = $v;
 				}
 		}
 	
@@ -236,17 +252,6 @@ class Invoice
 				}
 				if ($this->date_paid !== $ts) {
 						$this->date_paid = $ts;
-				}
-		}
-
-		public function setStatus($v)
-		{
-				if ($v !== null && !is_string($v)) {
-						$v = (string) $v;
-				}
-
-				if ($this->status !== $v) {
-						$this->status = $v;
 				}
 		}
 
@@ -319,9 +324,19 @@ class Invoice
 				return bcsub($this->getTotal(), $this->getAmountPaid(), 2);
 		}
 
-		public function isInvoiceDefinitief()
+		public function isInvoiceSend()
 		{
-				if($this->getStatus() === Invoice::STATUS_DEFINITIEF)
+				if($this->send)
+				{
+						return true;
+				}
+
+				return false;
+		}
+
+		public function isInvoiceExported()
+		{
+				if ($this->exported)
 				{
 						return true;
 				}
