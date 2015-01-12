@@ -7,7 +7,10 @@
     <services>
         <service id="invoice_number_generator" class="%invoice_number_generator.class%"/>
         <service id="invoice_journal_generator" class="%invoice_journal_generator.class%"/>
-        <service id="pdf_generator" class="%pdf_generator.class%"/>
+        <service id="pdf_generator" class="%pdf_generator.class%">
+            <argument type="service" id="scheme_customer_info_manager"/>
+        </service>
+
         
         <service id="vat_transformer" class="%vat_transformer.class%" public="false">
             <argument>%vat_class%</argument>
