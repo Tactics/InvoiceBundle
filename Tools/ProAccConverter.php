@@ -93,7 +93,7 @@ class ProAccConverter
         $customer = $this->invoice->getCustomer();
         $scheme = $this->customerSchemeMgr->searchOne(array('name' => 'proacc_nummer', 'customer_id' => $customer->getId(), 'customer_class' => get_class($customer)));
         
-        return $scheme->getValue();
+        return $scheme ? $scheme->getValue() : '';
     }
     
     /**
