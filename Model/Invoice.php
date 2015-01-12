@@ -21,8 +21,8 @@ class Invoice
     
 		protected $items = array();
 
-		protected $send;
-		protected $exported;
+		protected $send = 0;
+		protected $exported = 0;
     
     // getters
 		public function getSend()

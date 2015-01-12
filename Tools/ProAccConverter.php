@@ -36,6 +36,7 @@ class ProAccConverter
         $rangeAAToAM = array_map(create_function('$object', 'return "A{$object}";'), range('A', 'M'));
         $rangeAtoAM = array_merge(range('A', 'Z'), $rangeAAToAM);
         $blancos = array_combine($rangeAtoAM, array_fill(0, count($rangeAtoAM), '0'));
+        $omschrijving = $this->getOmschrijving();
         
         $lines = array();
         foreach ($this->invoice->getItems() as $cnt => $item)
@@ -56,7 +57,7 @@ class ProAccConverter
               'M' => number_format($this->invoice->getTotal(), 2, ',', ''),
               'N' => number_format($this->invoice->getVat(), 2, ',', ''),
               'X' => $this->invoice->getVat() ? number_format($this->invoice->getTotal(), 2, ',', '') : 0,00,
-              'Z' => $item->getAnalytical1Account() ? $item->getAnalytical1Account()->getName() : '',
+              'Z' => $omschrijving,
               'AA' => $item->getGlAccount()->getCode(),
               'AB' => $item->getAnalytical1Account() ? $item->getAnalytical1Account()->getCode() : '',
               'AC' => number_format($item->getPriceExVat(), 2, ',', ''),
@@ -73,6 +74,13 @@ class ProAccConverter
         $lines[] = $this->getLastLine($blancos);
         
         return $lines;
+    }
+
+    private function getOmschrijving()
+    {
+        $omschrijving =  $this->invoice->getItems() ? $this->invoice->getItems()[0]->getGroupDescription() : '';
+
+        return substr($omschrijving, 0, 20);
     }
     
     private function getLastLine($blancos)
