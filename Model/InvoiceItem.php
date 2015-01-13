@@ -12,6 +12,7 @@ class InvoiceItem
     protected $price_incl_vat;
     protected $description;    
     protected $group_description;
+    protected $type;
     
     protected $invoice;
     protected $vat;
@@ -23,45 +24,50 @@ class InvoiceItem
     protected $analytical_5_account = null;
 
     // getters	
-	public function getId()
-	{
-		return $this->id;
+	  public function getId()
+	  {
+		    return $this->id;
     }
     
     public function getSchemeId()
-	{
-		return $this->scheme_id;
-	}	
+    {
+        return $this->scheme_id;
+    }
 	
-	public function getQuantity()
-	{
-		return $this->quantity;
-	}
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
 	
-	public function getUnitPrice()
-	{
-		return $this->unit_price;
-	}
-    
-	public function getPriceExVat()
-	{
-        return $this->price_ex_vat;
-	}
-	
-	public function getPriceInclVat()
-	{
-		return $this->price_incl_vat;
-	}
-	
-	public function getDescription()
-	{
-		return $this->description;
-	}
+    public function getUnitPrice()
+    {
+        return $this->unit_price;
+    }
 
-  public function getGroupDescription()
-  {
-    return $this->group_description;
-  }
+    public function getPriceExVat()
+    {
+        return $this->price_ex_vat;
+    }
+
+    public function getPriceInclVat()
+    {
+        return $this->price_incl_vat;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function getGroupDescription()
+    {
+        return $this->group_description;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
     
     /**
      * 
@@ -176,6 +182,13 @@ class InvoiceItem
         if ($this->group_description !== $v) {
           $this->group_description = $v;
         }
+    }
+
+    public function setType($v)
+    {
+      if ($this->type !== $v) {
+          $this->type = $v;
+      }
     }
     
     public function setInvoice($v)
