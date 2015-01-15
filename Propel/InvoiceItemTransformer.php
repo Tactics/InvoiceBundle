@@ -72,7 +72,10 @@ class InvoiceItemTransformer extends Transformer
         $item = parent::fromOrm($propel_invoice_item);
         
         // set vat
-        $item->setVat($this->vat_transformer->fromOrm($propel_invoice_item->getPropelVat()));
+        if ($propelVat = $propel_invoice_item->getPropelVat())
+        {
+            $item->setVat($this->vat_transformer->fromOrm($propelVat));
+        }
         
         // set accounts
         foreach ($this->account_names as $account_name)
@@ -80,7 +83,7 @@ class InvoiceItemTransformer extends Transformer
             $ucfirstCamelizedAccountName = Helper::camelize($account_name, true);
             $propelGetter = "getPropelAccountRelatedBy{$ucfirstCamelizedAccountName}Code";
             $domainSetter = "set{$ucfirstCamelizedAccountName}";
-            $account = $propel_invoice_item->$propelGetter();                        
+            $account = $propel_invoice_item->$propelGetter();
             $item->$domainSetter($this->account_transformer->fromOrm($account));
         }
         
