@@ -45,11 +45,44 @@ class InvoiceManager extends ObjectManager
         
         $invoice->setDate(time());
         $invoice->setDateDue(strtotime('+30 days'));
-        
-        $invoice->setNumber($this->generateNumber($invoice));
-        $invoice->setStructuredCommunication($this->generateStructuredCommunication($invoice));
                 
         return $invoice;
+    }
+
+    /**
+     *
+     * @param mixed $domainObject
+     */
+    public function save($domainObject)
+    {
+        $invoice = $domainObject;
+
+        while (true)
+        {
+            try
+            {
+                $invoice->setNumber($this->generateNumber($invoice));
+                $invoice->setStructuredCommunication($this->generateStructuredCommunication($invoice));
+
+                $ormObject = $this->transformer->toOrm($domainObject);
+
+                $result = $ormObject->save();
+
+                // setting the id
+                foreach ($this->pk_php_name as $pkName)
+                {
+                    $pkSetter = 'set' . $pkName;
+                    $pkGetter = 'get' . $pkName;
+                    $domainObject->$pkSetter($ormObject->$pkGetter());
+                }
+
+                return $result;
+            }
+            catch (\Exception $e)
+            {
+                $ormObject->setAlreadyInSave(false);
+            }
+        }
     }
     
     /**
@@ -79,7 +112,7 @@ class InvoiceManager extends ObjectManager
             'number', // sort by number
             false // descending
         );
-        
+
         $lastNumber = isset($lastInvoice) ? $lastInvoice->getNumber() : null;
         $nextNumber = $this->number_generator->generate($invoice, $lastNumber);
         
@@ -111,4 +144,6 @@ class InvoiceManager extends ObjectManager
 
         return $strCom . (string) $digit97;
     }
+
+
 }

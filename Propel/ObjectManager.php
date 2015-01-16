@@ -8,7 +8,7 @@ use Tactics\InvoiceBundle\Model\TransformerInterface;
 class ObjectManager extends Model\ObjectManager
 {
     private $propel_classname;
-    private $pk_php_name;
+    protected $pk_php_name;
     
     /**
      * 
