@@ -10,9 +10,9 @@ class InvoiceItem
     protected $unit_price;    
     protected $price_ex_vat;
     protected $price_incl_vat;
-    protected $description;    
-    protected $group_description;
-    protected $type;
+    protected $description = '';    
+    protected $group_description = '';
+    protected $type = 'invoice';
     
     protected $invoice;
     protected $vat;
