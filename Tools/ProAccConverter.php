@@ -46,7 +46,7 @@ class ProAccConverter
             $lines[] = array_merge($blancos, array(
               'A' => $cnt === 0 ? '1' : '3',
               'B' => $this->getKlantcode(),
-              'C' => $this->getJournalNumber($item),
+              'C' => $this->invoice->getJournalCode(),
               'D' => $this->invoice->getNumber(),
               'E' => $this->invoice->getDate('d/m/Y'),
               'F' => $this->invoice->getDate('ym'),
@@ -104,41 +104,6 @@ class ProAccConverter
         $scheme = $this->customerSchemeMgr->searchOne(array('name' => 'proacc_nummer', 'customer_id' => $customer->getId(), 'customer_class' => get_class($customer)));
         
         return $scheme ? $scheme->getValue() : '';
-    }
-    
-    /**
-     * Geeft het dagboeknummer terug
-     * 1. facturen verkoopdagboek
-     * 2. creditnota's verkoopdagboek
-     * 3. Facturen vrij van BTW
-     * 4. CN vrij van BTW
-     * 
-     * @return int
-     */
-    private function getJournalNumber(InvoiceItem $item)
-    {
-      $isCN = bccomp($item->getPriceExVat(), 0, 2) === -1;
-      $vrijVanBtw = $item->getPriceExVat() && !$item->getVat();
-      
-      if ($isCN && $vrijVanBtw)
-      {
-        return 4;
-      }
-      
-      if ($isCN && !$vrijVanBtw)
-      {
-        return 2;
-      }
-      
-      if (!$isCN && $vrijVanBtw)
-      {
-        return 3;
-      }
-      
-      if (!$isCN && !$vrijVanBtw)
-      {
-        return 1;
-      }
     }
 }
 
