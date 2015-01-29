@@ -41,6 +41,8 @@ class ProAccConverter
         $lines = array();
         foreach ($this->invoice->getItems() as $cnt => $item)
         {
+          if ($item->getType() == 'text') continue;
+          
             $lines[] = array_merge($blancos, array(
               'A' => $cnt === 0 ? '1' : '3',
               'B' => $this->getKlantcode(),
