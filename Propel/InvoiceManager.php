@@ -32,6 +32,7 @@ class InvoiceManager extends ObjectManager
     public function create(InvoiceableInterface $object = null, $options = array())
     {
         $invoice = parent::create();
+        $invoice->setSchemeId(isset($options['scheme_id']) ? $options['scheme_id'] : null);
         
         if ($object)
         {
