@@ -101,6 +101,7 @@
 
         <service id="proacc_converter" class="Tactics\InvoiceBundle\Tools\ProAccConverter">
             <argument type="service" id="scheme_customer_info_manager"/>
+            <argument type="service" id="journal_manager"/>
         </service>
         
     </services>

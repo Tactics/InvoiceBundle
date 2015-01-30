@@ -3,21 +3,22 @@
 namespace Tactics\InvoiceBundle\Tools;
 
 use Tactics\InvoiceBundle\Model\Invoice;
-use Tactics\InvoiceBundle\Model\InvoiceItem;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 
 class ProAccConverter
 {
     private $customerSchemeMgr;
+    private $journalMgr;
 
     /**
      * constructor
      *
      * @param ObjectManager $customerSchemeMgr
      */
-    public function __construct(ObjectManager $customerSchemeMgr)
+    public function __construct(ObjectManager $customerSchemeMgr, ObjectManager $journalMgr)
     {
         $this->customerSchemeMgr = $customerSchemeMgr;
+        $this->journalMgr = $journalMgr;
     }
 
     private $invoice;
@@ -37,6 +38,7 @@ class ProAccConverter
         $rangeAtoAM = array_merge(range('A', 'Z'), $rangeAAToAM);
         $blancos = array_combine($rangeAtoAM, array_fill(0, count($rangeAtoAM), '0'));
         $omschrijving = $this->getOmschrijving();
+        $boekingsPeriode = $this->getBoekingsperiode($this->invoice);
         
         $lines = array();
         foreach ($this->invoice->getItems() as $cnt => $item)
@@ -49,7 +51,7 @@ class ProAccConverter
               'C' => $this->invoice->getJournalCode(),
               'D' => $this->invoice->getNumber(),
               'E' => $this->invoice->getDate('d/m/Y'),
-              'F' => $this->invoice->getDate('ym'),
+              'F' => $boekingsPeriode,
               'G' => '',
               'H' => $this->invoice->getDateDue('d/m/Y'),
               'I' => 'EUR',
@@ -58,7 +60,7 @@ class ProAccConverter
               'L' => number_format($this->invoice->getTotal() + $this->invoice->getVat(), 2, ',', ''),
               'M' => number_format($this->invoice->getTotal(), 2, ',', ''),
               'N' => number_format($this->invoice->getVat(), 2, ',', ''),
-              'X' => $this->invoice->getVat() ? number_format($this->invoice->getTotal(), 2, ',', '') : 0,00,
+              'X' => $this->invoice->getVat() ? number_format($this->invoice->getTotal(), 2, ',', '') : 0.00,
               'Z' => $omschrijving,
               'AA' => $item->getGlAccount()->getCode(),
               'AB' => $item->getAnalytical1Account() ? $item->getAnalytical1Account()->getCode() : '',
@@ -104,6 +106,30 @@ class ProAccConverter
         $scheme = $this->customerSchemeMgr->searchOne(array('name' => 'proacc_nummer', 'customer_id' => $customer->getId(), 'customer_class' => get_class($customer)));
         
         return $scheme ? $scheme->getValue() : '';
+    }
+    
+    /**
+     * 
+     * @param Invoice $invoice
+     * @return string
+     * 
+     * @todo: fix dependency on \Config::BOEKINGSPERIODE
+     */
+    private function getBoekingsperiode($invoice)
+    {
+        $journal = $this->journalMgr->find(array(
+            $invoice->getJournalCode(),
+            $invoice->getSchemeId()
+        ));
+        
+        // verkoopdagboek facturen met BTW afh van config val, rest automatisch
+        if ($journal->getWithVat() && !$journal->getCreditNotes())
+        {
+            $ns = \sfContext::getInstance()->getUser()->getBedrijf()->getVarNaam();
+            return \ConfigPeer::get(\Config::BOEKINGSPERIODE, '', $ns);
+        }
+        
+        return $invoice->getDate('ym');
     }
 }
 
