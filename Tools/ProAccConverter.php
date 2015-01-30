@@ -122,8 +122,8 @@ class ProAccConverter
             $invoice->getSchemeId()
         ));
         
-        // verkoopdagboek facturen met BTW afh van config val, rest automatisch
-        if ($journal->getWithVat() && !$journal->getCreditNotes())
+        // facturen en creditnota's met BTW afh van config val
+        if ($journal->getWithVat())
         {
             $ns = \sfContext::getInstance()->getUser()->getBedrijf()->getVarNaam();
             return \ConfigPeer::get(\Config::BOEKINGSPERIODE, '', $ns);
