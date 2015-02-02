@@ -343,4 +343,22 @@ class Invoice
 
 				return false;
 		}
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public function isCreditNote()
+    {
+      return bccomp($this->getTotal(), 0, 2) === -1;
+    }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public function withVat()
+    {
+      return bccomp($this->getVat(), 0, 2) !== 0;
+    }
 }
