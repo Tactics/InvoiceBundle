@@ -60,12 +60,13 @@ class ProAccConverter
               'L' => number_format($this->invoice->getTotal() + $this->invoice->getVat(), 2, ',', ''),
               'M' => number_format($this->invoice->getTotal(), 2, ',', ''),
               'N' => number_format($this->invoice->getVat(), 2, ',', ''),
-              'X' => $this->invoice->getVat() ? number_format($this->invoice->getTotal(), 2, ',', '') : 0.00,
+              'U' => $this->invoice->getVat() ? 0 : number_format($this->invoice->getTotal(), 2, ',', ''), // maatstaf heffing 0% BTW hele dossier
+              'X' => $this->invoice->getVat() ? number_format($this->invoice->getTotal(), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
               'Z' => $omschrijving,
               'AA' => $item->getGlAccount()->getCode(),
               'AB' => $item->getAnalytical1Account() ? $item->getAnalytical1Account()->getCode() : '',
               'AC' => number_format($item->getPriceExVat(), 2, ',', ''),
-              'AD' => number_format(bcsub($item->getPriceInclVat(), $item->getPriceExVat(), 2), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
+              'AD' => number_format($item->getPriceExVat(), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
               'AE' => number_format($item->getVat()->getPercentage(), 2, ',', ''),
               'AG' => substr($item->getDescription(), 0, 25), // omschrijving, voor inovant moet hier de opleidingscode inkomen
               'AI' => $item->getAnalytical2Account() ? $item->getAnalytical2Account()->getCode() : '',
