@@ -65,7 +65,7 @@ class ProAccConverter
               'AA' => $item->getGlAccount()->getCode(),
               'AB' => $item->getAnalytical1Account() ? $item->getAnalytical1Account()->getCode() : '',
               'AC' => number_format($item->getPriceExVat(), 2, ',', ''),
-              'AD' => number_format($item->getPriceExVat(), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
+              'AD' => number_format(bcsub($item->getPriceInclVat(), $item->getPriceExVat(), 2), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
               'AE' => number_format($item->getVat()->getPercentage(), 2, ',', ''),
               'AG' => substr($item->getDescription(), 0, 25), // omschrijving, voor inovant moet hier de opleidingscode inkomen
               'AI' => $item->getAnalytical2Account() ? $item->getAnalytical2Account()->getCode() : '',
