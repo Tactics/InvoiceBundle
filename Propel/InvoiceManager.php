@@ -51,13 +51,34 @@ class InvoiceManager extends ObjectManager
     }
 
     /**
-     *
-     * @param mixed $domainObject
+     * 
+     * @param Invoice $domainObject
+     * @return type
      */
     public function save($domainObject)
     {
         $invoice = $domainObject;
-
+        if (!$invoice->getId())
+        {
+          return $this->saveNew($invoice);
+        }
+        
+        $ormObject = $this->transformer->toOrm($invoice);
+        $result = $ormObject->save();
+        
+        return $result;
+    }
+    
+    /**
+     * saves a new invoice:
+     *  - generates invoice number and structured communication
+     *  - sets the new id to the domainObject
+     * 
+     * @param Invoice $invoice
+     * @return int 
+     */
+    private function saveNew(Invoice $invoice)
+    {
         while (true)
         {
             try
@@ -65,8 +86,7 @@ class InvoiceManager extends ObjectManager
                 $invoice->setNumber($this->generateNumber($invoice));
                 $invoice->setStructuredCommunication($this->generateStructuredCommunication($invoice));
 
-                $ormObject = $this->transformer->toOrm($domainObject);
-
+                $ormObject = $this->transformer->toOrm($invoice);
                 $result = $ormObject->save();
 
                 // setting the id
@@ -74,7 +94,7 @@ class InvoiceManager extends ObjectManager
                 {
                     $pkSetter = 'set' . $pkName;
                     $pkGetter = 'get' . $pkName;
-                    $domainObject->$pkSetter($ormObject->$pkGetter());
+                    $invoice->$pkSetter($ormObject->$pkGetter());
                 }
 
                 return $result;
