@@ -18,6 +18,10 @@ class AccountingScheme
     protected $scheme_4_active = false;
     protected $scheme_5_name;
     protected $scheme_5_active = false;
+		protected $scheme_6_name;
+		protected $scheme_6_active = false;
+		protected $scheme_7_name;
+		protected $scheme_7_active = false;
     
     // getters
     public function getId()
@@ -77,9 +81,29 @@ class AccountingScheme
 	
 	public function getScheme5Active()
 	{
-		return $this->scheme_5_active;
+        return $this->scheme_5_active;
 	}
-    
+
+	public function getScheme6Name()
+	{
+       return $this->scheme_6_name;
+	}
+
+	public function getScheme6Active()
+	{
+       return $this->scheme_6_active;
+	}
+
+	public function getScheme7Name()
+	{
+       return $this->scheme_7_name;
+	}
+
+	public function getScheme7Active()
+	{
+       return $this->scheme_7_active;
+	}
+
     // setters
     public function setId($v)
 	{
@@ -190,6 +214,42 @@ class AccountingScheme
 	{
         if ($this->scheme_5_active !== $v || $v === true) {
 			$this->scheme_5_active = $v;
+		}
+	}
+
+	public function setScheme6Name($v)
+	{
+		if ($v !== null && !is_string($v)) {
+			$v = (string) $v;
+		}
+
+		if ($this->scheme_6_name !== $v) {
+			$this->scheme_6_name = $v;
+		}
+	}
+
+	public function setScheme6Active($v)
+	{
+				if ($this->scheme_6_active !== $v || $v === true) {
+			$this->scheme_6_active = $v;
+		}
+	}
+
+	public function setScheme7Name($v)
+	{
+		if ($v !== null && !is_string($v)) {
+			$v = (string) $v;
+		}
+
+		if ($this->scheme_7_name !== $v) {
+			$this->scheme_7_name = $v;
+		}
+	}
+
+	public function setScheme7Active($v)
+	{
+		if ($this->scheme_7_active !== $v || $v === true) {
+			$this->scheme_7_active = $v;
 		}
 	}
   
