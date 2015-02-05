@@ -13,7 +13,9 @@ class ProductConfigurationTransformer extends Transformer
         'analytical_2_account',
         'analytical_3_account',
         'analytical_4_account',
-        'analytical_5_account'
+        'analytical_5_account',
+        'analytical_6_account',
+        'analytical_7_account'
     );
         
     /**

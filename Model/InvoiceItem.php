@@ -22,6 +22,9 @@ class InvoiceItem
     protected $analytical_3_account = null;
     protected $analytical_4_account = null;
     protected $analytical_5_account = null;
+    protected $analytical_6_account = null;
+    protected $analytical_7_account = null;
+    
 
     // getters	
 	  public function getId()
@@ -117,6 +120,15 @@ class InvoiceItem
         return $this->analytical_5_account;
     }
     
+    public function getAnalytical6Account()
+    {
+        return $this->analytical_6_account;
+    }
+    
+    public function getAnalytical7Account()
+    {
+        return $this->analytical_7_account;
+    }
     // setters
 	public function setId($v)
 	{
@@ -229,6 +241,16 @@ class InvoiceItem
     public function setAnalytical5Account($analytical_account)
     {
         $this->analytical_5_account = $analytical_account;
+    }
+    
+    public function setAnalytical6Account($analytical_account)
+    {
+        $this->analytical_6_account = $analytical_account;
+    }
+    
+    public function setAnalytical7Account($analytical_account)
+    {
+        $this->analytical_7_account = $analytical_account;
     }
     
     public function calculatePrices()

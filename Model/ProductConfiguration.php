@@ -14,6 +14,8 @@ class ProductConfiguration
     protected $analytical_3_account = null;
     protected $analytical_4_account = null;
     protected $analytical_5_account = null;
+    protected $analytical_6_account = null;
+    protected $analytical_7_account = null;
 
     //setters
     public function getId()
@@ -64,6 +66,16 @@ class ProductConfiguration
     public function getAnalytical5Account()
     {
         return $this->analytical_5_account;
+    }
+    
+    public function getAnalytical6Account()
+    {
+        return $this->analytical_6_account;
+    }
+    
+    public function getAnalytical7Account()
+    {
+        return $this->analytical_7_account;
     }
 
     // setters
@@ -119,5 +131,15 @@ class ProductConfiguration
     public function setAnalytical5Account($analytical_account)
     {
         $this->analytical_5_account = $analytical_account;
+    }
+    
+    public function setAnalytical6Account($analytical_account)
+    {
+        $this->analytical_6_account = $analytical_account;
+    }
+    
+    public function setAnalytical7Account($analytical_account)
+    {
+        $this->analytical_7_account = $analytical_account;
     }
 }
