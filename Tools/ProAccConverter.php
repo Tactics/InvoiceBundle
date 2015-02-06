@@ -77,8 +77,6 @@ class ProAccConverter
             ));
         }
         
-        $lines[] = $this->getLastLine($blancos);
-        
         return $lines;
     }
 
@@ -87,13 +85,6 @@ class ProAccConverter
         $omschrijving =  $this->invoice->getItems() ? $this->invoice->getItems()[0]->getGroupDescription() : '';
 
         return substr($omschrijving, 0, 20);
-    }
-    
-    private function getLastLine($blancos)
-    {
-        return array_merge($blancos, array(
-          'A' => '99'
-        ));
     }
     
     /**
