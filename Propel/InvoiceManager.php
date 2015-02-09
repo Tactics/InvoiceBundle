@@ -41,12 +41,8 @@ class InvoiceManager extends ObjectManager
                 $invoice->addItem($item);
             }
             $invoice->setCustomer($object->getCustomer());
-            $invoice->setJournalCode($this->journal_generator->generate($invoice));
         }
         
-        $invoice->setDate(time());
-        $invoice->setDateDue(strtotime('+30 days'));
-                
         return $invoice;
     }
 
@@ -57,13 +53,16 @@ class InvoiceManager extends ObjectManager
      */
     public function save($domainObject)
     {
-        $invoice = $domainObject;
-        if (!$invoice->getId())
+        $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
+        $domainObject->setDate(time());
+        $domainObject->setDateDue(strtotime('+30 days'));
+        
+        if (!$domainObject->getId())
         {
-          return $this->saveNew($invoice);
+          return $this->saveNew($domainObject);
         }
         
-        $ormObject = $this->transformer->toOrm($invoice);
+        $ormObject = $this->transformer->toOrm($domainObject);
         $result = $ormObject->save();
         
         return $result;
