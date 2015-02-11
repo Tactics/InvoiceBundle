@@ -99,6 +99,7 @@
 
         <service id="proacc_importer" class="Tactics\InvoiceBundle\Tools\ProAccImporter">
             <argument type="service" id="invoice_manager"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
 
         <service id="proacc_converter" class="Tactics\InvoiceBundle\Tools\ProAccConverter">

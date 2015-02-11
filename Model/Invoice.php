@@ -318,6 +318,20 @@ class Invoice
     {
         return sprintf('Factuur %06u', $this->getNumber());
     }
+    
+    /**
+     * 
+     * @param float $amount
+     * @param string $cultureDate
+     */
+    public function addPayment($amount, $cultureDate)
+    {
+        $this->setAmountPaid(bcadd((float) $this->getAmountPaid(), $amount, 2));
+        if ($this->isPaid())
+        {
+            $this->setDatePaid(\myDateTools::cultureDateToPropelDate($cultureDate));
+        }
+    }
 
 		public function getOutstandingAmount()
 		{
@@ -346,7 +360,7 @@ class Invoice
     
     public function isPaid()
     {
-        return $this->getDatePaid() !== null;
+        return bccomp($this->getOutstandingAmount(), 0, 2) === 0;
     }
     
     /**

@@ -8,13 +8,15 @@
 
 namespace Tactics\InvoiceBundle\Tools;
 
-use Tactics\InvoiceBundle\Model\Invoice;
 use Tactics\InvoiceBundle\Propel\InvoiceManager;
+//use Symfony\Component\EventDispatcher;
+use Tactics\InvoiceBundle\Model\Invoice;
+use Tactics\InvoiceBundle\Events;
 
-class ProAccImporter
+final class ProAccImporter
 {
-
     private $invoiceMgr;
+    private $eventDispatcher;
 
     private $logs = array();
 
@@ -23,9 +25,10 @@ class ProAccImporter
      *
      * @param InvoiceManager $invoiceMgr
      */
-    public function __construct(InvoiceManager $invoiceMgr)
+    public function __construct(InvoiceManager $invoiceMgr, $eventDispatcher)
     {
         $this->invoiceMgr = $invoiceMgr;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -65,6 +68,7 @@ class ProAccImporter
     {
         $factuurNr = $line[0];
         $amountPaid = str_replace(',', '.', $line[1]);
+        $cultureDate = $line[3];
       
         if ($invoice->isPaid())
         {
@@ -77,19 +81,16 @@ class ProAccImporter
             return;
         }
         
-        if (bccomp($invoice->getOutstandingAmount(), $amountPaid, 2) === 0)
-        {
-            $invoice->setAmountPaid(bcadd($invoice->getAmountPaid(), $amountPaid, 2));
-            $invoice->setDatePaid(\myDateTools::cultureDateToPropelDate($line[3]));            
-            $this->logs[] = $factuurNr.': Factuur volledig betaald';
-        }
-        else if (bccomp($invoice->getOutstandingAmount(), $amountPaid, 2) === 1)
-        {
-            $invoice->setAmountPaid(bcadd($invoice->getAmountPaid(), $amountPaid, 2));            
-            $this->logs[] = $factuurNr.': Factuur deels betaald';
-        }
+        $invoice->addPayment($amountPaid, $cultureDate);
+        $this->logs[] = $invoice->isPaid()
+          ? $factuurNr.': Factuur volledig betaald'
+          : $factuurNr.': Factuur deels betaald'
+        ;        
 
         $this->invoiceMgr->save($invoice);
+        
+        $event = new Events\InvoicePaymentEvent($invoice, $amountPaid);
+        $this->eventDispatcher->dispatch(Events\InvoiceEvents::PAYMENT, $event);
 
     }
 }
