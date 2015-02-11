@@ -344,6 +344,11 @@ class Invoice
 				return false;
 		}
     
+    public function isPaid()
+    {
+        return $this->getDatePaid() !== null;
+    }
+    
     /**
      * 
      * @return boolean

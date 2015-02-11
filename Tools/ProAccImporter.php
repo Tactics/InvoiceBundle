@@ -38,7 +38,10 @@ class ProAccImporter
     {
         while (!feof($file)) {
             $line = explode("\t", trim(fgets($file)));
-
+            if (!isset($line[0]) || !$line[0]) // skip emtpy lines
+            {
+              continue;
+            }
             $invoice = $this->invoiceMgr->searchOne(array('number' => $line[0]));
 
             if (!$invoice) {
@@ -55,40 +58,38 @@ class ProAccImporter
     /**
      * edit invoice with new payments
      *
-     * @param $invoice
-     * @param $line
+     * @param Invoice $invoice
+     * @param array $line
      */
     private function editInvoice($invoice, $line)
     {
-        $amountPaid = $line[1];
-        if ($invoice->getStatus() == Invoice::STATUS_BETAALD)
+        $factuurNr = $line[0];
+        $amountPaid = str_replace(',', '.', $line[1]);
+      
+        if ($invoice->isPaid())
         {
-            $this->logs[] = $line[0].': Factuur is alreeds betaald';
+            $this->logs[] = $factuurNr.': Factuur is reeds betaald';
             return;
         }
-
-
         if (bccomp($invoice->getOutstandingAmount(), $amountPaid, 2) === -1)
         {
-            $this->logs[] = $line[0].': Er is <b>te veel</b> betaald voor deze factuur. <span style="color:red">Factuur niet opgeslagen.</span>';
+            $this->logs[] = $factuurNr.': Er is <b>te veel</b> betaald voor deze factuur. <span style="color:red">Factuur niet opgeslagen.</span>';
             return;
         }
+        
         if (bccomp($invoice->getOutstandingAmount(), $amountPaid, 2) === 0)
         {
             $invoice->setAmountPaid(bcadd($invoice->getAmountPaid(), $amountPaid, 2));
-            $invoice->setDatePaid(\myDateTools::cultureDateToPropelDate($line[3]));
-            $invoice->setStatus(Invoice::STATUS_BETAALD);
-            $this->logs[] = $line[0].': Factuur volledig betaald';
+            $invoice->setDatePaid(\myDateTools::cultureDateToPropelDate($line[3]));            
+            $this->logs[] = $factuurNr.': Factuur volledig betaald';
         }
-
-        if (bccomp($invoice->getOutstandingAmount(), $amountPaid, 2) === 1)
+        else if (bccomp($invoice->getOutstandingAmount(), $amountPaid, 2) === 1)
         {
-            $invoice->setAmountPaid(bcadd($invoice->getAmountPaid(), $amountPaid, 2));
-            $invoice->setStatus(Invoice::STATUS_DEELS_BETAALD);
-            $this->logs[] = $line[0].': Factuur deels betaald';
+            $invoice->setAmountPaid(bcadd($invoice->getAmountPaid(), $amountPaid, 2));            
+            $this->logs[] = $factuurNr.': Factuur deels betaald';
         }
 
-         $this->invoiceMgr->save($invoice);
+        $this->invoiceMgr->save($invoice);
 
     }
 }
