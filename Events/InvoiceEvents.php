@@ -9,5 +9,6 @@ namespace Tactics\InvoiceBundle\Events;
  */
 final class InvoiceEvents
 {
+    const CREATED = 'invoice.created';
     const PAYMENT = 'invoice.payment';
 }

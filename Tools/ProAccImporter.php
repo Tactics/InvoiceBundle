@@ -9,7 +9,7 @@
 namespace Tactics\InvoiceBundle\Tools;
 
 use Tactics\InvoiceBundle\Propel\InvoiceManager;
-//use Symfony\Component\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tactics\InvoiceBundle\Model\Invoice;
 use Tactics\InvoiceBundle\Events;
 
@@ -25,7 +25,7 @@ final class ProAccImporter
      *
      * @param InvoiceManager $invoiceMgr
      */
-    public function __construct(InvoiceManager $invoiceMgr, $eventDispatcher)
+    public function __construct(InvoiceManager $invoiceMgr, EventDispatcherInterface $eventDispatcher)
     {
         $this->invoiceMgr = $invoiceMgr;
         $this->eventDispatcher = $eventDispatcher;
