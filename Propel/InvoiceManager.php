@@ -4,22 +4,27 @@ namespace Tactics\InvoiceBundle\Propel;
 
 use Tactics\InvoiceBundle\Model;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tactics\InvoiceBundle\Model\InvoiceableInterface;
 use Tactics\InvoiceBundle\Model\Invoice;
+use Tactics\InvoiceBundle\Events\InvoiceEvents;
+use Tactics\InvoiceBundle\Events\InvoiceCreatedEvent;
 
 class InvoiceManager extends ObjectManager
 {
     private $number_generator;
     private $journal_generator;
     private $pdf_generator;
+    private $event_dispatcher;
     
-    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator, $pdf_generator)
+    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator, $pdf_generator, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($class, $transformer);
         
         $this->number_generator = $number_generator;
         $this->journal_generator = $journal_generator;
         $this->pdf_generator = $pdf_generator;
+        $this->event_dispatcher = $eventDispatcher;
     }
     
     /**
@@ -51,7 +56,7 @@ class InvoiceManager extends ObjectManager
      * @param Invoice $domainObject
      * @return type
      */
-    public function save($domainObject)
+    public function save($domainObject, $options = array())
     {
         $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
         $domainObject->setDate(time());
@@ -59,7 +64,12 @@ class InvoiceManager extends ObjectManager
         
         if (!$domainObject->getId())
         {
-          return $this->saveNew($domainObject);
+          $result =  $this->saveNew($domainObject);
+          
+          $event = new InvoiceCreatedEvent($domainObject, $options);
+          $this->event_dispatcher->dispatch(InvoiceEvents::CREATED, $event);
+          
+          return $result;
         }
         
         $ormObject = $this->transformer->toOrm($domainObject);
@@ -164,6 +174,4 @@ class InvoiceManager extends ObjectManager
 
         return $strCom . (string) $digit97;
     }
-
-
 }

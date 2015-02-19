@@ -5,7 +5,6 @@ namespace Tactics\InvoiceBundle\Model;
 class InvoiceItem
 {    
     protected $id;
-    protected $scheme_id;
     protected $quantity = 1;
     protected $unit_price;    
     protected $price_ex_vat;
@@ -13,28 +12,22 @@ class InvoiceItem
     protected $description = '';    
     protected $group_description = '';
     protected $type = 'invoice';
+    protected $vat_percentage;
+    protected $gl_account_code;
+    protected $analytical_1_account_code = null;
+    protected $analytical_2_account_code = null;
+    protected $analytical_3_account_code = null;
+    protected $analytical_4_account_code = null;
+    protected $analytical_5_account_code = null;
+    protected $analytical_6_account_code = null;
+    protected $analytical_7_account_code = null;
     
     protected $invoice;
-    protected $vat;
-    protected $gl_account;
-    protected $analytical_1_account = null;
-    protected $analytical_2_account = null;
-    protected $analytical_3_account = null;
-    protected $analytical_4_account = null;
-    protected $analytical_5_account = null;
-    protected $analytical_6_account = null;
-    protected $analytical_7_account = null;
-    
 
     // getters	
 	  public function getId()
 	  {
 		    return $this->id;
-    }
-    
-    public function getSchemeId()
-    {
-        return $this->scheme_id;
     }
 	
     public function getQuantity()
@@ -81,54 +74,51 @@ class InvoiceItem
 		return $this->invoice;
 	}
     
-    /**
-     * 
-     * @return Tactics\InvoiceBundle\Model\Vat
-     */
-    public function getVat()
+    public function getVatPercentage()
 	{
-		return $this->vat;
+		return $this->vat_percentage;
 	}
     
-    public function getGlAccount()
+    public function getGlAccountCode()
     {
-        return $this->gl_account;
+        return $this->gl_account_code;
     }
     
-    public function getAnalytical1Account()
+    public function getAnalytical1AccountCode()
     {
-        return $this->analytical_1_account;
+        return $this->analytical_1_account_code;
     }
     
-    public function getAnalytical2Account()
+    public function getAnalytical2AccountCode()
     {
-        return $this->analytical_2_account;
+        return $this->analytical_2_account_code;
     }
     
-    public function getAnalytical3Account()
+    public function getAnalytical3AccountCode()
     {
-        return $this->analytical_3_account;
+        return $this->analytical_3_account_code;
     }
     
-    public function getAnalytical4Account()
+    public function getAnalytical4AccountCode()
     {
-        return $this->analytical_4_account;
+        return $this->analytical_4_account_code;
     }
     
-    public function getAnalytical5Account()
+    public function getAnalytical5AccountCode()
     {
-        return $this->analytical_5_account;
+        return $this->analytical_5_account_code;
     }
     
-    public function getAnalytical6Account()
+    public function getAnalytical6AccountCode()
     {
-        return $this->analytical_6_account;
+        return $this->analytical_6_account_code;
     }
     
-    public function getAnalytical7Account()
+    public function getAnalytical7AccountCode()
     {
-        return $this->analytical_7_account;
+        return $this->analytical_7_account_code;
     }
+    
     // setters
 	public function setId($v)
 	{
@@ -139,11 +129,6 @@ class InvoiceItem
 		if ($this->id !== $v) {
 			$this->id = $v;			
 		}
-	}
-    
-    public function setSchemeId($scheme_id)
-    {
-        $this->scheme_id = $scheme_id;
 	}
 	
 	public function setQuantity($v)
@@ -208,56 +193,54 @@ class InvoiceItem
         $this->invoice = $v;
     }
     
-    public function setVat($v)
+    public function setVatPercentage($v)
     {
-        $this->vat = $v;
+        $this->vat_percentage = $v;
     }
     
-    public function setGlAccount($gl_account)
+    public function setGlAccountCode($gl_account_code)
     {
-        $this->gl_account = $gl_account;
+        $this->gl_account_code = $gl_account_code;
     }
     
-    public function setAnalytical1Account($analytical_account)
+    public function setAnalytical1AccountCode($analytical_account_code)
     {
-        $this->analytical_1_account = $analytical_account;
+        $this->analytical_1_account_code = $analytical_account_code;
     }
     
-    public function setAnalytical2Account($analytical_account)
+    public function setAnalytical2AccountCode($analytical_account_code)
     {
-        $this->analytical_2_account = $analytical_account;
+        $this->analytical_2_account_code = $analytical_account_code;
     }
     
-    public function setAnalytical3Account($analytical_account)
+    public function setAnalytical3AccountCode($analytical_account_code)
     {
-        $this->analytical_3_account = $analytical_account;
+        $this->analytical_3_account_code = $analytical_account_code;
     }
     
-    public function setAnalytical4Account($analytical_account)
+    public function setAnalytical4AccountCode($analytical_account_code)
     {
-        $this->analytical_4_account = $analytical_account;
+        $this->analytical_4_account_code = $analytical_account_code;
     }
     
-    public function setAnalytical5Account($analytical_account)
+    public function setAnalytical5AccountCode($analytical_account_code)
     {
-        $this->analytical_5_account = $analytical_account;
+        $this->analytical_5_account_code = $analytical_account_code;
     }
     
-    public function setAnalytical6Account($analytical_account)
+    public function setAnalytical6AccountCode($analytical_account_code)
     {
-        $this->analytical_6_account = $analytical_account;
+        $this->analytical_6_account_code = $analytical_account_code;
     }
     
-    public function setAnalytical7Account($analytical_account)
+    public function setAnalytical7AccountCode($analytical_account_code)
     {
-        $this->analytical_7_account = $analytical_account;
+        $this->analytical_7_account_code = $analytical_account_code;
     }
     
     public function calculatePrices()
     {
-        $vatPct = $this->getVat() ? $this->getVat()->getPercentage() : 0;
-        
         $this->price_ex_vat = $this->quantity * $this->unit_price;
-        $this->price_incl_vat = $this->price_ex_vat * ((100 + $vatPct)/100);
+        $this->price_incl_vat = $this->price_ex_vat * ((100 + $this->getVatPercentage())/100);
     }
 }

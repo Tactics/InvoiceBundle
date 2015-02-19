@@ -338,7 +338,7 @@ class Invoice
 				return bcsub($this->getTotal(), $this->getAmountPaid(), 2);
 		}
 
-		public function isInvoiceSend()
+		public function isSend()
 		{
 				if($this->send)
 				{
@@ -348,7 +348,7 @@ class Invoice
 				return false;
 		}
 
-		public function isInvoiceExported()
+		public function isExported()
 		{
 				if ($this->exported)
 				{

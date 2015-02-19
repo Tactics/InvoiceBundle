@@ -6,7 +6,7 @@ use Tactics\InvoiceBundle\Model\Invoice;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Description of PaymentEvent
+ * Description of InvoicePaymentEvent
  *
  * @author Joris
  */

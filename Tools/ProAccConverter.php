@@ -64,13 +64,13 @@ class ProAccConverter
               'O' => !$withVat ? number_format($this->invoice->getTotal(), 2, ',', '') : 0,
               'X' => $withVat ? number_format($this->invoice->getTotal(), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
               'Z' => $omschrijving,
-              'AA' => $item->getGlAccount()->getCode(),
-              'AB' => $item->getAnalytical1Account() ? $item->getAnalytical1Account()->getCode() : '',
+              'AA' => $item->getGlAccountCode(),
+              'AB' => $item->getAnalytical1AccountCode() ?: '',
               'AC' => number_format($item->getPriceExVat(), 2, ',', ''),
               'AD' => number_format($item->getPriceExVat(), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt              
-              'AE' => $withVat ? number_format($item->getVat()->getPercentage(), 2, ',', '') : 0,
+              'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
               'AG' => substr($item->getDescription(), 0, 25), // omschrijving, voor inovant moet hier de opleidingscode inkomen
-              'AI' => $item->getAnalytical2Account() ? $item->getAnalytical2Account()->getCode() : '',
+              'AI' => $item->getAnalytical2AccountCode() ?: '',
               'AK' => '',
               'AL' => $this->invoice->getDatePaid() ? '1' : '0',
               'AM' => ''

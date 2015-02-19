@@ -45,6 +45,7 @@
             <argument type="service" id="invoice_number_generator"/>
             <argument type="service" id="invoice_journal_generator"/>
             <argument type="service" id="pdf_generator"/>
+            <argument type="service" id="event_dispatcher"/>
         </service>
         
         <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%" public="false">
