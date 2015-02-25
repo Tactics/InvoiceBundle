@@ -149,7 +149,7 @@ class ObjectManager extends Model\ObjectManager
         foreach ($search_fields as $field_name => $value)
         {
             $colName = $peerClass::translateFieldName($field_name, \BasePeer::TYPE_FIELDNAME, \BasePeer::TYPE_COLNAME);
-            $c->add($colName, $value);
+            $c->add($colName, $value, is_array($value) ? \Criteria::IN : \Criteria::EQUAL);
         }
         
         // sorting
