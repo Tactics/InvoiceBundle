@@ -8,6 +8,7 @@ class Account
     protected $name;
     protected $type;
     protected $scheme_nr;
+    protected $contra_account_code;
     
     protected $accounting_scheme;
     
@@ -31,6 +32,11 @@ class Account
 	{
         return $this->scheme_nr;
 	}
+  
+    public function getContraAccountCode()
+    {
+        return $this->contra_account_code;
+    }
     
     public function getAccountingScheme()
     {
@@ -81,6 +87,17 @@ class Account
 			$this->scheme_nr = $v;
 		}
 	}
+    
+    public function setContraAccountCode($v)
+    {
+        if ($v !== null && !is_string($v)) {
+			$v = (string) $v; 
+		}
+
+		if ($this->contra_account_code !== $v) {
+			$this->contra_account_code = $v;            
+        }   
+    }
     
     public function setAccountingScheme($v)
     {

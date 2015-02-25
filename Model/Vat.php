@@ -8,6 +8,7 @@ class Vat
     protected $name;
     protected $percentage;
     protected $scheme_id;
+    protected $account_code;
     
     // getters
     public function getCode()
@@ -28,6 +29,11 @@ class Vat
     public function getSchemeId()
     {
         return $this->scheme_id;
+    }
+    
+    public function getAccountCode()
+    {
+        return $this->account_code;
     }
     
     // setters
@@ -67,6 +73,17 @@ class Vat
     public function setSchemeId($v)
     {
         $this->scheme_id = $v;
+    }
+    
+    public function setAccountCode($v)
+    {
+        if ($v !== null && !is_string($v)) {
+			$v = (string) $v; 
+		}
+
+		if ($this->account_code !== $v) {
+			$this->account_code = $v;            
+        }   
     }
     
     public function __toString() 
