@@ -108,5 +108,12 @@
             <argument type="service" id="journal_manager"/>
         </service>
         
+        <service id="agresso_invoice_converter" class="Tactics\InvoiceBundle\Tools\AgressoInvoiceConverter">
+            <argument type="service" id="invoice_manager"/>
+            <argument type="service" id="scheme_customer_info_manager"/>
+            <argument type="service" id="account_manager"/>  
+            <argument type="service" id="vat_manager"/>  
+        </service>
+        
     </services>
 </container>
