@@ -316,7 +316,11 @@ class Invoice
     
     public function __toString()
     {
-        return sprintf('Factuur %06u', $this->getNumber());
+        $type = $this->isCreditNote() ? 'Creditnota' : 'Factuur';
+        return $this->getId()
+            ? sprintf('%s %06u', $type, $this->getNumber())
+            : sprintf('Nieuwe %s', $type)
+        ;
     }
     
     /**
