@@ -38,6 +38,7 @@ class InvoiceManager extends ObjectManager
     {
         $invoice = parent::create();
         $invoice->setSchemeId(isset($options['scheme_id']) ? $options['scheme_id'] : null);
+        $invoice->setRef(isset($options['ref']) ? $options['ref'] : null);
         
         if ($object)
         {
@@ -88,6 +89,7 @@ class InvoiceManager extends ObjectManager
       /* @var $creditNote Invoice */
       $creditNote = $this->create(null, array('scheme_id' => $invoice->getSchemeId()));
       $creditNote->setCustomer($invoice->getCustomer());
+      $creditNote->setRef($invoice->getRef());
       foreach ($invoice->getItems() as $item)
       {        
         if ($item->getType() === 'text') continue;
