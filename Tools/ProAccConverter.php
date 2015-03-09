@@ -40,6 +40,7 @@ class ProAccConverter
         $omschrijving = $this->getOmschrijving();
         $boekingsPeriode = $this->getBoekingsperiode($this->invoice);
         $withVat = $this->invoice->withVat();
+        $isCreditNote = $this->invoice->isCreditNote();
         
         $lines = array();
         foreach ($this->invoice->getItems() as $cnt => $item)
@@ -47,7 +48,7 @@ class ProAccConverter
           if ($item->getType() == 'text') continue;
           
             $lines[] = array_merge($blancos, array(
-              'A' => $cnt === 0 ? '1' : '3',
+              'A' => $cnt === 0 ? ($isCreditNote ? '2' : '1') : '3',
               'B' => $this->getKlantcode(),
               'C' => $this->invoice->getJournalCode(),
               'D' => $this->invoice->getNumber(),
