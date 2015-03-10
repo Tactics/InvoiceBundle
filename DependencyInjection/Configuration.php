@@ -51,6 +51,9 @@ class Configuration implements ConfigurationInterface
                   ->info('class that generates the invoice pdf')
                   ->defaultValue('Tactics\InvoiceBundle\Tools\PdfGenerator')
                 ->end()
+                ->scalarNode('accounting_software')
+                  ->info('Configure the accounting software: ProAcc|Agresso')
+                ->end()
             ->end()
         ;
     }

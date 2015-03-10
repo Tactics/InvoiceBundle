@@ -1,19 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Glenn
- * Date: 31/12/2014
- * Time: 10:59
- */
-
-namespace Tactics\InvoiceBundle\Tools;
+namespace Tactics\InvoiceBundle\Tools\ProAcc;
 
 use Tactics\InvoiceBundle\Propel\InvoiceManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tactics\InvoiceBundle\Model\Invoice;
 use Tactics\InvoiceBundle\Events;
 
-final class ProAccImporter
+final class PaymentImporter
 {
     private $invoiceMgr;
     private $eventDispatcher;

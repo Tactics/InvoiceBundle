@@ -97,22 +97,17 @@
             <argument>%scheme_customer_info_class%</argument>
             <argument type="service" id="scheme_customer_info_transformer"/>        
         </service>
-
-        <service id="proacc_importer" class="Tactics\InvoiceBundle\Tools\ProAccImporter">
-            <argument type="service" id="invoice_manager"/>
-            <argument type="service" id="event_dispatcher"/>
-        </service>
-
-        <service id="proacc_converter" class="Tactics\InvoiceBundle\Tools\ProAccConverter">
+        
+        <service id="invoice_converter" class="%invoice_converter.class%">
             <argument type="service" id="scheme_customer_info_manager"/>
+            <argument type="service" id="account_manager"/>
+            <argument type="service" id="vat_manager"/>
             <argument type="service" id="journal_manager"/>
         </service>
         
-        <service id="agresso_invoice_converter" class="Tactics\InvoiceBundle\Tools\AgressoInvoiceConverter">
+        <service id="payment_importer" class="%payment_importer.class%">
             <argument type="service" id="invoice_manager"/>
-            <argument type="service" id="scheme_customer_info_manager"/>
-            <argument type="service" id="account_manager"/>  
-            <argument type="service" id="vat_manager"/>  
+            <argument type="service" id="event_dispatcher"/>
         </service>
         
     </services>
