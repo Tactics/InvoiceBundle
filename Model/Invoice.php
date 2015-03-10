@@ -16,13 +16,13 @@ class Invoice
 		protected $amount_paid = 0;
 		protected $structured_communication;
 		protected $currency = 'EUR';
-	
+    protected $send = 0;
+		protected $exported = 0;
+    protected $ref;
     protected $customer;
-    
 		protected $items = array();
 
-		protected $send = 0;
-		protected $exported = 0;
+		
     
     // getters
 		public function getSend()
@@ -34,6 +34,11 @@ class Invoice
 		{
 				return $this->exported;
 		}
+    
+    public function getRef()
+    {
+        return $this->ref;
+    }
 
     public function getId()
 		{
@@ -172,6 +177,17 @@ class Invoice
 						$this->exported = $v;
 				}
 		}
+    
+    public function setRef($v)
+    {
+        if ($v !== null && !is_string($v)) {
+            $v = (string) $v; 
+        }
+
+        if ($this->ref !== $v) {
+            $this->ref = $v;
+        }
+    } 
 
 		public function setId($v)
 		{
@@ -316,7 +332,11 @@ class Invoice
     
     public function __toString()
     {
-        return sprintf('Factuur %06u', $this->getNumber());
+        $type = $this->isCreditNote() ? 'Creditnota' : 'Factuur';
+        return $this->getId()
+            ? sprintf('%s %06u', $type, $this->getNumber())
+            : sprintf('Nieuwe %s', $type)
+        ;
     }
     
     /**

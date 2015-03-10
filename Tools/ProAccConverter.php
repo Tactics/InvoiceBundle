@@ -40,6 +40,9 @@ class ProAccConverter
         $omschrijving = $this->getOmschrijving();
         $boekingsPeriode = $this->getBoekingsperiode($this->invoice);
         $withVat = $this->invoice->withVat();
+        $isCreditNote = $this->invoice->isCreditNote();
+        $vat = abs($this->invoice->getVat());
+        $total = abs($this->invoice->getTotal());
         
         $lines = array();
         foreach ($this->invoice->getItems() as $cnt => $item)
@@ -47,7 +50,7 @@ class ProAccConverter
           if ($item->getType() == 'text') continue;
           
             $lines[] = array_merge($blancos, array(
-              'A' => $cnt === 0 ? '1' : '3',
+              'A' => $cnt === 0 ? ($isCreditNote ? '2' : '1') : '3',
               'B' => $this->getKlantcode(),
               'C' => $this->invoice->getJournalCode(),
               'D' => $this->invoice->getNumber(),
@@ -57,17 +60,17 @@ class ProAccConverter
               'H' => $this->invoice->getDateDue('d/m/Y'),
               'I' => 'EUR',
               'J' => 1,
-              'K' => number_format($this->invoice->getTotal() + $this->invoice->getVat(), 2, ',', ''),
-              'L' => number_format($this->invoice->getTotal() + $this->invoice->getVat(), 2, ',', ''),
-              'M' => number_format($this->invoice->getTotal(), 2, ',', ''),
-              'N' => $withVat ? number_format($this->invoice->getVat(), 2, ',', '') : 0,
-              'O' => !$withVat ? number_format($this->invoice->getTotal(), 2, ',', '') : 0,
-              'X' => $withVat ? number_format($this->invoice->getTotal(), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
+              'K' => number_format($total + $vat, 2, ',', ''),
+              'L' => number_format($total + $vat, 2, ',', ''),
+              'M' => number_format($total, 2, ',', ''),
+              'N' => $withVat ? number_format($vat, 2, ',', '') : 0,
+              'O' => !$withVat ? number_format($total, 2, ',', '') : 0,
+              'X' => $withVat ? number_format($total, 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
               'Z' => $omschrijving,
               'AA' => $item->getGlAccountCode(),
               'AB' => $item->getAnalytical1AccountCode() ?: '',
-              'AC' => number_format($item->getPriceExVat(), 2, ',', ''),
-              'AD' => number_format($item->getPriceExVat(), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt              
+              'AC' => number_format(abs($item->getPriceExVat()), 2, ',', ''),
+              'AD' => number_format(abs($item->getPriceExVat()), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt              
               'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
               'AG' => substr($item->getDescription(), 0, 25), // omschrijving, voor inovant moet hier de opleidingscode inkomen
               'AI' => $item->getAnalytical2AccountCode() ?: '',

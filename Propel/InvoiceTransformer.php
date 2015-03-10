@@ -27,14 +27,26 @@ class InvoiceTransformer extends Transformer
      */
     public function toOrm($invoice)
     {
+        /* @var $propelInvoice \PropelInvoice */
         $propelInvoice = parent::toOrm($invoice);
         
         $propelInvoice->setCustomerClass(get_class($invoice->getCustomer()));
         $propelInvoice->setCustomerId($invoice->getCustomer()->getId());
                         
+        $oldItems = \Misc::buildIndexedCache($propelInvoice->getPropelInvoiceItems());        
         foreach ($invoice->getItems() as $item)
         {
+            if (isset($oldItems[$item->getId()]))
+            {
+                unset($oldItems[$item->getId()]);
+            }
             $propelInvoice->addPropelInvoiceItem($this->item_transformer->toOrm($item));
+        }
+        
+        // remove oldItems
+        foreach ($oldItems as $oldItem)
+        {
+            $oldItem->delete();
         }
         
         return $propelInvoice;

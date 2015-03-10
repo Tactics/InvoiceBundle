@@ -38,6 +38,7 @@ class InvoiceManager extends ObjectManager
     {
         $invoice = parent::create();
         $invoice->setSchemeId(isset($options['scheme_id']) ? $options['scheme_id'] : null);
+        $invoice->setRef(isset($options['ref']) ? $options['ref'] : null);
         
         if ($object)
         {
@@ -79,6 +80,41 @@ class InvoiceManager extends ObjectManager
     }
     
     /**
+     * Aanmaken van creditnote
+     * 
+     * @param Invoice $invoice
+     */
+    public function createCreditNote(Invoice $invoice)
+    {
+      /* @var $creditNote Invoice */
+      $creditNote = $this->create(null, array('scheme_id' => $invoice->getSchemeId()));
+      $creditNote->setCustomer($invoice->getCustomer());
+      $creditNote->setRef($invoice->getRef());
+      foreach ($invoice->getItems() as $item)
+      {        
+        if ($item->getType() === 'text') continue;
+        $creditedItem = clone $item;
+        $creditedItem->setId(null);
+        $creditedItem->setGroupDescription(sprintf('CREDITNOTA VOOR FACTUUR %s VAN %s', $invoice->getNumber(), $invoice->getDate('d/m/Y')));
+        $creditedItem->setUnitPrice(bcsub(0, $creditedItem->getUnitPrice(), 2));
+        $creditNote->addItem($creditedItem);
+      }
+      
+      return $creditNote;
+    }
+    
+    /**
+     * Creates PDF
+     * 
+     * @param Invoice $invoice
+     * @return type
+     */
+    public function createPdf(Invoice $invoice)
+    {
+        return $this->pdf_generator->generate($invoice);
+    }
+    
+    /**
      * saves a new invoice:
      *  - generates invoice number and structured communication
      *  - sets the new id to the domainObject
@@ -113,17 +149,6 @@ class InvoiceManager extends ObjectManager
                 $ormObject->setAlreadyInSave(false);
             }
         }
-    }
-    
-    /**
-     * Creates PDF
-     * 
-     * @param Invoice $invoice
-     * @return type
-     */
-    public function createPdf(Invoice $invoice)
-    {
-        return $this->pdf_generator->generate($invoice);
     }
     
     /**
