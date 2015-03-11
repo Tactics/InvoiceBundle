@@ -57,16 +57,16 @@ class InvoiceConverter
         $voucher .= sprintf('<Period>%s</Period>', $invoice->getDate('Ym')); // boekingsperiode, nog afh van instelbare periode?
         $voucher .= sprintf('<VoucherDate>%s</VoucherDate>', $invoice->getDate()); // factuurdatum
         
-        // vraag: AR transaction per factuur of lijn?
-        //$voucher .= $this->getArTransaction($invoice); // klantrekening
+        // 1 AR transactie (klantrekening per factuur
+        $voucher .= $this->getArTransaction($invoice); // klantrekening
+        
+        // 1 GL en 1 TX transactie (indien met BTW) per Lijn
         foreach ($invoice->getItems() as $item)
         {
-            if ($item->getType() !== 'invoice') continue;
-          
-            $voucher .= $this->getArTransaction($item); // klantrekening
+            if ($item->getType() !== 'invoice') continue;  // we exporteren enkel invoice lijnen
+            
             $voucher .= $this->getGlTransaction($item); // verkooprekening
             
-            // vraag: TX transaction per factuur of lijn?
             if ($item->getVatPercentage() > 0)
             {
                 $voucher .= $this->getTxTransaction($item); // alleen indien met BTW
@@ -79,40 +79,24 @@ class InvoiceConverter
     /**
      * transactie voor klantrekening
      * 
-     * @param InvoiceItem $item
+     * @param Invoice $invoice
      * @return string
+     * @todo: GL account indien waarborg???
      */
-    private function getArTransaction(InvoiceItem $item /* of Invoice $invoice?*/)
+    private function getArTransaction(Invoice $invoice)
     {
-        /* @var $invoice Invoice */
-        $invoice = $item->getInvoice();
-        
         $arTransaction = '<Transaction>';
         $arTransaction .= '<TransType>AR</TransType>';
-        $arTransaction .= sprintf('<Description>%s</Description>', $item->getGroupDescription()); // globale omschrijving?
+        $arTransaction .= sprintf('<Description>%s</Description>', $invoice->getRef()); // globale omschrijving?
         $arTransaction .= sprintf('<TransDate>%s</TransDate>', $invoice->getDate()); // factuurdatum;
         
         // AR amount is positief indien factuur, negatief indien creditnota!
-        $amountExVat = bcmul($item->getQuantity(), $item->getUnitPrice(), 2);
-        $vat = bcdiv(bcmul((int)$item->getVatPercentage(), $amountExVat, 2), 100, 2);
-        $amount = bcadd($amountExVat, $vat, 2);
+        $amount = bcadd($invoice->getTotal(), $invoice->getVat(), 2);
         $arTransaction .= sprintf('<Amounts><Amount>%.2f</Amount></Amounts>', $amount); // bedrag inclusief btw
         
         $arTransaction .= '<GLAnalysis>';
-        
-        // contra_account_code en btw_account_code nog opslaan bij item
-        $account = $this->accountMgr->searchOne(array(
-            'code' => $item->getGlAccountCode(), 'scheme_id' => $invoice->getSchemeId()
-        ));
-        $arTransaction .= sprintf('<Account>%s</Account>', $account->getContraAccountCode()); // contra_account_code van overeenkomende verkooprekening        
-        // dims hier ook nodig? dan ook contra_dims nodig! lijkt wat overkill!!!
-//        $arTransaction .= '<Dim1>dim1</Dim1>';
-//        $arTransaction .= '<Dim2>dim2</Dim2>';
-//        $arTransaction .= '<Dim3>dim3</Dim3>';
-//        $arTransaction .= '<Dim4>dim4</Dim4>';
-//        $arTransaction .= '<Dim5>dim5</Dim5>';
-//        $arTransaction .= '<Dim6>dim6</Dim6>';
-//        $arTransaction .= '<Dim7>dim7</Dim7>';
+        $account = '40000000'; // altijd 40000000, tenzij waarborgen: dan 41600000
+        $arTransaction .= sprintf('<Account>%s</Account>', $account);
         $arTransaction .= '</GLAnalysis>';
         
         $arTransaction .= $this->getApArInfo($invoice);
