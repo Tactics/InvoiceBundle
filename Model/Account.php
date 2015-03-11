@@ -10,7 +10,7 @@ class Account
     protected $scheme_nr;
     protected $contra_account_code;
     
-    protected $accounting_scheme;
+    protected $scheme_id;
     
     // getters
     public function getCode()
@@ -38,9 +38,9 @@ class Account
         return $this->contra_account_code;
     }
     
-    public function getAccountingScheme()
+    public function getSchemeId()
     {
-        return $this->accounting_scheme;
+        return $this->scheme_id;
     }
     
     // setters
@@ -99,9 +99,9 @@ class Account
         }   
     }
     
-    public function setAccountingScheme($v)
+    public function setSchemeId($v)
     {
-        $this->accounting_scheme = $v;
+        $this->scheme_id = $v;
     }
     
     public function __toString()

@@ -30,7 +30,6 @@ class InvoiceExtension extends Extension
         'propel' => array(
             'default' => 'Tactics\InvoiceBundle\Propel\Transformer',
             'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceTransformer',
-            'account' => 'Tactics\InvoiceBundle\Propel\AccountTransformer',
             'product_configuration' => 'Tactics\InvoiceBundle\Propel\ProductConfigurationTransformer',
             'scheme_customer_info' => 'Tactics\InvoiceBundle\Propel\SchemeCustomerInfoTransformer'
         )
