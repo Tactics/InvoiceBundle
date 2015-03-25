@@ -54,6 +54,11 @@ class Transformer extends Model\Transformer
      */
     public function fromOrm($ormObject)
     {
+        if (!$ormObject)
+        {
+          return null;
+        }
+        
         $ormObjectHash = spl_object_hash($ormObject);
     
         if (isset($this->domainObjects[$ormObjectHash]))

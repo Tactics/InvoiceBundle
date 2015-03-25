@@ -91,8 +91,8 @@ class ProductConfigurationTransformer extends Transformer
             $ucfirstCamelizedAccountName = Helper::camelize($account_name, true);
             $propelGetter = "getPropelAccountRelatedBy{$ucfirstCamelizedAccountName}Code";
             $domainSetter = "set{$ucfirstCamelizedAccountName}";
-            $account = $propel_product_configuration->$propelGetter();                        
-            $productConfig->$domainSetter($this->account_transformer->fromOrm($account));
+            $account = $propel_product_configuration->$propelGetter();
+            $productConfig->$domainSetter($account ? $this->account_transformer->fromOrm($account) : null);
         }
         
         return $productConfig;
