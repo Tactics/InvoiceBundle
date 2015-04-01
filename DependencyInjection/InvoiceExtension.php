@@ -49,7 +49,7 @@ class InvoiceExtension extends Extension
           'payment_importer' => 'Tactics\InvoiceBundle\Tools\ProAcc\PaymentImporter'
       ),
       'Agresso' => array(
-//          'customer_converter' => 'Tactics\InvoiceBundle\Tools\Agresso\CustomerConverter',
+          'customer_converter' => 'Tactics\InvoiceBundle\Tools\Agresso\CustomerConverter',
           'invoice_converter' => 'Tactics\InvoiceBundle\Tools\Agresso\InvoiceConverter',
           'payment_importer' => 'Tactics\InvoiceBundle\Tools\Agresso\PaymentImporter'
       )
@@ -66,7 +66,7 @@ class InvoiceExtension extends Extension
         $container->setParameter('invoice_number_generator.class', $config['number_generator']);
         $container->setParameter('invoice_journal_generator.class', $config['journal_generator']);
         $container->setParameter('pdf_generator.class', $config['pdf_generator']);
-//        $container->setParameter('customer_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['customer_converter']);
+        $container->setParameter('customer_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['customer_converter']);
         $container->setParameter('invoice_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['invoice_converter']);
         $container->setParameter('payment_importer.class', $this->accountingSoftwareMap[$config['accounting_software']]['payment_importer']);
         
