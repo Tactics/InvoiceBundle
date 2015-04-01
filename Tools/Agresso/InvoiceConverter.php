@@ -201,11 +201,12 @@ class InvoiceConverter
         $apArInfo .= sprintf('<ApArGroup>%s</ApArGroup>', $this->getApArGroup($debiteur)); 
         
         // agresso deb nr: Debiteur ID, in het geval van een onderneming het kbo nummer 10 cijferig, in het geval van een persoon het rijksregisternummer 11 cijferig
-        $customerInfo = $this->customerInfoMgr->searchOne(array(
-          'name' => 'proacc_nummer', 'customer_id' => $debiteur->getId(), 'customer_class' => get_class($debiteur)
-        ));
+//        $customerInfo = $this->customerInfoMgr->searchOne(array(
+//          'name' => 'proacc_nummer', 'customer_id' => $debiteur->getId(), 'customer_class' => get_class($debiteur)
+//        ));
+        $agressoCustomer = new Customer($invoice->getCustomer());
         
-        $apArInfo .= sprintf('<ApArNo>%s</ApArNo>', $customerInfo->getValue()); 
+        $apArInfo .= sprintf('<ApArNo>%s</ApArNo>', $agressoCustomer->getApArNo()); 
         $apArInfo .= sprintf('<InvoiceNo>%u</InvoiceNo>', $invoice->getNumber()); // factuurnr
         $apArInfo .= sprintf('<Duedate>%s</Duedate>', $invoice->getDateDue()); // due date
         $apArInfo .= sprintf('<BacsId>%s</BacsId>', $invoice->getStructuredCommunication()); // gestructureerde mededeling
