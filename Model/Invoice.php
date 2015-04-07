@@ -325,8 +325,8 @@ class Invoice
         foreach ($this->getItems() as $item)
         {
             $item->calculatePrices();
-            $this->total += $item->getPriceExVat();
-            $this->vat += $item->getPriceInclVat() - $item->getPriceExVat();
+            $this->total = bcadd($this->total, $item->getPriceExVat(), 2);
+            $this->vat = bcadd($this->vat, bcsub($item->getPriceInclVat(), $item->getPriceExVat(), 2), 2);
         }
     }
     
@@ -346,7 +346,7 @@ class Invoice
      */
     public function addPayment($amount, $cultureDate)
     {
-        $this->setAmountPaid(bcadd((float) $this->getAmountPaid(), $amount, 2));
+        $this->setAmountPaid(bcadd($this->getAmountPaid(), $amount, 2));
         if ($this->isPaid())
         {
             $this->setDatePaid(\myDateTools::cultureDateToPropelDate($cultureDate));
@@ -355,7 +355,7 @@ class Invoice
 
 		public function getOutstandingAmount()
 		{
-				return bcsub($this->getTotal(), $this->getAmountPaid(), 2);
+				return bcsub(bcadd($this->total, $this->vat, 2), $this->getAmountPaid(), 2);
 		}
 
 		public function isSend()
