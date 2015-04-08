@@ -98,7 +98,14 @@
             <argument type="service" id="scheme_customer_info_transformer"/>        
         </service>
         
-        <service id="customer_converter" class="%customer_converter.class%"/>
+        <service id="customer_factory" class="%customer_factory.class%">
+          <argument>%invoice.accounting_software%</argument>
+          <argument type="service" id="scheme_customer_info_manager"/>
+        </service>
+        
+        <service id="customer_converter" class="%customer_converter.class%">
+          <argument type="service" id="customer_factory"/>
+        </service>
         
         <service id="invoice_converter" class="%invoice_converter.class%">
             <argument type="service" id="scheme_customer_info_manager"/>

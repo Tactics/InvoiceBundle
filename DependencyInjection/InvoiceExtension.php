@@ -44,7 +44,7 @@ class InvoiceExtension extends Extension
     
     private $accountingSoftwareMap = array(
       'ProAcc' => array(
-        //'customer_converter' => 'Tactics\InvoiceBundle\Tools\ProAcc\CustomerConverter',
+          'customer_converter' => 'Tactics\InvoiceBundle\Tools\ProAcc\CustomerConverter',
           'invoice_converter' => 'Tactics\InvoiceBundle\Tools\ProAcc\InvoiceConverter',
           'payment_importer' => 'Tactics\InvoiceBundle\Tools\ProAcc\PaymentImporter'
       ),
@@ -63,6 +63,7 @@ class InvoiceExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         
+        $container->setParameter('customer_factory.class', $config['customer_factory_class']);
         $container->setParameter('invoice_number_generator.class', $config['number_generator']);
         $container->setParameter('invoice_journal_generator.class', $config['journal_generator']);
         $container->setParameter('pdf_generator.class', $config['pdf_generator']);

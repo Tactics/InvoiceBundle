@@ -3,16 +3,20 @@
 namespace Tactics\InvoiceBundle\Tools\Agresso;
 
 use Tactics\InvoiceBundle\Tools\Agresso\Customer as AgressoCustomer;
+use Tactics\InvoiceBundle\Model\ObjectManager as CustomerInfoMgr;
 use Tactics\InvoiceBundle\Tools\ConverterResult;
 
 class CustomerConverter
 {
+    private $customerFactory;
+    
     /**
      * Constructor
+     * @param CustomerFactoryInterface $customerFactory
      */
-    public function __construct()
+    public function __construct(CustomerFactoryInterface $customerFactory)
     {
-        // nothing to construct?
+        $this->customerFactory = $customerFactory;
     }
     
     /**
@@ -31,7 +35,7 @@ class CustomerConverter
         $xml .= '<Customer>';
         foreach ($invoices as $invoice)
         {
-            $xml .= $this->getCustomerXml(new AgressoCustomer($invoice->getCustomer()));
+            $xml .= $this->getCustomerXml($this->customerFactory->getCustomer($invoice));
         }
         $xml .= '</Customer>';
         

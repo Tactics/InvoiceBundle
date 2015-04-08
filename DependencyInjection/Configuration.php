@@ -39,6 +39,12 @@ class Configuration implements ConfigurationInterface
                   ->info('Configure the orm: propel|doctrine (todo)')                    
                   ->defaultValue('propel')
                 ->end()
+                ->scalarNode('accounting_software')
+                  ->info('Configure the accounting software: ProAcc|Agresso')
+                ->end()
+                ->scalarNode('customer_factory_class')
+                  ->info('Configure the customer factory class')
+                ->end()
                 ->scalarNode('number_generator')
                   ->info('class that generates the invoice numbers')                    
                   ->defaultValue('Tactics\InvoiceBundle\Tools\NumberGenerator')
@@ -51,9 +57,7 @@ class Configuration implements ConfigurationInterface
                   ->info('class that generates the invoice pdf')
                   ->defaultValue('Tactics\InvoiceBundle\Tools\PdfGenerator')
                 ->end()
-                ->scalarNode('accounting_software')
-                  ->info('Configure the accounting software: ProAcc|Agresso')
-                ->end()
+                
             ->end()
         ;
     }
