@@ -6,6 +6,8 @@ use Tactics\InvoiceBundle\Model\Invoice;
 
 interface CustomerInterface 
 {
+    public function getExternalId();
+    public function getNaam();
     public function getKlantcode();
     public function getOpzoeknaam();
     public function getFirmanaam();

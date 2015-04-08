@@ -108,7 +108,7 @@
         </service>
         
         <service id="invoice_converter" class="%invoice_converter.class%">
-            <argument type="service" id="scheme_customer_info_manager"/>
+            <argument type="service" id="customer_factory"/>
             <argument type="service" id="account_manager"/>
             <argument type="service" id="vat_manager"/>
             <argument type="service" id="journal_manager"/>

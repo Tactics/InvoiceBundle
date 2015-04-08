@@ -9,6 +9,7 @@ use Tactics\InvoiceBundle\Tools\ConverterResult;
 class CustomerConverter
 {
     private $customerFactory;
+    private $customer;
     
     /**
      * Constructor
@@ -31,7 +32,8 @@ class CustomerConverter
         
         foreach ($invoices as $invoice)
         {
-            $txtLines[] = $this->createCsvLine($this->customerFactory->getCustomer($invoice));
+            $this->customer = $this->customerFactory->getCustomer($invoice);
+            $txtLines[] = $this->createCsvLine();
         }
         
         // add last line
@@ -43,30 +45,29 @@ class CustomerConverter
     /**
      * Geeft ProAcc lijn terug voor klantenexport
      * 
-     * @param ProAccCustomer $customer
      * @return string
      */
-    private function createCsvLine(ProAccCustomerInterface $customer)
+    private function createCsvLine()
     {
         $line = array_merge($this->createBlancos(), array(
             'A' => 1,
-            'B' => $customer->getKlantcode(),
-            'C' => $customer->getOpzoeknaam(),
-            'E' => $customer->getFirmanaam(),      
-            'H' => $customer->getStraatNummerBus(),
-            'I' => $customer->getPostcode(),
-            'J' => $customer->getGemeente(),
-            'K' => $customer->getLandcode(),
-            'L' => $customer->getLandnaam(),
-            'M' => $customer->getTelefoon(),  
-            'N' => $customer->getFax(),
-            'O' => $customer->getEmail(),
-            'P' => $customer->getBtwNummer(),
-            'S' => $customer->getBankrekening(),
-            'T' => $customer->getCodeValuta(),
-            'V' => $customer->getCode1(),
-            'AG' => $customer->getBtwStatus(),
-            'AW' => $customer->getOndernemingsnummer()
+            'B' => $this->customer->getKlantcode(),
+            'C' => $this->customer->getOpzoeknaam(),
+            'E' => $this->customer->getFirmanaam(),      
+            'H' => $this->customer->getStraatNummerBus(),
+            'I' => $this->customer->getPostcode(),
+            'J' => $this->customer->getGemeente(),
+            'K' => $this->customer->getLandcode(),
+            'L' => $this->customer->getLandnaam(),
+            'M' => $this->customer->getTelefoon(),  
+            'N' => $this->customer->getFax(),
+            'O' => $this->customer->getEmail(),
+            'P' => $this->customer->getBtwNummer(),
+            'S' => $this->customer->getBankrekening(),
+            'T' => $this->customer->getCodeValuta(),
+            'V' => $this->customer->getCode1(),
+            'AG' => $this->customer->getBtwStatus(),
+            'AW' => $this->customer->getOndernemingsnummer()
         ));
         
         return implode("\t", $line);

@@ -3,12 +3,13 @@
 namespace Tactics\InvoiceBundle\Tools\ProAcc;
 
 use Tactics\InvoiceBundle\Model\Invoice;
+use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Tools\ConverterResult;
 
 class InvoiceConverter
 {
-    private $customerInfoMgr;
+    private $customerFactory;
     private $journalMgr;
 
     /**
@@ -16,9 +17,9 @@ class InvoiceConverter
      *
      * @param ObjectManager $customerInfoMgr
      */
-    public function __construct(ObjectManager $customerInfoMgr, ObjectManager $accountMgr, ObjectManager $vatMgr, ObjectManager $journalMgr)
+    public function __construct(CustomerFactoryInterface $customerFactory, ObjectManager $accountMgr, ObjectManager $vatMgr, ObjectManager $journalMgr)
     {
-        $this->customerInfoMgr = $customerInfoMgr;
+        $this->customerFactory = $customerFactory;
         $this->journalMgr = $journalMgr;
     }
     
@@ -117,10 +118,9 @@ class InvoiceConverter
      */
     private function getKlantcode(Invoice $invoice)
     {
-        $customer = $invoice->getCustomer();
-        $info = $this->customerInfoMgr->searchOne(array('name' => 'proacc_nummer', 'customer_id' => $customer->getId(), 'customer_class' => get_class($customer)));
+        $customer = $this->customerFactory->getCustomer($invoice);
         
-        return $info ? $info->getValue() : '';
+        return $customer->getExternalId();
     }
     
     /**

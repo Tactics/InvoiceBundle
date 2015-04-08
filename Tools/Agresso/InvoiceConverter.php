@@ -2,6 +2,7 @@
 
 namespace Tactics\InvoiceBundle\Tools\Agresso;
 
+use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Model\Invoice;
 use Tactics\InvoiceBundle\Model\InvoiceItem;
@@ -9,7 +10,7 @@ use Tactics\InvoiceBundle\Tools\ConverterResult;
 
 class InvoiceConverter
 {
-    private $customerInfoMgr;
+    private $customerFactory;
     private $accountMgr;
     private $vatMgr;
     
@@ -18,9 +19,9 @@ class InvoiceConverter
      *
      * @param ObjectManager $customerSchemeMgr
      */
-    public function __construct(ObjectManager $customerInfoMgr, ObjectManager $accountMgr, ObjectManager $vatMgr, ObjectManager $journalMgr)
+    public function __construct(CustomerFactoryInterface $customerFactory, ObjectManager $accountMgr, ObjectManager $vatMgr, ObjectManager $journalMgr)
     {
-        $this->customerInfoMgr = $customerInfoMgr;
+        $this->customerFactory = $customerFactory;
         $this->accountMgr = $accountMgr;
         $this->vatMgr = $vatMgr;
     }
@@ -194,19 +195,11 @@ class InvoiceConverter
     
     private function getApArInfo(Invoice $invoice)
     {
-        $debiteur = $invoice->getCustomer();
+        $customer = $this->customerFactory->getCustomer($invoice);
+        
         $apArInfo = '<ApArInfo>';
-        
-        //01 (Klanten - Belgische ondernemingen), 02 (Klanten - Buitenlandse ondernemingen), 03 (Klanten - Belgische natuurlijke personen), 04 (Klanten - Buitenlande natuurlijke personen)
-        $apArInfo .= sprintf('<ApArGroup>%s</ApArGroup>', $this->getApArGroup($debiteur)); 
-        
-        // agresso deb nr: Debiteur ID, in het geval van een onderneming het kbo nummer 10 cijferig, in het geval van een persoon het rijksregisternummer 11 cijferig
-//        $customerInfo = $this->customerInfoMgr->searchOne(array(
-//          'name' => 'proacc_nummer', 'customer_id' => $debiteur->getId(), 'customer_class' => get_class($debiteur)
-//        ));
-        $agressoCustomer = new Customer($invoice->getCustomer());
-        
-        $apArInfo .= sprintf('<ApArNo>%s</ApArNo>', $agressoCustomer->getApArNo()); 
+        $apArInfo .= sprintf('<ApArGroup>%s</ApArGroup>', $customer->getApArGroup());
+        $apArInfo .= sprintf('<ApArNo>%s</ApArNo>', $customer->getApArNo());
         $apArInfo .= sprintf('<InvoiceNo>%u</InvoiceNo>', $invoice->getNumber()); // factuurnr
         $apArInfo .= sprintf('<Duedate>%s</Duedate>', $invoice->getDateDue()); // due date
         $apArInfo .= sprintf('<BacsId>%s</BacsId>', $invoice->getStructuredCommunication()); // gestructureerde mededeling
@@ -215,32 +208,5 @@ class InvoiceConverter
         $apArInfo .= '</ApArInfo>';
         
         return $apArInfo;
-    }
-    
-    /**
-     * 
-     * @param mixed $customer Persoon of Organisatie
-     */
-    private function getApArGroup($debiteur)
-    {
-        //01 (Klanten - Belgische ondernemingen), 02 (Klanten - Buitenlandse ondernemingen), 
-        //03 (Klanten - Belgische natuurlijke personen), 04 (Klanten - Buitenlande natuurlijke personen)
-        $map = array(
-          'Organisatie' => array(
-            'BE' => '01',
-            'foreign' => '02'
-          ),
-          'Persoon' => array(
-            'BE' => '03',
-            'foreign' => '04'
-          )
-        );
-          
-        $class = get_class($debiteur);
-        $nationaliteit = $class === 'Persoon'
-          ? $debiteur->getNationaliteit()
-          : $debiteur->getLandId();
-        
-        return isset($map[$class][$nationaliteit]) ? $map[$class][$nationaliteit] : $map[$class]['foreign'];
     }
 }

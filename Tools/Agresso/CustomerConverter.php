@@ -2,17 +2,18 @@
 
 namespace Tactics\InvoiceBundle\Tools\Agresso;
 
-use Tactics\InvoiceBundle\Tools\Agresso\Customer as AgressoCustomer;
-use Tactics\InvoiceBundle\Model\ObjectManager as CustomerInfoMgr;
+use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
+use Tactics\InvoiceBundle\Tools\Agresso\CustomerInterface as AgressoCustomerInterface;
 use Tactics\InvoiceBundle\Tools\ConverterResult;
 
 class CustomerConverter
 {
     private $customerFactory;
+    private $customer;
     
     /**
      * Constructor
-     * @param CustomerFactoryInterface $customerFactory
+     * @param CustomerFactoryInterface $this->customerFactory
      */
     public function __construct(CustomerFactoryInterface $customerFactory)
     {
@@ -35,7 +36,8 @@ class CustomerConverter
         $xml .= '<Customer>';
         foreach ($invoices as $invoice)
         {
-            $xml .= $this->getCustomerXml($this->customerFactory->getCustomer($invoice));
+            $this->customer = $this->customerFactory->getCustomer($invoice);
+            $xml .= $this->getCustomerXml();
         }
         $xml .= '</Customer>';
         
@@ -45,50 +47,49 @@ class CustomerConverter
     /**
      * generates the Agresso XML for a customer
      * 
-     * @param CustomerInterface $customer
      * @return string An Agresso customer XML
      */
-    private function getCustomerXml(AgressoCustomer $customer)
+    private function getCustomerXml()
     {
         $xml = '<MasterFile>';        
-        $xml .= sprintf('<ApArNo>%s</ApArNo>', $customer->getApArNo());
-        $xml .= $this->getSupplierCustomer($customer);        
-        $xml .= $this->getAddressInfo($customer);
+        $xml .= sprintf('<ApArNo>%s</ApArNo>', $this->customer->getApArNo());
+        $xml .= $this->getSupplierCustomer($this->customer);        
+        $xml .= $this->getAddressInfo($this->customer);
         $xml .= '</MasterFile>';
         
         return $xml;
     }
     
-    private function getSupplierCustomer(AgressoCustomer $customer)
+    private function getSupplierCustomer()
     {
         $xml = '<SupplierCustomer>';
-        $xml .= sprintf('<Name>%s</Name>', substr($customer->getName(), 0, 255));
-        $xml .= sprintf('<ApArGroup>%02u</ApArGroup>', $customer->getApArGroup());
-        $xml .= sprintf('<ShortName>%s</ShortName>', $customer->getApArNo());
-        $xml .= sprintf('<CountryCode>%s</CountryCode>', $customer->getCountryCode());
-        $xml .= $this->getInvoiceInfo($customer);        
+        $xml .= sprintf('<Name>%s</Name>', substr($this->customer->getName(), 0, 255));
+        $xml .= sprintf('<ApArGroup>%02u</ApArGroup>', $this->customer->getApArGroup());
+        $xml .= sprintf('<ShortName>%s</ShortName>', $this->customer->getApArNo());
+        $xml .= sprintf('<CountryCode>%s</CountryCode>', $this->customer->getCountryCode());
+        $xml .= $this->getInvoiceInfo($this->customer);        
         $xml .= '</SupplierCustomer>';
         
         return $xml;
     }
     
-    private function getInvoiceInfo(AgressoCustomer $customer)
+    private function getInvoiceInfo()
     {
         $xml = '<InvoiceInfo>';
-        $xml .= sprintf('<HeadOffice>%s</HeadOffice>', $customer->getApArNo());
-        $xml .= sprintf('<Control>%s</Control>', $customer->getControl());
+        $xml .= sprintf('<HeadOffice>%s</HeadOffice>', $this->customer->getApArNo());
+        $xml .= sprintf('<Control>%s</Control>', $this->customer->getControl());
         $xml .= '</InvoiceInfo>';
         
         return $xml;
     }
     
-    private function getAddressInfo(AgressoCustomer $customer)
+    private function getAddressInfo()
     {
         $xml = '<AddressInfo>';
-        $xml .= sprintf('<Address>%s</Address>', $customer->getAddress());
-        $xml .= sprintf('<Place>%s</Place>', $customer->getPlace());
-        $xml .= sprintf('<ZipCode>%s</ZipCode>', $customer->getZipCode());
-        $xml .= sprintf('<CountryCode>%s</CountryCode>', $customer->getCountryCode());
+        $xml .= sprintf('<Address>%s</Address>', $this->customer->getAddress());
+        $xml .= sprintf('<Place>%s</Place>', $this->customer->getPlace());
+        $xml .= sprintf('<ZipCode>%s</ZipCode>', $this->customer->getZipCode());
+        $xml .= sprintf('<CountryCode>%s</CountryCode>', $this->customer->getCountryCode());
         $xml .= '</AddressInfo>';
         
         return $xml;
