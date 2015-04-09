@@ -2,12 +2,10 @@
 
 namespace Tactics\InvoiceBundle\Tools;
 
-use Tactics\InvoiceBundle\Model\Invoice;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 
 abstract class Customer
 {
-    protected $invoice;       // The invoice
     protected $customer;      // The customer object
     protected $customerClass; // Persoon of Organisatie
     
@@ -16,30 +14,26 @@ abstract class Customer
     
     /**
      * 
-     * @param Invoice $invoice
+     * @param mixed $customer the application customer
+     * @param int $schemeId The accounting scheme id
      * @param ObjectManager $customerInfoManager
-     * @throws \Exception
      */
-    public function __construct(Invoice $invoice, ObjectManager $customerInfoManager)
-    {
-        $this->invoice = $invoice;
-        $this->customer = $invoice->getCustomer();
-        $this->customerClass = get_class($this->customer);
-        if (!in_array($this->customerClass, array('Persoon', 'Organisatie')))
-        {
-            throw new \Exception('Customer needs to be of class \'Persoon\' or \'Organisatie\'');
-        }
-        
+    public function __construct($customer, $schemeId, ObjectManager $customerInfoManager)
+    {        
+        $this->customer = $customer;
+        $this->customerClass = get_class($customer);
         $this->customerInfoManager = $customerInfoManager;
-        $this->customerInfo = $this->setCustomerInfo($customerInfoManager);
+        
+        $this->generateCustomerInfo($customerInfoManager, $schemeId);
     }
     
     /**
      * 
-     * @param type $customerInfoManager
+     * @param ObjectManager $customerInfoManager
+     * @param int $schemeId
      * @return array[name] = value
      */
-    abstract function setCustomerInfo($customerInfoManager);
+    abstract function generateCustomerInfo(ObjectManager $customerInfoManager, $schemeId);
     
     /**
      * 

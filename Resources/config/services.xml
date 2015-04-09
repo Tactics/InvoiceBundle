@@ -99,7 +99,7 @@
         </service>
         
         <service id="customer_factory" class="%customer_factory.class%">
-          <argument>%invoice.accounting_software%</argument>
+          <argument>%customer.class%</argument>
           <argument type="service" id="scheme_customer_info_manager"/>
         </service>
         

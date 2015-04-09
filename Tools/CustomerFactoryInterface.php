@@ -6,6 +6,11 @@ use Tactics\InvoiceBundle\Model\Invoice;
 
 interface CustomerFactoryInterface
 {
-    public function getCustomer(Invoice $invoice);
+    /**
+     * 
+     * @param mixed $customer The application customer object or an Invoice
+     * @param int $schemeId
+     */
+    public function getCustomer($customer, $schemeId = null);
 }
 

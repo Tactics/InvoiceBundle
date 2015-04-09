@@ -63,7 +63,8 @@ class InvoiceExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         
-        $container->setParameter('customer_factory.class', $config['customer_factory_class']);
+        $container->setParameter('customer_factory.class', 'Tactics\InvoiceBundle\Tools\CustomerFactory');
+        $container->setParameter('customer.class', $config['customer_class']);
         $container->setParameter('invoice_number_generator.class', $config['number_generator']);
         $container->setParameter('invoice_journal_generator.class', $config['journal_generator']);
         $container->setParameter('pdf_generator.class', $config['pdf_generator']);
