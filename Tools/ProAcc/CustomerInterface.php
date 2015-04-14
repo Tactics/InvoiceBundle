@@ -2,11 +2,10 @@
 
 namespace Tactics\InvoiceBundle\Tools\ProAcc;
 
-use Tactics\InvoiceBundle\Model\Invoice;
+use Tactics\InvoiceBundle\Tools\CustomerInterface as GenericCustomerInterface;
 
-interface CustomerInterface 
+interface CustomerInterface extends GenericCustomerInterface
 {
-    public function getExternalId();
     public function getNaam();
     public function getKlantcode();
     public function getOpzoeknaam();

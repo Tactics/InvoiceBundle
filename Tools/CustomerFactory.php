@@ -24,15 +24,13 @@ class CustomerFactory implements CustomerFactoryInterface
      * Geeft de correcte customer terug op basis van de ingestelde accounting_software
      * 
      * @param mixed $appCustomerOrInvoice The application customer object
-     * @param int $schemeId The accounting scheme id, optional when Invoice is used as first param 
      * @return mixed an invoice customer
      */
-    public function getCustomer($appCustomerOrInvoice, $schemeId = null)
+    public function getCustomer($appCustomerOrInvoice)
     {
         if (get_class($appCustomerOrInvoice) === 'Tactics\InvoiceBundle\Model\Invoice')
         {
             $appCustomer = $appCustomerOrInvoice->getCustomer();
-            $schemeId = $appCustomerOrInvoice->getSchemeId();
         }
         else
         {
@@ -40,7 +38,7 @@ class CustomerFactory implements CustomerFactoryInterface
         }
         
         $customerClass = $this->customerClass;        
-        return new $customerClass($appCustomer, $schemeId, $this->customerInfoMgr);
+        return new $customerClass($appCustomer, $this->customerInfoMgr);
     }
 }
 

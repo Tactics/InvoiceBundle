@@ -7,7 +7,7 @@ use Tactics\InvoiceBundle\Propel\ObjectManager;
 abstract class Customer
 {
     protected $customer;      // The customer object
-    protected $customerClass; // Persoon of Organisatie
+    protected $customerClass; // The customer class
     
     protected $customerInfoManager;
     protected $customerInfo;
@@ -15,33 +15,51 @@ abstract class Customer
     /**
      * 
      * @param mixed $customer the application customer
-     * @param int $schemeId The accounting scheme id
      * @param ObjectManager $customerInfoManager
      */
-    public function __construct($customer, $schemeId, ObjectManager $customerInfoManager)
+    public function __construct($customer, ObjectManager $customerInfoManager)
     {        
         $this->customer = $customer;
         $this->customerClass = get_class($customer);
         $this->customerInfoManager = $customerInfoManager;
-        
-        $this->generateCustomerInfo($customerInfoManager, $schemeId);
+    }
+    
+    public function getCustomer()
+    {
+        return $this->customer;
     }
     
     /**
      * 
-     * @param ObjectManager $customerInfoManager
-     * @param int $schemeId
+     * @param int $schemeId The accounting scheme id
      * @return array[name] = value
      */
-    abstract function generateCustomerInfo(ObjectManager $customerInfoManager, $schemeId);
+    public function getCustomerInfo($schemeId)
+    {
+        if (!$this->customerInfo)
+        {
+            $storedInfo = $this->findStoredCustomerInfo($schemeId);
+            $defaults = array_combine($this->getFields(), array_fill(0, count($this->getFields()), null));
+            $this->customerInfo = array_intersect_key(array_merge($defaults, $storedInfo), $defaults);
+        }
+        
+        return $this->customerInfo;
+    }
     
     /**
      * 
-     * @return array
+     * @param int $schemeId The accounting scheme id
+     * @return array[name] = value
      */
-    public function getCustomerInfo()
+    private function findStoredCustomerInfo($schemeId)
     {
-        return $this->customerInfo;
+        $infos = $this->customerInfoManager->search(array(
+          'scheme_id' => $schemeId,
+          'customer_id' => $this->customer->getId(), 
+          'customer_class' => $this->customerClass
+        ));
+        
+        return array_combine(array_map(function($info){return $info->getName();}, $infos), $infos);
     }
 }
 

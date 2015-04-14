@@ -2,7 +2,9 @@
 
 namespace Tactics\InvoiceBundle\Tools\Agresso;
 
-interface CustomerInterface 
+use Tactics\InvoiceBundle\Tools\CustomerInterface as GenericCustomerInterface;
+
+interface CustomerInterface extends GenericCustomerInterface
 {
     public function getApArNo();    
     public function getName();
