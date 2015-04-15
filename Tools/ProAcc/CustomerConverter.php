@@ -10,6 +10,7 @@ class CustomerConverter
 {
     private $customerFactory;
     private $customer;
+    private $invoice;
     
     /**
      * Constructor
@@ -32,6 +33,7 @@ class CustomerConverter
         
         foreach ($invoices as $invoice)
         {
+            $this->invoice = $invoice;
             $this->customer = $this->customerFactory->getCustomer($invoice);
             $txtLines[] = $this->createCsvLine();
         }
@@ -49,10 +51,11 @@ class CustomerConverter
      */
     private function createCsvLine()
     {
+        $schemeId = $this->invoice->getSchemeId();
         $line = array_merge($this->createBlancos(), array(
             'A' => 1,
-            'B' => $this->customer->getKlantcode(),
-            'C' => $this->customer->getOpzoeknaam(),
+            'B' => $this->customer->getKlantcode($schemeId),
+            'C' => $this->customer->getOpzoeknaam($schemeId),
             'E' => $this->customer->getFirmanaam(),      
             'H' => $this->customer->getStraatNummerBus(),
             'I' => $this->customer->getPostcode(),
@@ -65,7 +68,7 @@ class CustomerConverter
             'P' => $this->customer->getBtwNummer(),
             'S' => $this->customer->getBankrekening(),
             'T' => $this->customer->getCodeValuta(),
-            'V' => $this->customer->getCode1(),
+            'V' => $this->customer->getCode1($schemeId),
             'AG' => $this->customer->getBtwStatus(),
             'AW' => $this->customer->getOndernemingsnummer()
         ));

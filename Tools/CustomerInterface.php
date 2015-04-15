@@ -23,6 +23,12 @@ interface CustomerInterface
     /**
      * @return int de id van de customer in het externa boekhoudprogramma
      */
-    public function getExternalId();
+    public function getExternalId($schemeId);
+    
+    /**
+     * @return string de naam van de klant
+     */
+    public function getName();
+    
 }
 

@@ -4,6 +4,7 @@ namespace Tactics\InvoiceBundle\Propel;
 
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Tools\Customer;
+use Tactics\InvoiceBundle\Model\SchemeCustomerInfo;
 
 class SchemeCustomerInfoManager extends ObjectManager
 {
@@ -13,6 +14,7 @@ class SchemeCustomerInfoManager extends ObjectManager
      * @param type $schemeId
      * @param type $name
      * @param type $value
+     * @return SchemeCustomerInfo
      */
     public function update(Customer $customer, $schemeId, $name, $value)
     {
@@ -32,5 +34,7 @@ class SchemeCustomerInfoManager extends ObjectManager
         }
         $info->setValue($value);
         $this->save($info);
+        
+        return $info;
     }
 }

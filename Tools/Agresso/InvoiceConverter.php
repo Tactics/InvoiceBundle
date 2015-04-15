@@ -58,16 +58,14 @@ class InvoiceConverter
         $voucher .= sprintf('<Period>%s</Period>', $invoice->getDate('Ym')); // boekingsperiode, nog afh van instelbare periode?
         $voucher .= sprintf('<VoucherDate>%s</VoucherDate>', $invoice->getDate()); // factuurdatum
         
-        // 1 AR transactie (klantrekening per factuur
+        // 1 AR transactie (klantrekening) per factuur
         $voucher .= $this->getArTransaction($invoice); // klantrekening
         
         // 1 GL en 1 TX transactie (indien met BTW) per Lijn
         foreach ($invoice->getItems() as $item)
         {
             if ($item->getType() !== 'invoice') continue;  // we exporteren enkel invoice lijnen
-            
             $voucher .= $this->getGlTransaction($item); // verkooprekening
-            
             if ($item->getVatPercentage() > 0)
             {
                 $voucher .= $this->getTxTransaction($item); // alleen indien met BTW
@@ -199,7 +197,7 @@ class InvoiceConverter
         
         $apArInfo = '<ApArInfo>';
         $apArInfo .= sprintf('<ApArGroup>%s</ApArGroup>', $customer->getApArGroup());
-        $apArInfo .= sprintf('<ApArNo>%s</ApArNo>', $customer->getApArNo());
+        $apArInfo .= sprintf('<ApArNo>%s</ApArNo>', $customer->getApArNo($invoice->getSchemeId()));
         $apArInfo .= sprintf('<InvoiceNo>%u</InvoiceNo>', $invoice->getNumber()); // factuurnr
         $apArInfo .= sprintf('<Duedate>%s</Duedate>', $invoice->getDateDue()); // due date
         $apArInfo .= sprintf('<BacsId>%s</BacsId>', $invoice->getStructuredCommunication()); // gestructureerde mededeling

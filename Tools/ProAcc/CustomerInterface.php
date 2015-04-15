@@ -7,8 +7,8 @@ use Tactics\InvoiceBundle\Tools\CustomerInterface as GenericCustomerInterface;
 interface CustomerInterface extends GenericCustomerInterface
 {
     public function getNaam();
-    public function getKlantcode();
-    public function getOpzoeknaam();
+    public function getKlantcode($schemeId);
+    public function getOpzoeknaam($schemeId);
     public function getFirmanaam();
     public function getStraatNummerBus();
     public function getPostcode();
@@ -21,7 +21,7 @@ interface CustomerInterface extends GenericCustomerInterface
     public function getBtwNummer();
     public function getBankrekening();
     public function getCodeValuta();
-    public function getCode1();
+    public function getCode1($schemeId);
     public function getBtwStatus();
     public function getOndernemingsnummer();
 }

@@ -10,6 +10,7 @@ class CustomerConverter
 {
     private $customerFactory;
     private $customer;
+    private $invoice;
     
     /**
      * Constructor
@@ -36,6 +37,7 @@ class CustomerConverter
         $xml .= '<Customer>';
         foreach ($invoices as $invoice)
         {
+            $this->invoice = $invoice;
             $this->customer = $this->customerFactory->getCustomer($invoice);
             $xml .= $this->getCustomerXml();
         }
@@ -51,8 +53,10 @@ class CustomerConverter
      */
     private function getCustomerXml()
     {
+        $schemeId = $this->invoice->getSchemeId();
+        
         $xml = '<MasterFile>';        
-        $xml .= sprintf('<ApArNo>%s</ApArNo>', $this->customer->getApArNo());
+        $xml .= sprintf('<ApArNo>%s</ApArNo>', $this->customer->getApArNo($schemeId));
         $xml .= $this->getSupplierCustomer($this->customer);        
         $xml .= $this->getAddressInfo($this->customer);
         $xml .= '</MasterFile>';
@@ -62,10 +66,12 @@ class CustomerConverter
     
     private function getSupplierCustomer()
     {
+        $schemeId = $this->invoice->getSchemeId();
+        
         $xml = '<SupplierCustomer>';
         $xml .= sprintf('<Name>%s</Name>', substr($this->customer->getName(), 0, 255));
         $xml .= sprintf('<ApArGroup>%02u</ApArGroup>', $this->customer->getApArGroup());
-        $xml .= sprintf('<ShortName>%s</ShortName>', $this->customer->getApArNo());
+        $xml .= sprintf('<ShortName>%s</ShortName>', $this->customer->getApArNo($schemeId));
         $xml .= sprintf('<CountryCode>%s</CountryCode>', $this->customer->getCountryCode());
         $xml .= $this->getInvoiceInfo($this->customer);        
         $xml .= '</SupplierCustomer>';
@@ -75,8 +81,10 @@ class CustomerConverter
     
     private function getInvoiceInfo()
     {
+        $schemeId = $this->invoice->getSchemeId();
+        
         $xml = '<InvoiceInfo>';
-        $xml .= sprintf('<HeadOffice>%s</HeadOffice>', $this->customer->getApArNo());
+        $xml .= sprintf('<HeadOffice>%s</HeadOffice>', $this->customer->getApArNo($schemeId));
         $xml .= sprintf('<Control>%s</Control>', $this->customer->getControl());
         $xml .= '</InvoiceInfo>';
         

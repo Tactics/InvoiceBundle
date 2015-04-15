@@ -6,8 +6,7 @@ use Tactics\InvoiceBundle\Tools\CustomerInterface as GenericCustomerInterface;
 
 interface CustomerInterface extends GenericCustomerInterface
 {
-    public function getApArNo();    
-    public function getName();
+    public function getApArNo($schemeId);    
     public function getApArGroup();
     public function getControl();
     public function getAddress();

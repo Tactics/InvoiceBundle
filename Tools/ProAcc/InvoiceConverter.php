@@ -105,8 +105,7 @@ class InvoiceConverter
 
     private function getOmschrijving(Invoice $invoice)
     {
-        $omschrijving = $invoice->getItems() ? $invoice->getItems()[0]->getGroupDescription() : '';
-
+        $omschrijving = $invoice->getRef() ?: ($invoice->getItems() ? $invoice->getItems()[0]->getGroupDescription() : '');
         return substr($omschrijving, 0, 20);
     }
     
@@ -120,7 +119,7 @@ class InvoiceConverter
     {
         $customer = $this->customerFactory->getCustomer($invoice);
         
-        return $customer->getExternalId();
+        return $customer->getExternalId($invoice->getSchemeId());
     }
     
     /**
