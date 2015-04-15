@@ -38,18 +38,19 @@ class InvoiceExtension extends Extension
     private $ormManagerMap = array(
         'propel' => array(
             'default' => 'Tactics\InvoiceBundle\Propel\ObjectManager',
-            'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceManager'
+            'invoice' => 'Tactics\InvoiceBundle\Propel\InvoiceManager',
+            'scheme_customer_info' => 'Tactics\InvoiceBundle\Propel\SchemeCustomerInfoManager'
         )
     );
     
     private $accountingSoftwareMap = array(
       'ProAcc' => array(
-        //'customer_converter' => 'Tactics\InvoiceBundle\Tools\ProAcc\CustomerConverter',
+          'customer_converter' => 'Tactics\InvoiceBundle\Tools\ProAcc\CustomerConverter',
           'invoice_converter' => 'Tactics\InvoiceBundle\Tools\ProAcc\InvoiceConverter',
           'payment_importer' => 'Tactics\InvoiceBundle\Tools\ProAcc\PaymentImporter'
       ),
       'Agresso' => array(
-//          'customer_converter' => 'Tactics\InvoiceBundle\Tools\Agresso\CustomerConverter',
+          'customer_converter' => 'Tactics\InvoiceBundle\Tools\Agresso\CustomerConverter',
           'invoice_converter' => 'Tactics\InvoiceBundle\Tools\Agresso\InvoiceConverter',
           'payment_importer' => 'Tactics\InvoiceBundle\Tools\Agresso\PaymentImporter'
       )
@@ -63,10 +64,13 @@ class InvoiceExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
         
+        $container->setParameter('customer_factory.class', 'Tactics\InvoiceBundle\Tools\CustomerFactory');
+        $container->setParameter('customer.class', $config['customer_class']);
         $container->setParameter('invoice_number_generator.class', $config['number_generator']);
         $container->setParameter('invoice_journal_generator.class', $config['journal_generator']);
         $container->setParameter('pdf_generator.class', $config['pdf_generator']);
-//        $container->setParameter('customer_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['customer_converter']);
+        $container->setParameter('invoice.accounting_software', $config['accounting_software']);
+        $container->setParameter('customer_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['customer_converter']);
         $container->setParameter('invoice_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['invoice_converter']);
         $container->setParameter('payment_importer.class', $this->accountingSoftwareMap[$config['accounting_software']]['payment_importer']);
         

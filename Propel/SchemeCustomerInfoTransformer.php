@@ -4,21 +4,6 @@ namespace Tactics\InvoiceBundle\Propel;
 
 class SchemeCustomerInfoTransformer extends Transformer
 {
-    private $scheme_transformer;    
-        
-    /**
-     * Constructor
-     * 
-     * @param string $class
-     * @param Transformer $scheme_transformer
-     */
-    public function __construct($class, Transformer $scheme_transformer)
-    {
-        $this->scheme_transformer = $scheme_transformer;
-        
-        parent::__construct($class);
-    }
-    
     /**
      * Geeft PropelSchemeCustomerInfo terug op basis van $schemeCustomerInfo
      * 
@@ -34,13 +19,6 @@ class SchemeCustomerInfoTransformer extends Transformer
             $propelInfo->setCustomerClass(get_class($customer));
             $propelInfo->setCustomerId($customer->getId());
         }
-        
-        if ($schemeCustomerInfo->getAccountingScheme())
-        {
-            $accScheme = $schemeCustomerInfo->getAccountingScheme();            
-            $propelAccScheme = $this->scheme_transformer->toOrm($accScheme);
-            $propelInfo->setPropelAccountingScheme($propelAccScheme); 
-        }            
 
         return $propelInfo;
     }
@@ -64,14 +42,7 @@ class SchemeCustomerInfoTransformer extends Transformer
         if ($customer)
         {
           $info->setCustomer($customer);
-        } 
-        
-        if ($propelSchemeCustomerInfo->getPropelAccountingScheme())
-        {
-            $propelAccScheme = $propelSchemeCustomerInfo->getPropelAccountingScheme();
-            $accScheme = $this->scheme_transformer->fromOrm($propelAccScheme);
-            $info->setAccountingScheme($accScheme);
-        }           
+        }
         
         return $info;
     }      

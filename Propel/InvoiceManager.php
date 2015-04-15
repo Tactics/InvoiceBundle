@@ -36,9 +36,11 @@ class InvoiceManager extends ObjectManager
      */
     public function create(InvoiceableInterface $object = null, $options = array())
     {
+        /*@var $invoice Invoice*/
         $invoice = parent::create();
         $invoice->setSchemeId(isset($options['scheme_id']) ? $options['scheme_id'] : null);
         $invoice->setRef(isset($options['ref']) ? $options['ref'] : null);
+        $invoice->setStructuredCommunication(isset($options['structured_communication']) ? $options['structured_communication'] : null);
         
         if ($object)
         {
@@ -129,7 +131,10 @@ class InvoiceManager extends ObjectManager
             try
             {
                 $invoice->setNumber($this->generateNumber($invoice));
-                $invoice->setStructuredCommunication($this->generateStructuredCommunication($invoice));
+                if (!$invoice->getStructuredCommunication())
+                {
+                    $invoice->setStructuredCommunication($this->generateStructuredCommunication($invoice));
+                }
 
                 $ormObject = $this->transformer->toOrm($invoice);
                 $result = $ormObject->save();
