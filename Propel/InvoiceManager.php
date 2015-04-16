@@ -61,12 +61,11 @@ class InvoiceManager extends ObjectManager
      */
     public function save($domainObject, $options = array())
     {
-        $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
-        $domainObject->setDate(time());
-        $domainObject->setDateDue(strtotime('+30 days'));
-        
         if (!$domainObject->getId())
         {
+          $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
+          $domainObject->setDate(time());
+          $domainObject->setDateDue(strtotime('+30 days'));
           $result =  $this->saveNew($domainObject);
           
           $event = new InvoiceCreatedEvent($domainObject, $options);
