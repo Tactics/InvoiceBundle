@@ -16,8 +16,9 @@ class InvoiceManager extends ObjectManager
     private $journal_generator;
     private $pdf_generator;
     private $event_dispatcher;
+    private $options_generator;
     
-    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator, $pdf_generator, EventDispatcherInterface $eventDispatcher)
+    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator, $pdf_generator, EventDispatcherInterface $eventDispatcher, $options_generator)
     {
         parent::__construct($class, $transformer);
         
@@ -25,6 +26,7 @@ class InvoiceManager extends ObjectManager
         $this->journal_generator = $journal_generator;
         $this->pdf_generator = $pdf_generator;
         $this->event_dispatcher = $eventDispatcher;
+        $this->options_generator = $options_generator;
     }
     
     /**
@@ -49,6 +51,7 @@ class InvoiceManager extends ObjectManager
                 $invoice->addItem($item);
             }
             $invoice->setCustomer($object->getCustomer());
+            $this->options_generator->generate($object, $invoice);
         }
         
         return $invoice;

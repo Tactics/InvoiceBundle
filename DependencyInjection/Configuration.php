@@ -57,7 +57,10 @@ class Configuration implements ConfigurationInterface
                   ->info('class that generates the invoice pdf')
                   ->defaultValue('Tactics\InvoiceBundle\Tools\PdfGenerator')
                 ->end()
-                
+                ->scalarNode('options_generator')
+                  ->info('class that can generate extra invoice options (i.e. payment_method)')
+                  ->defaultValue('Tactics\InvoiceBundle\Tools\OptionsGenerator')
+                ->end()
             ->end()
         ;
     }

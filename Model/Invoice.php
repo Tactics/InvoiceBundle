@@ -19,6 +19,7 @@ class Invoice
     protected $send = 0;
     protected $exported = 0;
     protected $ref;
+    protected $pay_method;
     protected $customer;
     protected $items = array();
 
@@ -38,6 +39,11 @@ class Invoice
     public function getRef()
     {
         return $this->ref;
+    }
+    
+    public function getPayMethod()
+    {
+        return $this->pay_method;
     }
 
     public function getId()
@@ -186,6 +192,17 @@ class Invoice
 
         if ($this->ref !== $v) {
             $this->ref = $v;
+        }
+    } 
+    
+    public function setPayMethod($v)
+    {
+        if ($v !== null && !is_string($v)) {
+            $v = (string) $v; 
+        }
+
+        if ($this->pay_method !== $v) {
+            $this->pay_method = $v;
         }
     } 
 
