@@ -83,7 +83,7 @@ class InvoiceConverter
               'AC' => number_format(abs($item->getPriceExVat()), 2, ',', ''),
               'AD' => number_format(abs($item->getPriceExVat()), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt              
               'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
-              'AG' => substr($item->getDescription(), 0, 25), // omschrijving, voor inovant moet hier de opleidingscode inkomen
+              'AG' => substr($item->getDescription(), 0, 50), // omschrijving, voor inovant moet hier de opleidingscode inkomen
               'AI' => $item->getAnalytical2AccountCode() ?: '',
               'AK' => '',
               'AL' => $invoice->getDatePaid() ? '1' : '0',
