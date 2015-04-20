@@ -128,6 +128,7 @@ class InvoiceManager extends ObjectManager
      */
     private function saveNew(Invoice $invoice)
     {
+        $ormObject = $this->transformer->toOrm($invoice);
         while (true)
         {
             try
@@ -190,20 +191,6 @@ class InvoiceManager extends ObjectManager
      */
     private function generateStructuredCommunication(Invoice $invoice)
     {
-        $strCom = sprintf("%07s00%1u", $invoice->getNumber(), $invoice->getJournalCode());
-
-        if (strlen($strCom) != 10) {
-            throw new \sfException('There was a problem generating the structured communication: ' . $strCom);
-        }
-
-        $digit97 = sprintf("%02u", (bcmod($strCom, 97)));
-
-        // Geen 00 als digit97
-        if ($digit97 == 0)
-        {
-            $digit97 = 97;
-        }
-
-        return $strCom . (string) $digit97;
+        return $this->number_generator->generateStructuredCommunication($invoice);
     }
 }
