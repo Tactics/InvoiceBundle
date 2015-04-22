@@ -134,12 +134,7 @@ class InvoiceConverter
         $glTransaction .= sprintf('<Dim5>%s</Dim5>', $item->getAnalytical5AccountCode());
         $glTransaction .= sprintf('<Dim6>%s</Dim6>', $item->getAnalytical6AccountCode());
         $glTransaction .= sprintf('<Dim7>%s</Dim7>', $item->getAnalytical7AccountCode());
-        
-        // vat_code of contra_account_code en btw_account_code nog opslaan bij item?
-        $vat = $this->vatMgr->searchOne(array(
-            'percentage' => $item->getVatPercentage(), 'scheme_id' => $invoice->getSchemeId()
-        )); 
-        $glTransaction .= sprintf('<TaxCode>%s</TaxCode>', $vat->getCode());; // BTW codes nog aan te leveren
+        $glTransaction .= sprintf('<TaxCode>%s</TaxCode>', $item->getVatCode());
         $glTransaction .= '</GLAnalysis>';
         
         $glTransaction .= $this->getApArInfo($invoice);
@@ -170,12 +165,11 @@ class InvoiceConverter
                 
         $txTransaction .= '<GLAnalysis>';
         
-        // vat_code of contra_account_code en btw_account_code nog opslaan bij item?
-        $vat = $this->vatMgr->searchOne(array(
-            'percentage' => $item->getVatPercentage(), 'scheme_id' => $invoice->getSchemeId()
+        $vat = $this->vatMgr->find(array(
+            'code' => $item->getVatCode(), 'scheme_id' => $invoice->getSchemeId()
         )); 
-        $txTransaction .= sprintf('<Account>%s</Account>', $vat->getAccountCode()); // vat.account_code
-        $txTransaction .= sprintf('<TaxCode>%s</TaxCode>', $vat->getCode());; // BTW codes nog aan te leveren
+        $txTransaction .= sprintf('<Account>%s</Account>', $vat->getAccountCode());
+        $txTransaction .= sprintf('<TaxCode>%s</TaxCode>', $vat->getCode());
         $txTransaction .= '</GLAnalysis>';
         
         $txTransaction .= '<TaxTransInfo>';
