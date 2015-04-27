@@ -11,6 +11,10 @@ class CustomerConverter
     private $customerFactory;
     private $customer;
     private $invoice;
+    private $alreadyExported = array(
+      'persoon' => array(),
+      'organisatie' => array()
+    );
     
     /**
      * Constructor
@@ -39,7 +43,14 @@ class CustomerConverter
         {
             $this->invoice = $invoice;
             $this->customer = $this->customerFactory->getCustomer($invoice);
-            $xml .= $this->getCustomerXml();
+            $appCustomer = $invoice->getCustomer();
+            $lowerCaseCustomerClassName = strtolower(get_class($appCustomer));
+            if (!in_array($appCustomer->getId(), $this->alreadyExported[$lowerCaseCustomerClassName]))
+            {
+                $xml .= $this->getCustomerXml();
+                $this->alreadyExported[$lowerCaseCustomerClassName][] = $appCustomer->getId();
+            }
+            
         }
         $xml .= '</Customer>';
         
