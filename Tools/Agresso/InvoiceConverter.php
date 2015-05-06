@@ -196,7 +196,7 @@ class InvoiceConverter
         $apArInfo .= sprintf('<InvoiceNo>%u</InvoiceNo>', $invoice->getNumber()); // factuurnr
         $apArInfo .= sprintf('<Duedate>%s</Duedate>', $invoice->getDateDue()); // due date
         $apArInfo .= sprintf('<BacsId>%s</BacsId>', $invoice->getStructuredCommunication()); // gestructureerde mededeling
-        $apArInfo .= sprintf('<PayMethod>%s</PayMethod>', $invoice->getPayMethod()); // paymethod
+        $apArInfo .= sprintf('<PayMethod>%s</PayMethod>', $invoice->getPayMethod() ?: 'BB'); // paymethod
         $apArInfo .= '</ApArInfo>';
         
         return $apArInfo;
