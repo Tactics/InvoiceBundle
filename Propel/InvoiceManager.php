@@ -16,8 +16,9 @@ class InvoiceManager extends ObjectManager
     private $journal_generator;
     private $pdf_generator;
     private $event_dispatcher;
+    private $options_generator;
     
-    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator, $pdf_generator, EventDispatcherInterface $eventDispatcher)
+    public function __construct($class, Model\TransformerInterface $transformer, $number_generator, $journal_generator, $pdf_generator, EventDispatcherInterface $eventDispatcher, $options_generator)
     {
         parent::__construct($class, $transformer);
         
@@ -25,6 +26,7 @@ class InvoiceManager extends ObjectManager
         $this->journal_generator = $journal_generator;
         $this->pdf_generator = $pdf_generator;
         $this->event_dispatcher = $eventDispatcher;
+        $this->options_generator = $options_generator;
     }
     
     /**
@@ -36,9 +38,11 @@ class InvoiceManager extends ObjectManager
      */
     public function create(InvoiceableInterface $object = null, $options = array())
     {
+        /*@var $invoice Invoice*/
         $invoice = parent::create();
         $invoice->setSchemeId(isset($options['scheme_id']) ? $options['scheme_id'] : null);
         $invoice->setRef(isset($options['ref']) ? $options['ref'] : null);
+        $invoice->setStructuredCommunication(isset($options['structured_communication']) ? $options['structured_communication'] : null);
         
         if ($object)
         {
@@ -47,6 +51,7 @@ class InvoiceManager extends ObjectManager
                 $invoice->addItem($item);
             }
             $invoice->setCustomer($object->getCustomer());
+            $this->options_generator->generate($object, $invoice);
         }
         
         return $invoice;
@@ -59,12 +64,11 @@ class InvoiceManager extends ObjectManager
      */
     public function save($domainObject, $options = array())
     {
-        $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
-        $domainObject->setDate(time());
-        $domainObject->setDateDue(strtotime('+30 days'));
-        
         if (!$domainObject->getId())
         {
+          $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
+          $domainObject->setDate(time());
+          $domainObject->setDateDue(strtotime('+30 days'));
           $result =  $this->saveNew($domainObject);
           
           $event = new InvoiceCreatedEvent($domainObject, $options);
@@ -124,12 +128,16 @@ class InvoiceManager extends ObjectManager
      */
     private function saveNew(Invoice $invoice)
     {
+        $ormObject = $this->transformer->toOrm($invoice);
         while (true)
         {
             try
             {
                 $invoice->setNumber($this->generateNumber($invoice));
-                $invoice->setStructuredCommunication($this->generateStructuredCommunication($invoice));
+                if (!$invoice->getStructuredCommunication())
+                {
+                    $invoice->setStructuredCommunication($this->generateStructuredCommunication($invoice));
+                }
 
                 $ormObject = $this->transformer->toOrm($invoice);
                 $result = $ormObject->save();
@@ -183,20 +191,6 @@ class InvoiceManager extends ObjectManager
      */
     private function generateStructuredCommunication(Invoice $invoice)
     {
-        $strCom = sprintf("%07s00%1u", $invoice->getNumber(), $invoice->getJournalCode());
-
-        if (strlen($strCom) != 10) {
-            throw new \sfException('There was a problem generating the structured communication: ' . $strCom);
-        }
-
-        $digit97 = sprintf("%02u", (bcmod($strCom, 97)));
-
-        // Geen 00 als digit97
-        if ($digit97 == 0)
-        {
-            $digit97 = 97;
-        }
-
-        return $strCom . (string) $digit97;
+        return $this->number_generator->generateStructuredCommunication($invoice);
     }
 }

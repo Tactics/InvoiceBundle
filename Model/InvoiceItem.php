@@ -240,7 +240,8 @@ class InvoiceItem
     
     public function calculatePrices()
     {
-        $this->price_ex_vat = $this->quantity * $this->unit_price;
-        $this->price_incl_vat = $this->price_ex_vat * ((100 + $this->getVatPercentage())/100);
+        $this->price_ex_vat = bcmul($this->quantity, $this->unit_price, 2);
+        $vatMultiplier = bcdiv(bcadd(100, $this->vat_percentage, 2), 100, 2);
+        $this->price_incl_vat = bcmul($this->price_ex_vat, $vatMultiplier, 2);
     }
 }

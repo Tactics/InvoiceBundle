@@ -9,47 +9,53 @@ class Invoice
     protected $number;
     protected $journal_code;
     protected $total = 0;	
-		protected $vat = 0;
-		protected $date;
-		protected $date_due;
-		protected $date_paid;
-		protected $amount_paid = 0;
-		protected $structured_communication;
-		protected $currency = 'EUR';
+    protected $vat = 0;
+    protected $date;
+    protected $date_due;
+    protected $date_paid;
+    protected $amount_paid = 0;
+    protected $structured_communication;
+    protected $currency = 'EUR';
     protected $send = 0;
-		protected $exported = 0;
+    protected $exported = 0;
     protected $ref;
+    protected $pay_method;
     protected $customer;
-		protected $items = array();
+    protected $items = array();
 
 		
     
     // getters
-		public function getSend()
-		{
-				return $this->send;
-		}
+    public function getSend()
+    {
+        return $this->send;
+    }
 
-		public function getExported()
-		{
-				return $this->exported;
-		}
+    public function getExported()
+    {
+        return $this->exported;
+    }
     
     public function getRef()
     {
         return $this->ref;
     }
+    
+    public function getPayMethod()
+    {
+        return $this->pay_method;
+    }
 
     public function getId()
-		{
-				return $this->id;
-		}
+    {
+            return $this->id;
+    }
     
     public function getSchemeId()
-		{
-				return $this->scheme_id;
-		}
-    
+    {
+            return $this->scheme_id;
+    }
+
     public function getNumber()
     {
         return $this->number;
@@ -57,96 +63,96 @@ class Invoice
     
     public function getJournalCode()
     {
-        return $this->journal_code;
+    return $this->journal_code;
     }
 	
-		public function getTotal()
-		{
-				return $this->total;
-		}
+    public function getTotal()
+    {
+        return $this->total;
+    }
 
-		public function getVat()
-		{
-				return $this->vat;
-		}
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    public function getDate($format = 'Y-m-d')
+    {
+        if ($this->date === null || $this->date === '') {
+            return null;
+        } elseif (!is_int($this->date)) {
+            $ts = strtotime($this->date);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse value of [date] as date/time value: " . var_export($this->date, true));
+            }
+        } else {
+            $ts = $this->date;
+        }
+        if ($format === null) {
+            return $ts;
+        } elseif (strpos($format, '%') !== false) {
+            return strftime($format, $ts);
+        } else {
+            return date($format, $ts);
+        }
+    }
 	
-		public function getDate($format = 'Y-m-d')
-		{
-				if ($this->date === null || $this->date === '') {
-						return null;
-				} elseif (!is_int($this->date)) {
-						$ts = strtotime($this->date);
-						if ($ts === -1 || $ts === false) {
-							throw new PropelException("Unable to parse value of [date] as date/time value: " . var_export($this->date, true));
-						}
-				} else {
-						$ts = $this->date;
-				}
-				if ($format === null) {
-						return $ts;
-				} elseif (strpos($format, '%') !== false) {
-						return strftime($format, $ts);
-				} else {
-						return date($format, $ts);
-				}
-		}
-	
-		public function getDateDue($format = 'Y-m-d')
-		{
-				if ($this->date_due === null || $this->date_due === '') {
-						return null;
-				} elseif (!is_int($this->date_due)) {
-						$ts = strtotime($this->date_due);
-						if ($ts === -1 || $ts === false) {
-								throw new PropelException("Unable to parse value of [date_due] as date/time value: " . var_export($this->date_due, true));
-						}
-				} else {
-						$ts = $this->date_due;
-				}
-				if ($format === null) {
-						return $ts;
-				} elseif (strpos($format, '%') !== false) {
-						return strftime($format, $ts);
-				} else {
-						return date($format, $ts);
-				}
-		}
+    public function getDateDue($format = 'Y-m-d')
+    {
+        if ($this->date_due === null || $this->date_due === '') {
+            return null;
+        } elseif (!is_int($this->date_due)) {
+            $ts = strtotime($this->date_due);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse value of [date_due] as date/time value: " . var_export($this->date_due, true));
+            }
+        } else {
+            $ts = $this->date_due;
+        }
+        if ($format === null) {
+            return $ts;
+        } elseif (strpos($format, '%') !== false) {
+            return strftime($format, $ts);
+        } else {
+            return date($format, $ts);
+        }
+    }
 
-		public function getDatePaid($format = 'Y-m-d')
-		{
-				if ($this->date_paid === null || $this->date_paid === '') {
-						return null;
-				} elseif (!is_int($this->date_paid)) {
-						$ts = strtotime($this->date_paid);
-						if ($ts === -1 || $ts === false) {
-								throw new PropelException("Unable to parse value of [date_paid] as date/time value: " . var_export($this->date_paid, true));
-						}
-				} else {
-						$ts = $this->date_paid;
-				}
-				if ($format === null) {
-						return $ts;
-				} elseif (strpos($format, '%') !== false) {
-						return strftime($format, $ts);
-				} else {
-						return date($format, $ts);
-				}
-		}
+    public function getDatePaid($format = 'Y-m-d')
+    {
+        if ($this->date_paid === null || $this->date_paid === '') {
+            return null;
+        } elseif (!is_int($this->date_paid)) {
+            $ts = strtotime($this->date_paid);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse value of [date_paid] as date/time value: " . var_export($this->date_paid, true));
+            }
+        } else {
+            $ts = $this->date_paid;
+        }
+        if ($format === null) {
+            return $ts;
+        } elseif (strpos($format, '%') !== false) {
+            return strftime($format, $ts);
+        } else {
+            return date($format, $ts);
+        }
+    }
 
-		public function getAmountPaid()
-		{
-				return $this->amount_paid;
-		}
+    public function getAmountPaid()
+    {
+        return $this->amount_paid;
+    }
 
-		public function getStructuredCommunication()
-		{
-				return $this->structured_communication;
-		}
+    public function getStructuredCommunication()
+    {
+        return $this->structured_communication;
+    }
 
-		public function getCurrency()
-		{
-				return $this->currency;
-		}
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
     
     public function getCustomer()
     {
@@ -164,19 +170,19 @@ class Invoice
     }
 	
     // setters
-		public function setSend($v)
-		{
-				if ($this->send !== $v) {
-						$this->send = $v;
-				}
-		}
+    public function setSend($v)
+    {
+        if ($this->send !== $v) {
+            $this->send = $v;
+        }
+    }
 
-		public function setExported($v)
-		{
-				if ($this->exported !== $v) {
-						$this->exported = $v;
-				}
-		}
+    public function setExported($v)
+    {
+        if ($this->exported !== $v) {
+            $this->exported = $v;
+        }
+    }
     
     public function setRef($v)
     {
@@ -188,17 +194,28 @@ class Invoice
             $this->ref = $v;
         }
     } 
+    
+    public function setPayMethod($v)
+    {
+        if ($v !== null && !is_string($v)) {
+            $v = (string) $v; 
+        }
 
-		public function setId($v)
-		{
-				if ($v !== null && !is_int($v) && is_numeric($v)) {
-						$v = (int) $v;
-				}
+        if ($this->pay_method !== $v) {
+            $this->pay_method = $v;
+        }
+    } 
 
-				if ($this->id !== $v) {
-						$this->id = $v;
-				}
-		}
+    public function setId($v)
+    {
+        if ($v !== null && !is_int($v) && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->id !== $v) {
+            $this->id = $v;
+        }
+    }
     
     public function setSchemeId($scheme_id)
     {
@@ -208,97 +225,97 @@ class Invoice
     public function setNumber($v)
     {
         if ($this->number !== $v) {
-						$this->number = $v;
-				}
+            $this->number = $v;
+        }
     }
 	
-		public function setTotal($v)
-		{
-				if ($this->total !== $v) {
-						$this->total = $v;
-				}
-		}
-	
-		public function setVat($v)
-		{
-				if ($this->vat !== $v) {
-						$this->vat = $v;
-				}
-		}
-	
-		public function setDate($v)
-		{
-				if ($v !== null && !is_int($v)) {
-						$ts = strtotime($v);
-						if ($ts === -1 || $ts === false) {
-								throw new PropelException("Unable to parse date/time value for [date] from input: " . var_export($v, true));
-						}
-				} else {
-						$ts = $v;
-				}
-				if ($this->date !== $ts) {
-						$this->date = $ts;
-				}
-		}
+    public function setTotal($v)
+    {
+        if ($this->total !== $v) {
+            $this->total = $v;
+        }
+    }
 
-		public function setDateDue($v)
-		{
-				if ($v !== null && !is_int($v)) {
-						$ts = strtotime($v);
-						if ($ts === -1 || $ts === false) {
-								throw new PropelException("Unable to parse date/time value for [date_due] from input: " . var_export($v, true));
-						}
-				} else {
-						$ts = $v;
-				}
-				if ($this->date_due !== $ts) {
-						$this->date_due = $ts;
-				}
-		}
+    public function setVat($v)
+    {
+        if ($this->vat !== $v) {
+            $this->vat = $v;
+        }
+    }
 
-		public function setDatePaid($v)
-		{
-				if ($v !== null && !is_int($v)) {
-						$ts = strtotime($v);
-						if ($ts === -1 || $ts === false) {
-								throw new PropelException("Unable to parse date/time value for [date_paid] from input: " . var_export($v, true));
-						}
-				} else {
-						$ts = $v;
-				}
-				if ($this->date_paid !== $ts) {
-						$this->date_paid = $ts;
-				}
-		}
+    public function setDate($v)
+    {
+        if ($v !== null && !is_int($v)) {
+            $ts = strtotime($v);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse date/time value for [date] from input: " . var_export($v, true));
+            }
+        } else {
+            $ts = $v;
+        }
+        if ($this->date !== $ts) {
+            $this->date = $ts;
+        }
+    }
 
-		public function setAmountPaid($v)
-		{
-				if ($this->amount_paid !== $v || $v === 0) {
-						$this->amount_paid = $v;
-				}
-		}
+    public function setDateDue($v)
+    {
+        if ($v !== null && !is_int($v)) {
+            $ts = strtotime($v);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse date/time value for [date_due] from input: " . var_export($v, true));
+            }
+        } else {
+            $ts = $v;
+        }
+        if ($this->date_due !== $ts) {
+            $this->date_due = $ts;
+        }
+    }
 
-		public function setStructuredCommunication($v)
-		{
-				if ($v !== null && !is_string($v)) {
-						$v = (string) $v;
-				}
+    public function setDatePaid($v)
+    {
+        if ($v !== null && !is_int($v)) {
+            $ts = strtotime($v);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse date/time value for [date_paid] from input: " . var_export($v, true));
+            }
+        } else {
+            $ts = $v;
+        }
+        if ($this->date_paid !== $ts) {
+            $this->date_paid = $ts;
+        }
+    }
 
-				if ($this->structured_communication !== $v) {
-						$this->structured_communication = $v;
-				}
-		}
+    public function setAmountPaid($v)
+    {
+        if ($this->amount_paid !== $v || $v === 0) {
+            $this->amount_paid = $v;
+        }
+    }
 
-		public function setCurrency($v)
-		{
-				if ($v !== null && !is_string($v)) {
-						$v = (string) $v;
-				}
+    public function setStructuredCommunication($v)
+    {
+        if ($v !== null && !is_string($v)) {
+            $v = (string) $v;
+        }
 
-				if ($this->currency !== $v || $v === 'EUR') {
-						$this->currency = $v;
-				}
-		}
+        if ($this->structured_communication !== $v) {
+            $this->structured_communication = $v;
+        }
+    }
+
+    public function setCurrency($v)
+    {
+        if ($v !== null && !is_string($v)) {
+            $v = (string) $v;
+        }
+
+        if ($this->currency !== $v || $v === 'EUR') {
+            $this->currency = $v;
+        }
+    }
     
     public function setJournalCode($journal_code)
     {
@@ -325,8 +342,8 @@ class Invoice
         foreach ($this->getItems() as $item)
         {
             $item->calculatePrices();
-            $this->total += $item->getPriceExVat();
-            $this->vat += $item->getPriceInclVat() - $item->getPriceExVat();
+            $this->total = bcadd($this->total, $item->getPriceExVat(), 2);
+            $this->vat = bcadd($this->vat, bcsub($item->getPriceInclVat(), $item->getPriceExVat(), 2), 2);
         }
     }
     
@@ -353,30 +370,30 @@ class Invoice
       }
     }
 
-		public function getOutstandingAmount()
-		{
-				return bcsub($this->getTotal(), $this->getAmountPaid(), 2);
-		}
+    public function getOutstandingAmount()
+    {
+        return bcsub(bcadd($this->total, $this->vat, 2), $this->getAmountPaid(), 2);
+    }
 
-		public function isSend()
-		{
-				if($this->send)
-				{
-						return true;
-				}
+    public function isSend()
+    {
+        if($this->send)
+        {
+            return true;
+        }
 
-				return false;
-		}
+        return false;
+    }
 
-		public function isExported()
-		{
-				if ($this->exported)
-				{
-						return true;
-				}
+    public function isExported()
+    {
+        if ($this->exported)
+        {
+            return true;
+        }
 
-				return false;
-		}
+        return false;
+    }
     
     public function isPaid()
     {

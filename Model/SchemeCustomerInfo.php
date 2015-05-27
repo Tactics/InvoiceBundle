@@ -8,7 +8,7 @@ class SchemeCustomerInfo
     protected $name;
     protected $value;
         
-    protected $accounting_scheme;
+    protected $scheme_id;
     protected $customer;
     
     // getters
@@ -27,15 +27,20 @@ class SchemeCustomerInfo
         return $this->value;
 	}
 	
-	public function getAccountingScheme()
+	public function getSchemeId()
 	{
-        return $this->accounting_scheme;
+        return $this->scheme_id;
 	}
     
     public function getCustomer()
 	{
         return $this->customer;
 	}
+    
+    public function get()
+    {
+        return $this->value;
+    }
     
     // setters
     public function setId($v)
@@ -71,9 +76,9 @@ class SchemeCustomerInfo
 		}
 	}
 	
-	public function setAccountingScheme($v)
+	public function setSchemeId($v)
     {
-        $this->accounting_scheme = $v;
+        $this->scheme_id = $v;
     }
     
     public function setCustomer($v)

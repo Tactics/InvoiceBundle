@@ -46,6 +46,7 @@
             <argument type="service" id="invoice_journal_generator"/>
             <argument type="service" id="pdf_generator"/>
             <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="options_generator"/>
         </service>
         
         <service id="accounting_scheme_transformer" class="%accounting_scheme_transformer.class%" public="false">
@@ -90,7 +91,6 @@
         
         <service id="scheme_customer_info_transformer" class="%scheme_customer_info_transformer.class%" public="false">
             <argument>%scheme_customer_info_class%</argument>
-            <argument type="service" id="accounting_scheme_transformer"/>
         </service>
         
         <service id="scheme_customer_info_manager" class="%scheme_customer_info_manager.class%">
@@ -98,8 +98,17 @@
             <argument type="service" id="scheme_customer_info_transformer"/>        
         </service>
         
+        <service id="customer_factory" class="%customer_factory.class%">
+          <argument>%customer.class%</argument>
+          <argument type="service" id="scheme_customer_info_manager"/>
+        </service>
+        
+        <service id="customer_converter" class="%customer_converter.class%">
+          <argument type="service" id="customer_factory"/>
+        </service>
+        
         <service id="invoice_converter" class="%invoice_converter.class%">
-            <argument type="service" id="scheme_customer_info_manager"/>
+            <argument type="service" id="customer_factory"/>
             <argument type="service" id="account_manager"/>
             <argument type="service" id="vat_manager"/>
             <argument type="service" id="journal_manager"/>
@@ -109,6 +118,8 @@
             <argument type="service" id="invoice_manager"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
+        
+        <service id="options_generator" class="%options_generator.class%"/>
         
     </services>
 </container>

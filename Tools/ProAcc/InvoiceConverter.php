@@ -3,12 +3,13 @@
 namespace Tactics\InvoiceBundle\Tools\ProAcc;
 
 use Tactics\InvoiceBundle\Model\Invoice;
+use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Tools\ConverterResult;
 
 class InvoiceConverter
 {
-    private $customerInfoMgr;
+    private $customerFactory;
     private $journalMgr;
 
     /**
@@ -16,9 +17,9 @@ class InvoiceConverter
      *
      * @param ObjectManager $customerInfoMgr
      */
-    public function __construct(ObjectManager $customerInfoMgr, ObjectManager $accountMgr, ObjectManager $vatMgr, ObjectManager $journalMgr)
+    public function __construct(CustomerFactoryInterface $customerFactory, ObjectManager $accountMgr, ObjectManager $vatMgr, ObjectManager $journalMgr)
     {
-        $this->customerInfoMgr = $customerInfoMgr;
+        $this->customerFactory = $customerFactory;
         $this->journalMgr = $journalMgr;
     }
     
@@ -82,7 +83,7 @@ class InvoiceConverter
               'AC' => number_format(abs($item->getPriceExVat()), 2, ',', ''),
               'AD' => number_format(abs($item->getPriceExVat()), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt              
               'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
-              'AG' => substr($item->getDescription(), 0, 25), // omschrijving, voor inovant moet hier de opleidingscode inkomen
+              'AG' => substr($item->getDescription(), 0, 50), // omschrijving, voor inovant moet hier de opleidingscode inkomen
               'AI' => $item->getAnalytical2AccountCode() ?: '',
               'AK' => '',
               'AL' => $invoice->getDatePaid() ? '1' : '0',
@@ -104,8 +105,7 @@ class InvoiceConverter
 
     private function getOmschrijving(Invoice $invoice)
     {
-        $omschrijving = $invoice->getItems() ? $invoice->getItems()[0]->getGroupDescription() : '';
-
+        $omschrijving = $invoice->getRef() ?: ($invoice->getItems() ? $invoice->getItems()[0]->getGroupDescription() : '');
         return substr($omschrijving, 0, 20);
     }
     
@@ -117,10 +117,9 @@ class InvoiceConverter
      */
     private function getKlantcode(Invoice $invoice)
     {
-        $customer = $invoice->getCustomer();
-        $info = $this->customerInfoMgr->searchOne(array('name' => 'proacc_nummer', 'customer_id' => $customer->getId(), 'customer_class' => get_class($customer)));
+        $customer = $this->customerFactory->getCustomer($invoice);
         
-        return $info ? $info->getValue() : '';
+        return $customer->getExternalId($invoice->getSchemeId());
     }
     
     /**
