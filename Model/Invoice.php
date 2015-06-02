@@ -359,15 +359,15 @@ class Invoice
     /**
      * 
      * @param float $amount
-     * @param string $cultureDate
+     * @param propeldate $datePaid
      */
-    public function addPayment($amount, $cultureDate)
+    public function addPayment($amount, $datePaid = null)
     {
-        $this->setAmountPaid(bcadd($this->getAmountPaid(), $amount, 2));
-        if ($this->isPaid())
-        {
-            $this->setDatePaid(\myDateTools::cultureDateToPropelDate($cultureDate));
-        }
+      $this->setAmountPaid(bcadd($this->getAmountPaid(), str_replace(',', '.', $amount), 2));
+      if ($this->isPaid())
+      {
+          $this->setDatePaid(isset($datePaid) ? $datePaid : date('Y-m-d'));
+      }
     }
 
     public function getOutstandingAmount()

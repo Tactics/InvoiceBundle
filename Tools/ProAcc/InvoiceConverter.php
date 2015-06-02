@@ -26,14 +26,15 @@ class InvoiceConverter
     /**
      * 
      * @param array[Invoice] $invoices
+     * @param array $options
      * @return ConverterResult
      */
-    public function convert($invoices)
+    public function convert($invoices, $options = array())
     {
         $data = array();
         foreach ($invoices as $invoice)
         {
-            foreach ($this->getProAccVerkoopLijnen($invoice) as $verkoopLijn)
+            foreach ($this->getProAccVerkoopLijnen($invoice, $options) as $verkoopLijn)
             {
                $data[] = implode("\t", $verkoopLijn);
             }
@@ -44,9 +45,15 @@ class InvoiceConverter
         return new ConverterResult('verkopen.txt', 'text/csv', implode("\r\n", $data));
     }
     
-    private function getProAccVerkoopLijnen(Invoice $invoice)
+    /**
+     * 
+     * @param Invoice $invoice
+     * @param array $options
+     * @return array
+     */
+    private function getProAccVerkoopLijnen(Invoice $invoice, $options)
     {
-        $blancos = $this->getBlancos();
+        $blancos = $this->getBlancos($options);
         $omschrijving = $this->getOmschrijving($invoice);
         $boekingsPeriode = $this->getBoekingsperiode($invoice);
         $withVat = $invoice->withVat();
@@ -60,7 +67,7 @@ class InvoiceConverter
         {
             if ($item->getType() == 'text') continue;
 
-            $lines[] = array_merge($blancos, array(
+            $line = array_merge($blancos, array(
               'A' => $first ? ($isCreditNote ? '2' : '1') : '3',
               'B' => $this->getKlantcode($invoice),
               'C' => $invoice->getJournalCode(),
@@ -90,17 +97,29 @@ class InvoiceConverter
               'AM' => ''
             ));
             
+            if (isset($options['inovant']) && $options['inovant'])
+            {
+              $line['AO'] = $invoice->getRef();
+            }
+            
+            $lines[] = $line;
+            
             $first = false;
         }
 
         return $lines;
     }
     
-    private function getBlancos()
+    /**
+     * 
+     * @param array $options
+     * @return type
+     */
+    private function getBlancos($options)
     {
-        $rangeAAToAM = array_map(create_function('$object', 'return "A{$object}";'), range('A', 'M'));
-        $rangeAtoAM = array_merge(range('A', 'Z'), $rangeAAToAM);
-        return array_combine($rangeAtoAM, array_fill(0, count($rangeAtoAM), '0'));
+        $rangeAA = array_map(create_function('$object', 'return "A{$object}";'), range('A', isset($options['inovant']) && $options['inovant'] ? 'O' : 'M'));
+        $range = array_merge(range('A', 'Z'), $rangeAA);
+        return array_combine($range, array_fill(0, count($range), '0'));
     }
 
     private function getOmschrijving(Invoice $invoice)

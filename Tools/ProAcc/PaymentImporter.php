@@ -74,7 +74,7 @@ final class PaymentImporter
             return;
         }
         
-        $invoice->addPayment($amountPaid, $cultureDate);
+        $invoice->addPayment($amountPaid, \myDateTools::cultureDateToPropelDate($cultureDate));
         $this->logs[] = $invoice->isPaid()
           ? $factuurNr.': Factuur volledig betaald'
           : $factuurNr.': Factuur deels betaald'
