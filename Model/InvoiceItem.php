@@ -12,6 +12,7 @@ class InvoiceItem
     protected $description = '';    
     protected $group_description = '';
     protected $type = 'invoice';
+    protected $vat_code;
     protected $vat_percentage;
     protected $gl_account_code;
     protected $analytical_1_account_code = null;
@@ -72,6 +73,11 @@ class InvoiceItem
     public function getInvoice()
 	{
 		return $this->invoice;
+	}
+    
+    public function getVatCode()
+	{
+		return $this->vat_code;
 	}
     
     public function getVatPercentage()
@@ -191,6 +197,11 @@ class InvoiceItem
     public function setInvoice($v)
     {
         $this->invoice = $v;
+    }
+    
+    public function setVatCode($v)
+    {
+        $this->vat_code = $v;
     }
     
     public function setVatPercentage($v)

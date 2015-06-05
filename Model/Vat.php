@@ -88,6 +88,6 @@ class Vat
     
     public function __toString() 
     {
-        return sprintf('%2u%% : %s', $this->getPercentage(), $this->getName());
+        return sprintf('%s: %s', $this->getCode(), $this->getName());
     }
 }
