@@ -148,15 +148,10 @@ class InvoiceConverter
      * 
      * @todo: fix dependency on \Config::BOEKINGSPERIODE
      */
-    private function getBoekingsperiode($invoice)
+    private function getBoekingsperiode(Invoice $invoice)
     {
-        $journal = $this->journalMgr->find(array(
-            $invoice->getJournalCode(),
-            $invoice->getSchemeId()
-        ));
-        
         // facturen en creditnota's met BTW afh van config val
-        if ($journal->getWithVat())
+        if ($invoice->withVat())
         {
             $ns = \sfContext::getInstance()->getUser()->getBedrijf()->getVarNaam();
             return \ConfigPeer::get(\Config::BOEKINGSPERIODE, '', $ns);
