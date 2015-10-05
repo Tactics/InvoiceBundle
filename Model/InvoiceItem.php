@@ -24,6 +24,7 @@ class InvoiceItem
     protected $analytical_7_account_code = null;
     
     protected $invoice;
+    protected $object;
 
     // getters	
 	  public function getId()
@@ -74,6 +75,11 @@ class InvoiceItem
 	{
 		return $this->invoice;
 	}
+
+    public function getObject()
+    {
+        return $this->object;
+    }
     
     public function getVatCode()
 	{
@@ -197,6 +203,11 @@ class InvoiceItem
     public function setInvoice($v)
     {
         $this->invoice = $v;
+    }
+
+    public function setObject($v)
+    {
+        $this->object = $v;
     }
     
     public function setVatCode($v)
