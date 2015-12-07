@@ -145,10 +145,6 @@ class InvoiceItem
 	
 	public function setQuantity($v)
 	{
-        if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
-		}
-
 		if ($this->quantity !== $v) {
 			$this->quantity = $v;			
 		}
