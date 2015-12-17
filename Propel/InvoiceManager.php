@@ -67,11 +67,10 @@ class InvoiceManager extends ObjectManager
     {
         if (!$domainObject->getId())
         {
-
-
             if(!$domainObject->getJournalCode()) $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
-            $domainObject->setDate(time());
-            $domainObject->setDateDue(strtotime('+30 days'));
+            $dateCreated = new \DateTime($domainObject->getDate() ?: null);
+            $domainObject->setDate($dateCreated->getTimestamp());
+            $domainObject->setDateDue($dateCreated->add(new \DateInterval('P30D'))->getTimestamp());
             $result =  $this->saveNew($domainObject);
 
 
