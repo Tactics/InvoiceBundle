@@ -170,11 +170,20 @@ class InvoiceManager extends ObjectManager
      */
     private function generateNumber($invoice)
     {
+        if (method_exists($this->number_generator, 'getLastnumberSearchFields'))
+        {
+            $searchFields = $this->number_generator->getLastnumberSearchFields($invoice);
+        }
+        else
+        {
+            $searchFields = array(
+                'journal_code' => $invoice->getJournalCode()
+            );
+        }
+
         // retrieve last invoice from same journal
         $lastInvoice = $this->searchOne(
-            array(
-                'journal_code' => $invoice->getJournalCode()
-            ),
+            $searchFields,
             'number', // sort by number
             false // descending
         );
