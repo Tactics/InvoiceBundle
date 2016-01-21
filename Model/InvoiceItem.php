@@ -24,6 +24,7 @@ class InvoiceItem
     protected $analytical_7_account_code = null;
     
     protected $invoice;
+    protected $object;
 
     // getters	
 	  public function getId()
@@ -71,19 +72,24 @@ class InvoiceItem
      * @return Tactics\InvoiceBundle\Model\Invoice
      */
     public function getInvoice()
-	{
-		return $this->invoice;
-	}
+	  {
+		    return $this->invoice;
+	  }
+
+    public function getObject()
+    {
+        return $this->object;
+    }
     
     public function getVatCode()
-	{
-		return $this->vat_code;
-	}
+	  {
+		    return $this->vat_code;
+	  }
     
     public function getVatPercentage()
-	{
-		return $this->vat_percentage;
-	}
+	  {
+		    return $this->vat_percentage;
+    }
     
     public function getGlAccountCode()
     {
@@ -197,6 +203,11 @@ class InvoiceItem
     public function setInvoice($v)
     {
         $this->invoice = $v;
+    }
+
+    public function setObject($v)
+    {
+        $this->object = $v;
     }
     
     public function setVatCode($v)
