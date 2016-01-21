@@ -43,6 +43,7 @@ class InvoiceManager extends ObjectManager
         $invoice->setSchemeId(isset($options['scheme_id']) ? $options['scheme_id'] : null);
         $invoice->setRef(isset($options['ref']) ? $options['ref'] : null);
         $invoice->setStructuredCommunication(isset($options['structured_communication']) ? $options['structured_communication'] : null);
+        $invoice->setJournalCode(isset($options['journal_code']) ? $options['journal_code'] : null);
         
         if ($object)
         {
@@ -66,15 +67,17 @@ class InvoiceManager extends ObjectManager
     {
         if (!$domainObject->getId())
         {
-          $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
-          $domainObject->setDate(time());
-          $domainObject->setDateDue(strtotime('+30 days'));
-          $result =  $this->saveNew($domainObject);
+            if(!$domainObject->getJournalCode()) $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
+            $dateCreated = new \DateTime($domainObject->getDate() ?: null);
+            $domainObject->setDate($dateCreated->getTimestamp());
+            $domainObject->setDateDue($dateCreated->add(new \DateInterval('P30D'))->getTimestamp());
+            $result =  $this->saveNew($domainObject);
+
+
+            $event = new InvoiceCreatedEvent($domainObject, $options);
+            $this->event_dispatcher->dispatch(InvoiceEvents::CREATED, $event);
           
-          $event = new InvoiceCreatedEvent($domainObject, $options);
-          $this->event_dispatcher->dispatch(InvoiceEvents::CREATED, $event);
-          
-          return $result;
+            return $result;
         }
         
         $ormObject = $this->transformer->toOrm($domainObject);
@@ -167,11 +170,20 @@ class InvoiceManager extends ObjectManager
      */
     private function generateNumber($invoice)
     {
+        if (method_exists($this->number_generator, 'getLastnumberSearchFields'))
+        {
+            $searchFields = $this->number_generator->getLastnumberSearchFields($invoice);
+        }
+        else
+        {
+            $searchFields = array(
+                'journal_code' => $invoice->getJournalCode()
+            );
+        }
+
         // retrieve last invoice from same journal
         $lastInvoice = $this->searchOne(
-            array(
-                'journal_code' => $invoice->getJournalCode()
-            ),
+            $searchFields,
             'number', // sort by number
             false // descending
         );

@@ -72,9 +72,9 @@ class InvoiceItem
      * @return Tactics\InvoiceBundle\Model\Invoice
      */
     public function getInvoice()
-	  {
-		    return $this->invoice;
-	  }
+	{
+		return $this->invoice;
+	}
 
     public function getObject()
     {
@@ -145,10 +145,6 @@ class InvoiceItem
 	
 	public function setQuantity($v)
 	{
-        if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
-		}
-
 		if ($this->quantity !== $v) {
 			$this->quantity = $v;			
 		}
