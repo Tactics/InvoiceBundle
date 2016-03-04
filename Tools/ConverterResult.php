@@ -34,5 +34,12 @@ class ConverterResult
         
         exit();
     }
+
+    public function writeToFile()
+    {
+        $handle = fopen(\sfConfig::get('sf_data_dir') .'/exports/'.$this->filename, 'w');
+        fwrite($handle, $this->output);
+        fclose($handle);
+    }
 }
 
