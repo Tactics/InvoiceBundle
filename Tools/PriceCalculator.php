@@ -4,7 +4,7 @@ namespace Tactics\InvoiceBundle\Tools;
 
 use Tactics\InvoiceBundle\Model\InvoiceItem;
 
-class PriceCalculator implements PriceCalculatorInterface
+class PriceCalculator
 {
     public function calculate(InvoiceItem $item)
     {
