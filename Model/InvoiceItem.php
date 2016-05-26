@@ -12,6 +12,7 @@ class InvoiceItem
     protected $description = '';    
     protected $group_description = '';
     protected $type = 'invoice';
+    protected $vat = 0;
     protected $vat_code;
     protected $vat_percentage;
     protected $gl_account_code;
@@ -69,7 +70,7 @@ class InvoiceItem
     
     /**
      * 
-     * @return Tactics\InvoiceBundle\Model\Invoice
+     * @return Invoice
      */
     public function getInvoice()
 	{
@@ -79,6 +80,11 @@ class InvoiceItem
     public function getObject()
     {
         return $this->object;
+    }
+
+    public function getVat()
+    {
+        return $this->vat;
     }
     
     public function getVatCode()
@@ -209,6 +215,11 @@ class InvoiceItem
     {
         $this->object = $v;
     }
+
+    public function setVat($v)
+    {
+        $this->vat = $v;
+    }
     
     public function setVatCode($v)
     {
@@ -262,8 +273,7 @@ class InvoiceItem
     
     public function calculatePrices()
     {
-        $this->price_ex_vat = bcmul($this->quantity, $this->unit_price, 2);
-        $vatMultiplier = bcdiv(bcadd(100, $this->vat_percentage, 2), 100, 2);
-        $this->price_incl_vat = bcmul($this->price_ex_vat, $vatMultiplier, 2);
+        $priceCalc = \sfContext::getInstance()->getContainer()->get('invoice_price_calculator');
+        $priceCalc->calculate($this);
     }
 }

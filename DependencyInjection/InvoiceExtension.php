@@ -75,6 +75,7 @@ class InvoiceExtension extends Extension
         $container->setParameter('invoice_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['invoice_converter']);
         $container->setParameter('payment_importer.class', $this->accountingSoftwareMap[$config['accounting_software']]['payment_importer']);
         $container->setParameter('options_generator.class', $config['options_generator']);
+        $container->setParameter('invoice_price_calculator.class', $config['price_calculator']);
         
         // set the dic parameters for each domain object
         foreach ($this->object_names as $object_name)

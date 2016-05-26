@@ -118,6 +118,8 @@
         </service>
         
         <service id="options_generator" class="%options_generator.class%"/>
+
+        <service id="invoice_price_calculator" class="%invoice_price_calculator.class%"/>
         
     </services>
 </container>

@@ -158,7 +158,10 @@ class Invoice
     {
 				return $this->customer;
     }
-    
+
+    /**
+     * @return InvoiceItem[]
+     */
     public function getItems()
     {
         return $this->items;
@@ -343,7 +346,7 @@ class Invoice
         {
             $item->calculatePrices();
             $this->total = bcadd($this->total, $item->getPriceExVat(), 2);
-            $this->vat = bcadd($this->vat, bcsub($item->getPriceInclVat(), $item->getPriceExVat(), 2), 2);
+            $this->vat = bcadd($this->vat, $item->getVat(), 2);
         }
     }
     

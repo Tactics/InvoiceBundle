@@ -61,6 +61,10 @@ class Configuration implements ConfigurationInterface
                   ->info('class that can generate extra invoice options (i.e. payment_method)')
                   ->defaultValue('Tactics\InvoiceBundle\Tools\OptionsGenerator')
                 ->end()
+                ->scalarNode('price_calculator')
+                  ->info('class that calculates the invoice price)')
+                  ->defaultValue('Tactics\InvoiceBundle\Tools\PriceCalculator')
+                ->end()
             ->end()
         ;
     }
