@@ -67,7 +67,7 @@ class InvoiceConverter
         {
             if ($item->getType() == 'text') continue;
 
-            $priceExVat = $isCreditNote ? abs($item->getPriceExVat()) : $item->getPriceExVat();
+            $priceExVat = $isCreditNote ? bcmul(-1, $item->getPriceExVat(), 2) : $item->getPriceExVat();
             $line = array_merge($blancos, array(
                 'A' => $first ? ($isCreditNote ? '2' : '1') : '3',
                 'B' => $this->getKlantcode($invoice),
