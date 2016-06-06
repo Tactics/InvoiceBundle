@@ -158,7 +158,10 @@ class Invoice
     {
 				return $this->customer;
     }
-    
+
+  /**
+   * @return InvoiceItem[]
+   */
     public function getItems()
     {
         return $this->items;

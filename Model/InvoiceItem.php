@@ -264,6 +264,6 @@ class InvoiceItem
     {
         $this->price_ex_vat = bcmul($this->quantity, $this->unit_price, 2);
         $vatMultiplier = bcdiv(bcadd(100, $this->vat_percentage, 2), 100, 2);
-        $this->price_incl_vat = bcmul($this->price_ex_vat, $vatMultiplier, 2);
+        $this->price_incl_vat = round(bcmul($this->price_ex_vat, $vatMultiplier, 3), 2);
     }
 }
