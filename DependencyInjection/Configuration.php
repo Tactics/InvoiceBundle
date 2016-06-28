@@ -65,6 +65,10 @@ class Configuration implements ConfigurationInterface
                   ->info('class that calculates the invoice price)')
                   ->defaultValue('Tactics\InvoiceBundle\Tools\PriceCalculator')
                 ->end()
+                ->booleanNode('proacc_facturatiemodule')
+                  ->info('setting that enables download of 2 files for invoice imports in proacc iso 1')
+                  ->defaultValue(false)
+                  ->end()
             ->end()
         ;
     }

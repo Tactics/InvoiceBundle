@@ -41,7 +41,7 @@ class CustomerConverter
         // add last line
         $txtLines[] = '99';
         
-        return new ConverterResult('klanten.txt', 'text/plain', implode("\r\n", $txtLines));
+        return (new ConverterResult())->add('klanten.txt', 'text/plain', implode("\r\n", $txtLines));
     }
     
     /**

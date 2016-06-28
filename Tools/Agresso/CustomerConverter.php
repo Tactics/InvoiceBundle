@@ -54,7 +54,7 @@ class CustomerConverter
         }
         $xml .= '</Customer>';
         
-        return new ConverterResult('klanten_'.$now->format('yyyyMMddHHmmss').'.xml', 'text/xml', $xml);
+        return (new ConverterResult())->add('klanten_'.$now->format('yyyyMMddHHmmss').'.xml', 'text/xml', $xml);
     }
     
     /**

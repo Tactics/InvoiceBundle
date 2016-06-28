@@ -48,7 +48,7 @@ class InvoiceConverter
         }
         $xml .= '</Facturen>';
         
-        return new ConverterResult('verkopen_'.$batchId.'.xml', 'text/xml', $xml);
+        return (new ConverterResult())->add('verkopen_'.$batchId.'.xml', 'text/xml', $xml);
     }
     
     private function getVoucher(Invoice $invoice)

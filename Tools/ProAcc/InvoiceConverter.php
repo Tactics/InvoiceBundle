@@ -2,6 +2,7 @@
 
 namespace Tactics\InvoiceBundle\Tools\ProAcc;
 
+use Facturatie\Customer\ProAccCustomer;
 use Tactics\InvoiceBundle\Model\Invoice;
 use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
@@ -39,10 +40,26 @@ class InvoiceConverter
                $data[] = implode("\t", $verkoopLijn);
             }
         }
-        
         $data[] = "99"; // add last line
-        
-        return new ConverterResult('verkopen.txt', 'text/csv', implode("\r\n", $data));
+        $result = (new ConverterResult())->add('verkopen.txt', 'text/csv', implode("\r\n", $data));
+
+        // indien facturatie in proacc, aparte import in facturatiemodule
+        if (isset($options['proacc_facturatie']) && $options['proacc_facturatie'])
+        {
+            $data2 = [];
+            foreach ($invoices as $invoice)
+            {
+                foreach ($this->getProAccFacturatieLijnen($invoice, $options) as $facturatieLijn)
+                {
+                    $data2[] = implode("\t", $facturatieLijn);
+                }
+            }
+            $data2[] = "99"; // add last line
+
+            $result->add('facturen.txt', 'text/csv', implode("\r\n", $data2));
+        }
+
+        return $result;
     }
     
     /**
@@ -158,6 +175,73 @@ class InvoiceConverter
         }
         
         return $invoice->getDate('ym');
+    }
+
+    /**
+     * @param Invoice $invoice
+     * @param $options
+     */
+    private function getProAccFacturatieLijnen(Invoice $invoice, $options)
+    {
+        $blancos = $this->getBlancos($options);
+        $first = true;
+        $isCreditNote = $invoice->isCreditNote();
+        /** @var ProAccCustomer $customer */
+        $customer = $this->customerFactory->getCustomer($invoice);
+        $withVat = $invoice->withVat();
+
+        foreach ($invoice->getItems() as $cnt => $item)
+        {
+            if ($item->getType() == 'text') continue;
+
+            $line = array(
+                'A' => $first ? '1' : '3',
+                'B' => $isCreditNote ? 'C' : 'F',
+                'C' => $isCreditNote ? 'CRED' : 'FACT',
+                'D' => $invoice->getNumber(),
+                'E' => $this->getKlantcode($invoice),
+                'F' => $invoice->getDate('d/m/Y'),
+                'G' => $invoice->getRef(),
+                'H' => $customer->getRef($invoice),
+                'I' => 'EUR',
+                'J' => 1,
+                'K' => $customer->getBtwStatus(),
+                'L' => '', // vertegenwoordiger?
+                'M' => '', // code betalingswijze?
+                'N' => $invoice->getDateDue('d/m/Y'),
+                'O' => '', // globale korting %
+                'P' => '', // fin. korting %
+                'Q' => '', // kredietbeperking korting %
+                'R' => '', // artikelcode of *1, *2 of M + => omschrijving in volgend veld
+                'S' => $item->getDescription(),
+                'T' => $item->getQuantity(),
+                'U' => $item->getUnitPrice(),
+                'V' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
+                'W' => '', // lijnkorting%
+                'X' => $item->getGlAccountCode(), // Algemene rekening
+                'Y' => '', // analytiche rekening, maar er zijn er meerdere?
+                'Z' => '', // eenheid?
+                'AA' => '', // commissie vertegenwoordiger %
+                'AB' => '', // levertijd ?
+                'AC' => '', // leveringsvoorwaarden
+                'AD' => '', // voorschot,
+                'AE' => '', $customer->getNaam(), // max 30 , naam 1
+                'AF' => '', // max 30 , naam 2
+                'AG' => '', // max 30 , naam 3
+                'AH' => $customer->getStraatNummerBus(),
+                'AI' => $customer->getPostcode(),
+                'AJ' => $customer->getGemeente(),
+                'AK' => $customer->getLandcode(),
+                'AL' => $customer->getLandnaam(),
+                'AM' => 1, // prijzen btw in
+                'AN' => 0  // document geprint
+            );
+
+            $lines[] = $line;
+            $first = false;
+        }
+
+        return $lines;
     }
 }
 
