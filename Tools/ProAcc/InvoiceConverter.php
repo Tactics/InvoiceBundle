@@ -3,6 +3,7 @@
 namespace Tactics\InvoiceBundle\Tools\ProAcc;
 
 use Tactics\InvoiceBundle\Model\Invoice;
+use Tactics\InvoiceBundle\Model\InvoiceItem;
 use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Tools\ConverterResult;
@@ -65,7 +66,8 @@ class InvoiceConverter
         $first = true;
         foreach ($invoice->getItems() as $cnt => $item)
         {
-            if ($item->getType() == 'text') continue;
+            // negeer tekstlijnen en nullijnen
+            if (($item->getType() == 'text') || (bccomp(0, $item->getPriceExVat(), 2) === 0)) continue;
 
             $priceExVat = $isCreditNote ? bcmul(-1, $item->getPriceExVat(), 2) : $item->getPriceExVat();
             $line = array_merge($blancos, array(
