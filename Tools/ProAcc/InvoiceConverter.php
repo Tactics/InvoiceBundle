@@ -228,7 +228,7 @@ class InvoiceConverter
                 'AE' => '', substr($customer->getNaam(), 0, 30), // max 30 , naam 1
                 'AF' => '', // max 30 , naam 2
                 'AG' => '', // max 30 , naam 3
-                'AH' => $customer->getStraatNummerBus(),
+                'AH' => substr($customer->getStraatNummerBus(), 0, 30),
                 'AI' => $customer->getPostcode(),
                 'AJ' => $customer->getGemeente(),
                 'AK' => $customer->getLandcode(),
