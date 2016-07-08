@@ -52,28 +52,26 @@ class ConverterResult
 
     private function outputAsZipArchive()
     {
-        $zipname = 'verkopen.zip';
-        $zip = new \ZipArchive;
+        $zipname = tempnam(sys_get_temp_dir(), 'FAC');
+        $zip = new \ZipArchive();
         $zip->open($zipname, \ZipArchive::CREATE);
         foreach ($this->files as $fileInfo)
         {
-            $zip->addFromString($fileInfo['filename'], $fileInfo['content']);
+          $zip->addFromString($fileInfo['filename'], $fileInfo['content']);
         }
         $zip->close();
-        $content = readfile($zipname);
-        $filesize = filesize($zipname);
-        unlink($zipname);
 
         header('Content-Description: File Transfer');
         header('Content-Type: application/zip; charset=utf-8');
-        header('Content-Disposition: attachment; filename= '.$zipname);
-        header('Content-Length: ' . $filesize);
+        header('Content-Disposition: attachment; filename=verkopen.zip');
+        header('Content-Length: ' . filesize($zipname));
         header('Connection: Keep-Alive');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
 
-        echo $content;
+        readfile($zipname);
+        unlink($zipname);
         exit;
     }
 }
