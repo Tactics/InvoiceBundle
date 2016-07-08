@@ -207,13 +207,13 @@ class InvoiceConverter
                 'J' => 1,
                 'K' => $customer->getBtwStatus(),
                 'L' => '', // vertegenwoordiger?
-                'M' => '', // code betalingswijze?
+                'M' => $invoice->getJournalCode(), // code betalingswijze?
                 'N' => $invoice->getDateDue('d/m/Y'),
                 'O' => '', // globale korting %
                 'P' => '', // fin. korting %
                 'Q' => '', // kredietbeperking korting %
                 'R' => '', // artikelcode of *1, *2 of M + => omschrijving in volgend veld
-                'S' => $item->getDescription(),
+                'S' => $item->getDescription(), // max 300
                 'T' => $item->getQuantity(),
                 'U' => $item->getUnitPrice(),
                 'V' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
@@ -225,7 +225,7 @@ class InvoiceConverter
                 'AB' => '', // levertijd ?
                 'AC' => '', // leveringsvoorwaarden
                 'AD' => '', // voorschot,
-                'AE' => '', $customer->getNaam(), // max 30 , naam 1
+                'AE' => '', substr($customer->getNaam(), 0, 30), // max 30 , naam 1
                 'AF' => '', // max 30 , naam 2
                 'AG' => '', // max 30 , naam 3
                 'AH' => $customer->getStraatNummerBus(),
