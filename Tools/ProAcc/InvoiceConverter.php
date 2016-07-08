@@ -207,7 +207,7 @@ class InvoiceConverter
                 'J' => 1,
                 'K' => $customer->getBtwStatus(),
                 'L' => '', // vertegenwoordiger?
-                'M' => $invoice->getJournalCode(), // code betalingswijze?
+                'M' => 30, // code betalingswijze
                 'N' => $invoice->getDateDue('d/m/Y'),
                 'O' => '', // globale korting %
                 'P' => '', // fin. korting %
@@ -219,13 +219,13 @@ class InvoiceConverter
                 'V' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
                 'W' => '', // lijnkorting%
                 'X' => $item->getGlAccountCode(), // Algemene rekening
-                'Y' => '', // analytiche rekening, maar er zijn er meerdere?
+                'Y' => $item->getAnalytical1AccountCode(), // analytiche code
                 'Z' => '', // eenheid?
                 'AA' => '', // commissie vertegenwoordiger %
                 'AB' => '', // levertijd ?
                 'AC' => '', // leveringsvoorwaarden
-                'AD' => '', // voorschot,
-                'AE' => '', substr($customer->getNaam(), 0, 30), // max 30 , naam 1
+                'AD' => '', // voorschot
+                'AE' => substr($customer->getNaam(), 0, 30), // max 30 , naam 1
                 'AF' => '', // max 30 , naam 2
                 'AG' => '', // max 30 , naam 3
                 'AH' => substr($customer->getStraatNummerBus(), 0, 30),
@@ -234,7 +234,8 @@ class InvoiceConverter
                 'AK' => $customer->getLandcode(),
                 'AL' => $customer->getLandnaam(),
                 'AM' => 1, // prijzen btw in
-                'AN' => 0  // document geprint
+                'AN' => 0,  // document geprint
+                'AO' => $item->getAnalytical2AccountCode() // actienummer
             );
 
             $lines[] = $line;
