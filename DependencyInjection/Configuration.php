@@ -2,9 +2,9 @@
 
 namespace Tactics\InvoiceBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 /**
  * This is the class that validates and merges configuration from your config/container.yml files
@@ -60,6 +60,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('options_generator')
                   ->info('class that can generate extra invoice options (i.e. payment_method)')
                   ->defaultValue('Tactics\InvoiceBundle\Tools\OptionsGenerator')
+                ->end()
+                ->scalarNode('invoice_converter')
+                  ->info('class that converts the invoice for import in the accounting software')
                 ->end()
             ->end()
         ;

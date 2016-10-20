@@ -87,7 +87,7 @@ class InvoiceConverter
     {
         $arTransaction = '<Transaction>';
         $arTransaction .= '<TransType>AR</TransType>';
-        $arTransaction .= sprintf('<Description>%s</Description>', $invoice->getRef()); // globale omschrijving?
+        $arTransaction .= sprintf('<Description>%s</Description>', $this->getARDescription($invoice)); // globale omschrijving?
         $arTransaction .= sprintf('<TransDate>%s</TransDate>', $invoice->getDate()); // factuurdatum;
         
         // AR amount is positief indien factuur, negatief indien creditnota!
@@ -119,7 +119,7 @@ class InvoiceConverter
         
         $glTransaction = '<Transaction>';
         $glTransaction .= '<TransType>GL</TransType>';       
-        $glTransaction .= sprintf('<Description>%s</Description>', $item->getDescription()); // globale omschrijving?
+        $glTransaction .= sprintf('<Description>%s</Description>', $this->getGLDescription($item)); // globale omschrijving?
         $glTransaction .= sprintf('<TransDate>%s</TransDate>', $invoice->getDate()); // factuurdatum;
         
         // amount is negatief indien factuur, positief indien creditnota!
@@ -200,5 +200,29 @@ class InvoiceConverter
         $apArInfo .= '</ApArInfo>';
         
         return $apArInfo;
+    }
+    
+    /**
+     * Returns the Description for the AR transaction
+     * Can be overwritten in custom invoice converter
+     *
+     * @param Invoice $invoice
+     * @return string
+     */
+    protected function getARDescription(Invoice $invoice)
+    {
+        return $invoice->getRef();
+    }
+    
+    /**
+     * Returns the description for the GL transaction
+     * Can be overwritten in custom invoice converter
+     *
+     * @param InvoiceItem $item
+     * @return string
+     */
+    protected function getGLDescription(InvoiceItem $item)
+    {
+        return $item->getDescription();
     }
 }

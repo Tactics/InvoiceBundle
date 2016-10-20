@@ -72,7 +72,8 @@ class InvoiceExtension extends Extension
         $container->setParameter('pdf_generator.class', $config['pdf_generator']);
         $container->setParameter('invoice.accounting_software', $config['accounting_software']);
         $container->setParameter('customer_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['customer_converter']);
-        $container->setParameter('invoice_converter.class', $this->accountingSoftwareMap[$config['accounting_software']]['invoice_converter']);
+        $defaultInvoiceConverter = $this->accountingSoftwareMap[$config['accounting_software']]['invoice_converter'];
+        $container->setParameter('invoice_converter.class', isset($config['invoice_converter']) ? $config['invoice_converter'] : $defaultInvoiceConverter);
         $container->setParameter('payment_importer.class', $this->accountingSoftwareMap[$config['accounting_software']]['payment_importer']);
         $container->setParameter('options_generator.class', $config['options_generator']);
         
