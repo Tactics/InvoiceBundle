@@ -223,6 +223,6 @@ class InvoiceConverter
      */
     protected function getGLDescription(InvoiceItem $item)
     {
-        return $item->getDescription();
+        return htmlspecialchars($item->getDescription());
     }
 }
