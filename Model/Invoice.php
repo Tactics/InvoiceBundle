@@ -17,7 +17,9 @@ class Invoice
     protected $structured_communication;
     protected $currency = 'EUR';
     protected $send = 0;
+    protected $date_send;
     protected $exported = 0;
+    protected $date_exported;
     protected $ref;
     protected $pay_method;
     protected $customer;
@@ -30,11 +32,53 @@ class Invoice
     {
         return $this->send;
     }
-
+  
+    public function getDateSend($format = 'Y-m-d')
+    {
+        if ($this->date_send === null || $this->date_send === '') {
+            return null;
+        } elseif (!is_int($this->date_send)) {
+            $ts = strtotime($this->date_send);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse value of [date] as date/time value: " . var_export($this->date_send, true));
+            }
+        } else {
+            $ts = $this->date_send;
+        }
+        if ($format === null) {
+            return $ts;
+        } elseif (strpos($format, '%') !== false) {
+            return strftime($format, $ts);
+        } else {
+            return date($format, $ts);
+        }
+    }
+    
     public function getExported()
     {
         return $this->exported;
     }
+  
+    public function getDateExported($format = 'Y-m-d')
+    {
+        if ($this->date_exported === null || $this->date_exported === '') {
+            return null;
+        } elseif (!is_int($this->date_exported)) {
+            $ts = strtotime($this->date_exported);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse value of [date] as date/time value: " . var_export($this->date_exported, true));
+            }
+        } else {
+            $ts = $this->date_exported;
+        }
+        if ($format === null) {
+            return $ts;
+        } elseif (strpos($format, '%') !== false) {
+            return strftime($format, $ts);
+        } else {
+            return date($format, $ts);
+        }
+  }
     
     public function getRef()
     {
@@ -179,11 +223,41 @@ class Invoice
             $this->send = $v;
         }
     }
+  
+    public function setDateSend($v)
+    {
+        if ($v !== null && !is_int($v)) {
+           $ts = strtotime($v);
+            if ($ts === -1 || $ts === false) {
+                throw new PropelException("Unable to parse date/time value for [date] from input: " . var_export($v, true));
+            }
+        } else {
+            $ts = $v;
+        }
+        if ($this->date_send !== $ts) {
+            $this->date_send = $ts;
+        }
+    }
 
     public function setExported($v)
     {
         if ($this->exported !== $v) {
             $this->exported = $v;
+        }
+    }
+  
+    public function setDateExported($v)
+    {
+        if ($v !== null && !is_int($v)) {
+            $ts = strtotime($v);
+        if ($ts === -1 || $ts === false) {
+            throw new PropelException("Unable to parse date/time value for [date] from input: " . var_export($v, true));
+        }
+        } else {
+            $ts = $v;
+        }
+        if ($this->date_exported !== $ts) {
+            $this->date_exported = $ts;
         }
     }
     
