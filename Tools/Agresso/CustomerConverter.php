@@ -80,7 +80,7 @@ class CustomerConverter
         $schemeId = $this->invoice->getSchemeId();
         
         $xml = '<SupplierCustomer>';
-        $xml .= sprintf('<Name>%s</Name>', substr($this->customer->getName(), 0, 255));
+        $xml .= sprintf('<Name>%s</Name>', htmlspecialchars(substr($this->customer->getName(), 0, 255)));
         $xml .= sprintf('<ApArGroup>%02u</ApArGroup>', $this->customer->getApArGroup());
         $xml .= sprintf('<ShortName>%s</ShortName>', $this->customer->getApArNo($schemeId));
         $xml .= sprintf('<CountryCode>%s</CountryCode>', $this->customer->getCountryCode());
