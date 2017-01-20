@@ -10,7 +10,7 @@ use Tactics\InvoiceBundle\Tools\ConverterResult;
 
 class InvoiceConverter
 {
-    private $customerFactory;
+    protected $customerFactory;
     private $accountMgr;
     private $vatMgr;
     
@@ -224,5 +224,10 @@ class InvoiceConverter
     protected function getGLDescription(InvoiceItem $item)
     {
         return $item->getDescription();
+    }
+    
+    public function getErrors(Invoice $invoice)
+    {
+      return array();
     }
 }
