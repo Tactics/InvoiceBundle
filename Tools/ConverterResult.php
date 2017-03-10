@@ -22,23 +22,23 @@ class ConverterResult
         return $this;
     }
     
-    public function output() {
+    public function output($encoding = 'utf-8') {
         switch (count($this->files)){
             case 0:
                 // do nothing?
                 break;
             case 1:
-                $this->outputSingleFile();
+                $this->outputSingleFile($encoding);
                 break;
             default:
-                $this->outputAsZipArchive();
+                $this->outputAsZipArchive($encoding);
         }
     }
 
-    private function outputSingleFile()
+    private function outputSingleFile($encoding = 'utf-8')
     {
         header('Content-Description: File Transfer');
-        header('Content-Type: ' . $this->files[0]['mimeType'] . '; charset=utf-8');
+        header('Content-Type: ' . $this->files[0]['mimeType'] . '; charset='.$encoding);
         header('Content-Disposition: attachment; filename=' . $this->files[0]['filename']);
         header('Content-Length: ' . strlen($this->files[0]['content']));
         header('Connection: Keep-Alive');
@@ -46,11 +46,11 @@ class ConverterResult
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
 
-        echo $this->files[0]['content'];
+        echo $encoding != 'utf-8' ? iconv("UTF-8", $encoding, $this->files[0]['content']) : $this->files[0]['content'];
         exit;
     }
 
-    private function outputAsZipArchive()
+    private function outputAsZipArchive($encoding = 'utf-8')
     {
         $zipname = tempnam(sys_get_temp_dir(), 'FAC');
         $zip = new \ZipArchive();
@@ -62,7 +62,7 @@ class ConverterResult
         $zip->close();
 
         header('Content-Description: File Transfer');
-        header('Content-Type: application/zip; charset=utf-8');
+        header('Content-Type: application/zip; charset='.$encoding);
         header('Content-Disposition: attachment; filename=verkopen.zip');
         header('Content-Length: ' . filesize($zipname));
         header('Connection: Keep-Alive');
