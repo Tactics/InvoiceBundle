@@ -215,7 +215,7 @@ class InvoiceConverter
                 'R' => '', // artikelcode of *1, *2 of M + => omschrijving in volgend veld
                 'S' => $item->getDescription(), // max 300
                 'T' => $item->getQuantity(),
-                'U' => $item->getUnitPrice(),
+                'U' => number_format($item->getUnitPrice(), 2, ',', ''),
                 'V' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
                 'W' => '', // lijnkorting%
                 'X' => $item->getGlAccountCode(), // Algemene rekening
