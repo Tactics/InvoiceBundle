@@ -69,6 +69,9 @@ class Configuration implements ConfigurationInterface
                   ->info('setting that enables download of 2 files for invoice imports in proacc iso 1')
                   ->defaultValue(false)
                   ->end()
+                ->scalarNode('invoice_converter')
+                  ->info('class that converts invoice for export')
+                  ->end()
             ->end()
         ;
     }
