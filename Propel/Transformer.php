@@ -52,7 +52,7 @@ class Transformer extends Model\Transformer
      * @param mixed $ormObject The propel object
      * @return mixed The domain object
      */
-    public function fromOrm($ormObject)
+    public function fromOrm($ormObject, $force = false)
     {
         if (!$ormObject)
         {
@@ -61,7 +61,7 @@ class Transformer extends Model\Transformer
         
         $ormObjectHash = spl_object_hash($ormObject);
     
-        if (isset($this->domainObjects[$ormObjectHash]))
+        if (isset($this->domainObjects[$ormObjectHash]) && !$force)
         {
             $domainObject = $this->domainObjects[$ormObjectHash];
         }

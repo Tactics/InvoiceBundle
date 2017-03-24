@@ -61,7 +61,7 @@ class InvoiceManager extends ObjectManager
     /**
      * 
      * @param Invoice $domainObject
-     * @return type
+     * @return Invoice the saved invoice (with ids)
      */
     public function save($domainObject, $options = array())
     {
@@ -71,19 +71,18 @@ class InvoiceManager extends ObjectManager
             $dateCreated = new \DateTime($domainObject->getDate() ?: null);
             $domainObject->setDate($dateCreated->getTimestamp());
             $domainObject->setDateDue($dateCreated->add(new \DateInterval('P30D'))->getTimestamp());
-            $result =  $this->saveNew($domainObject);
+            $savedDomainObject = $this->saveNew($domainObject);
 
-
-            $event = new InvoiceCreatedEvent($domainObject, $options);
+            $event = new InvoiceCreatedEvent($savedDomainObject, $options);
             $this->event_dispatcher->dispatch(InvoiceEvents::CREATED, $event);
           
-            return $result;
+            return $savedDomainObject;
         }
         
         $ormObject = $this->transformer->toOrm($domainObject);
-        $result = $ormObject->save();
+        $ormObject->save();
         
-        return $result;
+        return $domainObject;
     }
     
     /**
@@ -127,11 +126,10 @@ class InvoiceManager extends ObjectManager
      *  - sets the new id to the domainObject
      * 
      * @param Invoice $invoice
-     * @return int 
+     * @return Invoice $invoice with ids
      */
     private function saveNew(Invoice $invoice)
     {
-        $ormObject = $this->transformer->toOrm($invoice);
         while (true)
         {
             try
@@ -143,17 +141,10 @@ class InvoiceManager extends ObjectManager
                 }
 
                 $ormObject = $this->transformer->toOrm($invoice);
-                $result = $ormObject->save();
+                $ormObject->save();
 
-                // setting the id
-                foreach ($this->pk_php_name as $pkName)
-                {
-                    $pkSetter = 'set' . $pkName;
-                    $pkGetter = 'get' . $pkName;
-                    $invoice->$pkSetter($ormObject->$pkGetter());
-                }
-
-                return $result;
+                // force opnieuw ophalen uit db zodat id's gezet worden
+                return $this->transformer->fromOrm($ormObject, true);
             }
             catch (\Exception $e)
             {
