@@ -46,7 +46,7 @@ class ConverterResult
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
 
-        echo $encoding != 'utf-8' ? iconv("UTF-8", $encoding, $this->files[0]['content']) : $this->files[0]['content'];
+        echo $encoding != 'utf-8' ? mb_convert_encoding($this->files[0]['content'], $encoding, 'utf-8') : $this->files[0]['content'];
         exit;
     }
 
