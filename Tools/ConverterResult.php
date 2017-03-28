@@ -37,16 +37,18 @@ class ConverterResult
 
     private function outputSingleFile($encoding = 'utf-8')
     {
+        $content = $encoding != 'utf-8' ? mb_convert_encoding($this->files[0]['content'], $encoding, 'utf-8') : $this->files[0]['content'];
+      
         header('Content-Description: File Transfer');
         header('Content-Type: ' . $this->files[0]['mimeType'] . '; charset='.$encoding);
         header('Content-Disposition: attachment; filename=' . $this->files[0]['filename']);
-        header('Content-Length: ' . strlen($this->files[0]['content']));
+        header('Content-Length: ' . strlen($content));
         header('Connection: Keep-Alive');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Pragma: public');
 
-        echo $encoding != 'utf-8' ? mb_convert_encoding($this->files[0]['content'], $encoding, 'utf-8') : $this->files[0]['content'];
+        echo $content;
         exit;
     }
 
