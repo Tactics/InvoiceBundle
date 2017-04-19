@@ -4,6 +4,7 @@ namespace Tactics\InvoiceBundle\Tools\ProAcc;
 
 use Facturatie\Customer\ProAccCustomer;
 use Tactics\InvoiceBundle\Model\Invoice;
+use Tactics\InvoiceBundle\Model\InvoiceItem;
 use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Tools\ConverterResult;
@@ -100,7 +101,7 @@ class InvoiceConverter
               'M' => number_format($total, 2, ',', ''),
               'N' => $withVat ? number_format($vat, 2, ',', '') : 0,
               'O' => !$withVat ? number_format($total, 2, ',', '') : 0,
-              'X' => $withVat ? number_format($total, 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
+              'X' => $withVat ? number_format($this->getMvh($invoice, '21'), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
               'Z' => $omschrijving,
               'AA' => $item->getGlAccountCode(),
               'AB' => $item->getAnalytical1AccountCode() ?: '',
@@ -244,5 +245,17 @@ class InvoiceConverter
 
         return $lines;
     }
+  
+  /**
+   * @param Invoice $invoice
+   * @param string $percentage
+   * @return mixed
+   */
+  private function getMvh(Invoice $invoice, $percentage)
+  {
+    return array_reduce($invoice->getItems(), function($carry, InvoiceItem $item) use ($percentage) {
+      return $item->getVatPercentage() === $percentage ? bcadd($carry, $item->getPriceExVat(), 2) : $carry;
+    }, 0);
+  }
 }
 
