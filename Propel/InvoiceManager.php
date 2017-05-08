@@ -30,10 +30,10 @@ class InvoiceManager extends ObjectManager
     }
     
     /**
-     * 
+     *
      * @param \Tactics\InvoiceBundle\Model\InvoiceableInterface $object
      * @return Tactics\InvoiceBundle\Model\Invoice
-     * 
+     *
      * @todo setNumber in transactie gieten? dagboek + code moet unique zijn => indien error opnieuw proberen
      */
     public function create(InvoiceableInterface $object = null, $options = array())
@@ -58,7 +58,7 @@ class InvoiceManager extends ObjectManager
     }
 
     /**
-     * 
+     *
      * @param Invoice $domainObject
      * @return type
      */
@@ -85,7 +85,7 @@ class InvoiceManager extends ObjectManager
     
     /**
      * Aanmaken van creditnote
-     * 
+     *
      * @param Invoice $invoice
      */
     public function createCreditNote(Invoice $invoice)
@@ -95,11 +95,11 @@ class InvoiceManager extends ObjectManager
       $creditNote->setCustomer($invoice->getCustomer());
       $creditNote->setRef($invoice->getRef());
       foreach ($invoice->getItems() as $item)
-      {        
+      {
         if ($item->getType() === 'text') continue;
         $creditedItem = clone $item;
         $creditedItem->setId(null);
-        $creditedItem->setGroupDescription(sprintf('CREDITNOTA VOOR FACTUUR %s VAN %s', $invoice->getNumber(), $invoice->getDate('d/m/Y')));
+//        $creditedItem->setGroupDescription(sprintf('CREDITNOTA VOOR FACTUUR %s VAN %s', $invoice->getNumber(), $invoice->getDate('d/m/Y')));
         $creditedItem->setUnitPrice(bcsub(0, $creditedItem->getUnitPrice(), 2));
         $creditNote->addItem($creditedItem);
       }
@@ -109,7 +109,7 @@ class InvoiceManager extends ObjectManager
     
     /**
      * Creates PDF
-     * 
+     *
      * @param Invoice $invoice
      * @return type
      */
@@ -122,9 +122,9 @@ class InvoiceManager extends ObjectManager
      * saves a new invoice:
      *  - generates invoice number and structured communication
      *  - sets the new id to the domainObject
-     * 
+     *
      * @param Invoice $invoice
-     * @return int 
+     * @return int
      */
     private function saveNew(Invoice $invoice)
     {
@@ -161,7 +161,7 @@ class InvoiceManager extends ObjectManager
     
     /**
      * Generates invoice number
-     * 
+     *
      * @param type $invoice
      * @return type
      */
@@ -184,7 +184,7 @@ class InvoiceManager extends ObjectManager
     
     /**
      * Generates structured communication message
-     * 
+     *
      * @param \Tactics\InvoiceBundle\Model\Invoice $invoice
      * @return string structured communication
      * @throws sfException
