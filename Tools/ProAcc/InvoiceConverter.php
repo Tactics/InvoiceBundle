@@ -25,7 +25,7 @@ class InvoiceConverter
     }
     
     /**
-     * 
+     *
      * @param array[Invoice] $invoices
      * @param array $options
      * @return ConverterResult
@@ -47,7 +47,7 @@ class InvoiceConverter
     }
     
     /**
-     * 
+     *
      * @param Invoice $invoice
      * @param array $options
      * @return array
@@ -86,7 +86,7 @@ class InvoiceConverter
                 'M' => number_format($total, 2, ',', ''),
                 'N' => $withVat ? number_format($vat, 2, ',', '') : 0,
                 'O' => !$withVat ? number_format($total, 2, ',', '') : 0,
-                'X' => $withVat ? number_format($total, 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
+                'X' => $withVat ? number_format($this->getMvh($invoice, '21'), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
                 'Z' => $omschrijving,
                 'AA' => $item->getGlAccountCode(),
                 'AB' => $item->getAnalytical1AccountCode() ?: '',
@@ -114,7 +114,7 @@ class InvoiceConverter
     }
     
     /**
-     * 
+     *
      * @param array $options
      * @return type
      */
@@ -133,7 +133,7 @@ class InvoiceConverter
     
     /**
      * Geeft de klantcode terug
-     * 
+     *
      * @return string
      * @todo: proacc_number ophalen/genereren van nieuwe
      */
@@ -145,10 +145,10 @@ class InvoiceConverter
     }
     
     /**
-     * 
+     *
      * @param Invoice $invoice
      * @return string
-     * 
+     *
      * @todo: fix dependency on \Config::BOEKINGSPERIODE
      */
     private function getBoekingsperiode(Invoice $invoice)
@@ -161,6 +161,18 @@ class InvoiceConverter
         }
         
         return $invoice->getDate('ym');
+    }
+  
+    /**
+     * @param Invoice $invoice
+     * @param string $percentage
+     * @return mixed
+     */
+    private function getMvh(Invoice $invoice, $percentage)
+    {
+        return array_reduce($invoice->getItems(), function($carry, InvoiceItem $item) use ($percentage) {
+            return $item->getVatPercentage() === $percentage ? bcadd($carry, $item->getPriceExVat(), 2) : $carry;
+       }, 0);
     }
 }
 
