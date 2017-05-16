@@ -68,7 +68,6 @@ class InvoiceConverter
         {
             // negeer tekstlijnen en nullijnen
             if (($item->getType() == 'text') || (bccomp(0, $item->getPriceExVat(), 2) === 0)) continue;
-
             $priceExVat = $isCreditNote ? bcmul(-1, $item->getPriceExVat(), 2) : $item->getPriceExVat();
             $line = array_merge($blancos, array(
                 'A' => $first ? ($isCreditNote ? '2' : '1') : '3',
@@ -85,8 +84,8 @@ class InvoiceConverter
                 'L' => number_format($total + $vat, 2, ',', ''),
                 'M' => number_format($total, 2, ',', ''),
                 'N' => $withVat ? number_format($vat, 2, ',', '') : 0,
-                'O' => !$withVat ? number_format($total, 2, ',', '') : 0,
-                'X' => $withVat ? number_format($this->getMvh($invoice, '21'), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
+                'O' => number_format($this->getMvh($invoice, '0'), 2, ',', ''), // maatstaf heffing 0% BTW hele dossier
+                'X' => number_format($this->getMvh($invoice, '21'), 2, ',', ''), // maatstaf heffing 21% BTW hele dossier
                 'Z' => $omschrijving,
                 'AA' => $item->getGlAccountCode(),
                 'AB' => $item->getAnalytical1AccountCode() ?: '',
