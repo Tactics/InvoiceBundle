@@ -13,24 +13,28 @@ class InvoiceConverter
     protected $customerFactory;
     private $accountMgr;
     private $vatMgr;
-    
-    /**
-     * constructor
-     *
-     * @param ObjectManager $customerSchemeMgr
-     */
+  
+  /**
+   * constructor
+   *
+   * @param CustomerFactoryInterface $customerFactory
+   * @param ObjectManager $accountMgr
+   * @param ObjectManager $vatMgr
+   * @param ObjectManager $journalMgr
+   * @internal param ObjectManager $customerSchemeMgr
+   */
     public function __construct(CustomerFactoryInterface $customerFactory, ObjectManager $accountMgr, ObjectManager $vatMgr, ObjectManager $journalMgr)
     {
         $this->customerFactory = $customerFactory;
         $this->accountMgr = $accountMgr;
         $this->vatMgr = $vatMgr;
     }
-    
-    /**
-     * 
-     * @param array[Invoice] $invoices
-     */
-    public function convert($invoices)
+  
+  /**
+   * @param Invoice[] $invoices
+   * @return ConverterResult
+   */
+    public function convert(array $invoices)
     {
         $now = new \myDate(time());
         
@@ -51,7 +55,7 @@ class InvoiceConverter
         return new ConverterResult('verkopen_'.$batchId.'.xml', 'text/xml', $xml);
     }
     
-    private function getVoucher(Invoice $invoice)
+    protected function getVoucher(Invoice $invoice)
     {
         $voucher = sprintf('<VoucherNo>%u</VoucherNo>', $invoice->getNumber()); // factuurnr
         $voucher .= sprintf('<VoucherType>%s</VoucherType>', $invoice->getJournalCode()); // dagboek/journaal
@@ -70,7 +74,7 @@ class InvoiceConverter
             if ($item->getVatPercentage() > 0)
             {
                 $voucher .= $this->getTxTransaction($item); // alleen indien met BTW
-            }            
+            }
         }
         
         return sprintf('<Voucher>%s</Voucher>', $voucher);
@@ -78,7 +82,7 @@ class InvoiceConverter
     
     /**
      * transactie voor klantrekening
-     * 
+     *
      * @param Invoice $invoice
      * @return string
      * @todo: GL account indien waarborg???
@@ -108,7 +112,7 @@ class InvoiceConverter
     
     /**
      * transactie voor verkooprekening
-     * 
+     *
      * @param InvoiceItem $item
      * @return string
      */
@@ -118,7 +122,7 @@ class InvoiceConverter
         $invoice = $item->getInvoice();
         
         $glTransaction = '<Transaction>';
-        $glTransaction .= '<TransType>GL</TransType>';       
+        $glTransaction .= '<TransType>GL</TransType>';
         $glTransaction .= sprintf('<Description>%s</Description>', $this->getGLDescription($item)); // globale omschrijving?
         $glTransaction .= sprintf('<TransDate>%s</TransDate>', $invoice->getDate()); // factuurdatum;
         
@@ -147,7 +151,7 @@ class InvoiceConverter
     
     /**
      * transactie voor btw rekening
-     * 
+     *
      * @param InvoiceItem $item
      * @return string
      */
@@ -157,18 +161,18 @@ class InvoiceConverter
         $invoice = $item->getInvoice();
         
         $txTransaction = '<Transaction>';
-        $txTransaction .= '<TransType>TX</TransType>';       
+        $txTransaction .= '<TransType>TX</TransType>';
         
         // amount is negatief indien factuur, positief indien creditnota!
         $baseAmount = bcsub(0, bcmul($item->getQuantity(), $item->getUnitPrice(), 2), 2);
         $amount = bcdiv(bcmul($baseAmount, $item->getVatPercentage(), 2), 100, 2);
         $txTransaction .= sprintf('<Amounts><Amount>%.2f</Amount></Amounts>', $amount); // btw
-                
+        
         $txTransaction .= '<GLAnalysis>';
         
         $vat = $this->vatMgr->find(array(
             'code' => $item->getVatCode(), 'scheme_id' => $invoice->getSchemeId()
-        )); 
+        ));
         $txTransaction .= sprintf('<Account>%s</Account>', $vat->getAccountCode());
         $txTransaction .= sprintf('<TaxCode>%s</TaxCode>', $vat->getCode());
         $txTransaction .= '</GLAnalysis>';
