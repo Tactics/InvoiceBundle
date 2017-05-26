@@ -26,7 +26,7 @@ class InvoiceConverter
     }
     
     /**
-     * 
+     *
      * @param array[Invoice] $invoices
      * @param array $options
      * @return ConverterResult
@@ -64,7 +64,7 @@ class InvoiceConverter
     }
     
     /**
-     * 
+     *
      * @param Invoice $invoice
      * @param array $options
      * @return array
@@ -106,7 +106,7 @@ class InvoiceConverter
               'AA' => $item->getGlAccountCode(),
               'AB' => $item->getAnalytical1AccountCode() ?: '',
               'AC' => number_format(abs($item->getPriceExVat()), 2, ',', ''),
-              'AD' => number_format(abs($item->getPriceExVat()), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt              
+              'AD' => number_format(abs($item->getPriceExVat()), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
               'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
               'AG' => substr($item->getDescription(), 0, 50), // omschrijving, voor inovant moet hier de opleidingscode inkomen
               'AI' => $item->getAnalytical2AccountCode() ?: '',
@@ -129,7 +129,7 @@ class InvoiceConverter
     }
     
     /**
-     * 
+     *
      * @param array $options
      * @return type
      */
@@ -148,7 +148,7 @@ class InvoiceConverter
     
     /**
      * Geeft de klantcode terug
-     * 
+     *
      * @return string
      * @todo: proacc_number ophalen/genereren van nieuwe
      */
@@ -160,10 +160,10 @@ class InvoiceConverter
     }
     
     /**
-     * 
+     *
      * @param Invoice $invoice
      * @return string
-     * 
+     *
      * @todo: fix dependency on \Config::BOEKINGSPERIODE
      */
     protected function getBoekingsperiode(Invoice $invoice)
@@ -249,12 +249,12 @@ class InvoiceConverter
   /**
    * @param Invoice $invoice
    * @param string $percentage
-   * @return mixed
+   * @return float
    */
   private function getMvh(Invoice $invoice, $percentage)
   {
     return array_reduce($invoice->getItems(), function($carry, InvoiceItem $item) use ($percentage) {
-      return $item->getVatPercentage() === $percentage ? bcadd($carry, $item->getPriceExVat(), 2) : $carry;
+      return $item->getVatPercentage() === $percentage ? bcadd($carry, abs($item->getPriceExVat()), 2) : $carry;
     }, 0);
   }
 }
