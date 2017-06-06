@@ -170,7 +170,7 @@ class InvoiceConverter
     private function getMvh(Invoice $invoice, $percentage)
     {
         return array_reduce($invoice->getItems(), function($carry, InvoiceItem $item) use ($percentage) {
-            return $item->getVatPercentage() === $percentage ? bcadd($carry, $item->getPriceExVat(), 2) : $carry;
+            return $item->getVatPercentage() === $percentage ? bcadd($carry, abs($item->getPriceExVat()), 2) : $carry;
        }, 0);
     }
 }
