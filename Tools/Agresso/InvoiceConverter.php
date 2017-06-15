@@ -132,13 +132,13 @@ class InvoiceConverter
         
         $glTransaction .= '<GLAnalysis>';
         $glTransaction .= sprintf('<Account>%s</Account>', $item->getGlAccountCode()); // grootboekrekening = gl_account_code
-        $glTransaction .= sprintf('<Dim1>%s</Dim1>', $item->getAnalytical1AccountCode());
-        $glTransaction .= sprintf('<Dim2>%s</Dim2>', $item->getAnalytical2AccountCode());
-        $glTransaction .= sprintf('<Dim3>%s</Dim3>', $item->getAnalytical3AccountCode());
-        $glTransaction .= sprintf('<Dim4>%s</Dim4>', $item->getAnalytical4AccountCode());
-        $glTransaction .= sprintf('<Dim5>%s</Dim5>', $item->getAnalytical5AccountCode());
-        $glTransaction .= sprintf('<Dim6>%s</Dim6>', $item->getAnalytical6AccountCode());
-        $glTransaction .= sprintf('<Dim7>%s</Dim7>', $item->getAnalytical7AccountCode());
+        $glTransaction .= sprintf('<Dim1>%s</Dim1>', $this->getDim(1, $item));
+        $glTransaction .= sprintf('<Dim2>%s</Dim2>', $this->getDim(2, $item));
+        $glTransaction .= sprintf('<Dim3>%s</Dim3>', $this->getDim(3, $item));
+        $glTransaction .= sprintf('<Dim4>%s</Dim4>', $this->getDim(4, $item));
+        $glTransaction .= sprintf('<Dim5>%s</Dim5>', $this->getDim(5, $item));
+        $glTransaction .= sprintf('<Dim6>%s</Dim6>', $this->getDim(6, $item));
+        $glTransaction .= sprintf('<Dim7>%s</Dim7>', $this->getDim(7, $item));
         $glTransaction .= sprintf('<TaxCode>%s</TaxCode>', $item->getVatCode());
         $glTransaction .= '</GLAnalysis>';
         
@@ -147,6 +147,18 @@ class InvoiceConverter
         $glTransaction .= '</Transaction>';
         
         return $glTransaction;
+    }
+    
+    /**
+     * @param int $number
+     * @param InvoiceItem $item
+     * @return mixed
+     */
+    protected function getDim($number, InvoiceItem $item)
+    {
+        $dimGetter = "getAnalytical{$number}AccountCode";
+        
+        return $item->$dimGetter();
     }
     
     /**
