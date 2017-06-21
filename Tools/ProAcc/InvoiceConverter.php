@@ -84,8 +84,8 @@ class InvoiceConverter
                 'L' => number_format($total + $vat, 2, ',', ''),
                 'M' => number_format($total, 2, ',', ''),
                 'N' => $withVat ? number_format($vat, 2, ',', '') : 0,
-                'O' => number_format($this->getMvh($invoice, '0'), 2, ',', ''), // maatstaf heffing 0% BTW hele dossier
-                'X' => number_format($this->getMvh($invoice, '21'), 2, ',', ''), // maatstaf heffing 21% BTW hele dossier
+                'O' => number_format(abs($this->getMvh($invoice, '0')), 2, ',', ''), // maatstaf heffing 0% BTW hele dossier
+                'X' => number_format(abs($this->getMvh($invoice, '21')), 2, ',', ''), // maatstaf heffing 21% BTW hele dossier
                 'Z' => $omschrijving,
                 'AA' => $item->getGlAccountCode(),
                 'AB' => $item->getAnalytical1AccountCode() ?: '',
@@ -170,7 +170,7 @@ class InvoiceConverter
     private function getMvh(Invoice $invoice, $percentage)
     {
         return array_reduce($invoice->getItems(), function($carry, InvoiceItem $item) use ($percentage) {
-            return $item->getVatPercentage() === $percentage ? bcadd($carry, abs($item->getPriceExVat()), 2) : $carry;
+            return $item->getVatPercentage() === $percentage ? bcadd($carry, $item->getPriceExVat(), 2) : $carry;
        }, 0);
     }
 }
