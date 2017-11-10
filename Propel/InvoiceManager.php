@@ -30,10 +30,10 @@ class InvoiceManager extends ObjectManager
     }
     
     /**
-     * 
+     *
      * @param \Tactics\InvoiceBundle\Model\InvoiceableInterface $object
      * @return Tactics\InvoiceBundle\Model\Invoice
-     * 
+     *
      * @todo setNumber in transactie gieten? dagboek + code moet unique zijn => indien error opnieuw proberen
      */
     public function create(InvoiceableInterface $object = null, $options = array())
@@ -59,7 +59,7 @@ class InvoiceManager extends ObjectManager
     }
 
     /**
-     * 
+     *
      * @param Invoice $domainObject
      * @return type
      */
@@ -89,17 +89,18 @@ class InvoiceManager extends ObjectManager
     
     /**
      * Aanmaken van creditnote
-     * 
+     *
      * @param Invoice $invoice
      */
-    public function createCreditNote(Invoice $invoice)
+    public function createCreditNote(Invoice $invoice, $journal = null)
     {
       /* @var $creditNote Invoice */
       $creditNote = $this->create(null, array('scheme_id' => $invoice->getSchemeId()));
       $creditNote->setCustomer($invoice->getCustomer());
       $creditNote->setRef($invoice->getRef());
+      $creditNote->setJournalCode($journal);
       foreach ($invoice->getItems() as $item)
-      {        
+      {
         if ($item->getType() === 'text') continue;
         $creditedItem = clone $item;
         $creditedItem->setId(null);
@@ -113,7 +114,7 @@ class InvoiceManager extends ObjectManager
     
     /**
      * Creates PDF
-     * 
+     *
      * @param Invoice $invoice
      * @return type
      */
@@ -126,9 +127,9 @@ class InvoiceManager extends ObjectManager
      * saves a new invoice:
      *  - generates invoice number and structured communication
      *  - sets the new id to the domainObject
-     * 
+     *
      * @param Invoice $invoice
-     * @return int 
+     * @return int
      */
     private function saveNew(Invoice $invoice)
     {
@@ -165,7 +166,7 @@ class InvoiceManager extends ObjectManager
     
     /**
      * Generates invoice number
-     * 
+     *
      * @param type $invoice
      * @return type
      */
@@ -188,7 +189,7 @@ class InvoiceManager extends ObjectManager
     
     /**
      * Generates structured communication message
-     * 
+     *
      * @param \Tactics\InvoiceBundle\Model\Invoice $invoice
      * @return string structured communication
      * @throws sfException
