@@ -11,7 +11,7 @@
     ],
     "require": {
         "tactics/formgoodness-bundle" : "1.0.*",
-        "phpunit/phpunit" : "4.*"
+        "phpunit/phpunit" : "5.*"
     },
     "autoload": {
         "psr-0": { "Tactics\\InvoiceBundle": "" }
