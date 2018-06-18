@@ -46,11 +46,11 @@ class InvoiceTest extends \PHPUnit_Framework_TestCase
     {
         $total1 = $this->item1->getQuantity() * $this->item1->getUnitPrice();
         $total2 = $this->item2->getQuantity() * $this->item2->getUnitPrice();
-        
-        $this->invoice->addItem($this->item1);        
-        $this->assertSame($total1, $this->invoice->getTotal());
-        
-        $this->invoice->addItem($this->item2);        
-        $this->assertSame($total1 + $total2, $this->invoice->getTotal());
+
+        $this->invoice->addItem($this->item1);
+        $this->assertSame($total1, (double)$this->invoice->getTotal());
+
+        $this->invoice->addItem($this->item2);
+        $this->assertSame($total1 + $total2, (double)$this->invoice->getTotal());
     }
 }
