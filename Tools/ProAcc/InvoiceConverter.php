@@ -24,7 +24,7 @@ class InvoiceConverter
         $this->customerFactory = $customerFactory;
         $this->journalMgr = $journalMgr;
     }
-    
+
     /**
      *
      * @param array[Invoice] $invoices
@@ -62,7 +62,7 @@ class InvoiceConverter
 
         return $result;
     }
-    
+
     /**
      *
      * @param Invoice $invoice
@@ -100,13 +100,13 @@ class InvoiceConverter
               'L' => number_format($total + $vat, 2, ',', ''),
               'M' => number_format($total, 2, ',', ''),
               'N' => $withVat ? number_format($vat, 2, ',', '') : 0,
-              'O' => !$withVat ? number_format($total, 2, ',', '') : 0,
+              'O' => $withVat ? number_format($total, 2, ',', '') : 0,
               'X' => $withVat ? number_format($this->getMvh($invoice, '21'), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
               'Z' => $omschrijving,
               'AA' => $item->getGlAccountCode(),
               'AB' => $item->getAnalytical1AccountCode() ?: '',
               'AC' => number_format(abs($item->getPriceExVat()), 2, ',', ''),
-              'AD' => number_format(abs($item->getPriceExVat()), 2, ',', ''), // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
+              'AD' => $withVat ? number_format(abs($item->getPriceExVat()), 2, ',', '') : 0, // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
               'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
               'AG' => substr($item->getDescription(), 0, 50), // omschrijving, voor inovant moet hier de opleidingscode inkomen
               'AI' => $item->getAnalytical2AccountCode() ?: '',
@@ -114,20 +114,20 @@ class InvoiceConverter
               'AL' => $invoice->getDatePaid() ? '1' : '0',
               'AM' => ''
             ));
-            
+
             if (isset($options['inovant']) && $options['inovant'])
             {
               $line['AO'] = $invoice->getRef();
             }
-            
+
             $lines[] = $line;
-            
+
             $first = false;
         }
 
         return $lines;
     }
-    
+
     /**
      *
      * @param array $options
@@ -145,7 +145,7 @@ class InvoiceConverter
         $omschrijving = $invoice->getRef() ?: ($invoice->getItems() ? $invoice->getItems()[0]->getGroupDescription() : '');
         return substr($omschrijving, 0, 20);
     }
-    
+
     /**
      * Geeft de klantcode terug
      *
@@ -155,10 +155,10 @@ class InvoiceConverter
     private function getKlantcode(Invoice $invoice)
     {
         $customer = $this->customerFactory->getCustomer($invoice);
-        
+
         return $customer->getExternalId($invoice->getSchemeId());
     }
-    
+
     /**
      *
      * @param Invoice $invoice
@@ -174,7 +174,7 @@ class InvoiceConverter
             $ns = \sfContext::getInstance()->getUser()->getBedrijf()->getVarNaam();
             return \ConfigPeer::get(\Config::BOEKINGSPERIODE, '', $ns);
         }
-        
+
         return $invoice->getDate('ym');
     }
 
@@ -245,7 +245,7 @@ class InvoiceConverter
 
         return $lines;
     }
-  
+
   /**
    * @param Invoice $invoice
    * @param string $percentage
