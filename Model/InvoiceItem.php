@@ -82,14 +82,14 @@ class InvoiceItem
     }
     
     public function getVatCode()
-	{
-		return $this->vat_code;
-	}
+	  {
+		    return $this->vat_code;
+	  }
     
     public function getVatPercentage()
-	{
-		return $this->vat_percentage;
-	}
+	  {
+		    return $this->vat_percentage;
+    }
     
     public function getGlAccountCode()
     {
@@ -145,10 +145,6 @@ class InvoiceItem
 	
 	public function setQuantity($v)
 	{
-        if ($v !== null && !is_int($v) && is_numeric($v)) {
-			$v = (int) $v;
-		}
-
 		if ($this->quantity !== $v) {
 			$this->quantity = $v;			
 		}

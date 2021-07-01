@@ -58,9 +58,9 @@ class InvoiceTransformer extends Transformer
      * @param \PropelInvoice $propel_invoice
      * @return \Tactics\InvoiceBundle\Propel\Invoice
      */
-    public function fromOrm($propel_invoice)
+    public function fromOrm($propel_invoice, $force = false)
     {
-        $invoice = parent::fromOrm($propel_invoice);
+        $invoice = parent::fromOrm($propel_invoice, $force);
         
         $customer = Helper::classAndIdToObject($propel_invoice->toArray(), 'Customer');
         if ($customer)

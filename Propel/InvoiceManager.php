@@ -61,30 +61,28 @@ class InvoiceManager extends ObjectManager
     /**
      * 
      * @param Invoice $domainObject
-     * @return type
+     * @return Invoice the saved invoice (with ids)
      */
     public function save($domainObject, $options = array())
     {
         if (!$domainObject->getId())
         {
-
-
             if(!$domainObject->getJournalCode()) $domainObject->setJournalCode($this->journal_generator->generate($domainObject));
-            $domainObject->setDate(time());
-            $domainObject->setDateDue(strtotime('+30 days'));
-            $result =  $this->saveNew($domainObject);
+            $dateCreated = new \DateTime($domainObject->getDate() ?: null);
+            $domainObject->setDate($dateCreated->getTimestamp());
+            $domainObject->setDateDue($dateCreated->add(new \DateInterval('P30D'))->getTimestamp());
+            $savedDomainObject = $this->saveNew($domainObject);
 
-
-            $event = new InvoiceCreatedEvent($domainObject, $options);
+            $event = new InvoiceCreatedEvent($savedDomainObject, $options);
             $this->event_dispatcher->dispatch(InvoiceEvents::CREATED, $event);
           
-            return $result;
+            return $savedDomainObject;
         }
         
         $ormObject = $this->transformer->toOrm($domainObject);
-        $result = $ormObject->save();
+        $ormObject->save();
         
-        return $result;
+        return $domainObject;
     }
     
     /**
@@ -128,11 +126,10 @@ class InvoiceManager extends ObjectManager
      *  - sets the new id to the domainObject
      * 
      * @param Invoice $invoice
-     * @return int 
+     * @return Invoice $invoice with ids
      */
     private function saveNew(Invoice $invoice)
     {
-        $ormObject = $this->transformer->toOrm($invoice);
         while (true)
         {
             try
@@ -144,17 +141,10 @@ class InvoiceManager extends ObjectManager
                 }
 
                 $ormObject = $this->transformer->toOrm($invoice);
-                $result = $ormObject->save();
+                $ormObject->save();
 
-                // setting the id
-                foreach ($this->pk_php_name as $pkName)
-                {
-                    $pkSetter = 'set' . $pkName;
-                    $pkGetter = 'get' . $pkName;
-                    $invoice->$pkSetter($ormObject->$pkGetter());
-                }
-
-                return $result;
+                // force opnieuw ophalen uit db zodat id's gezet worden
+                return $this->transformer->fromOrm($ormObject, true);
             }
             catch (\Exception $e)
             {
@@ -171,11 +161,20 @@ class InvoiceManager extends ObjectManager
      */
     private function generateNumber($invoice)
     {
+        if (method_exists($this->number_generator, 'getLastnumberSearchFields'))
+        {
+            $searchFields = $this->number_generator->getLastnumberSearchFields($invoice);
+        }
+        else
+        {
+            $searchFields = array(
+                'journal_code' => $invoice->getJournalCode()
+            );
+        }
+
         // retrieve last invoice from same journal
         $lastInvoice = $this->searchOne(
-            array(
-                'journal_code' => $invoice->getJournalCode()
-            ),
+            $searchFields,
             'number', // sort by number
             false // descending
         );
