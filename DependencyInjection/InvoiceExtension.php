@@ -45,6 +45,11 @@ class InvoiceExtension extends Extension
     );
     
     private $accountingSoftwareMap = array(
+      'ProLink' => array(
+        'customer_converter' => 'Tactics\InvoiceBundle\Tools\ProLink\CustomerConverter',
+        'invoice_converter' => 'Tactics\InvoiceBundle\Tools\ProLink\InvoiceConverter',
+        'payment_importer' => 'Tactics\InvoiceBundle\Tools\ProLink\PaymentImporter'
+      ),
       'ProAcc' => array(
           'customer_converter' => 'Tactics\InvoiceBundle\Tools\ProAcc\CustomerConverter',
           'invoice_converter' => 'Tactics\InvoiceBundle\Tools\ProAcc\InvoiceConverter',
