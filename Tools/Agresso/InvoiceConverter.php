@@ -57,7 +57,7 @@ class InvoiceConverter
     
     protected function getVoucher(Invoice $invoice)
     {
-        $voucher = sprintf('<VoucherNo>%u</VoucherNo>', $invoice->getNumber()); // factuurnr
+        $voucher = sprintf('<VoucherNo>%s</VoucherNo>', $invoice->getNumber()); // factuurnr
         $voucher .= sprintf('<VoucherType>%s</VoucherType>', $invoice->getJournalCode()); // dagboek/journaal
         $voucher .= '<CompanyCode>SB</CompanyCode>'; // Stad Brugge
         $voucher .= sprintf('<Period>%s</Period>', $invoice->getDate('Ym')); // boekingsperiode, nog afh van instelbare periode?
@@ -209,7 +209,7 @@ class InvoiceConverter
         $apArInfo = '<ApArInfo>';
         $apArInfo .= sprintf('<ApArGroup>%s</ApArGroup>', $customer->getApArGroup());
         $apArInfo .= sprintf('<ApArNo>%s</ApArNo>', $customer->getApArNo($invoice->getSchemeId()));
-        $apArInfo .= sprintf('<InvoiceNo>%u</InvoiceNo>', $invoice->getNumber()); // factuurnr
+        $apArInfo .= sprintf('<InvoiceNo>%s</InvoiceNo>', $invoice->getNumber()); // factuurnr
         $apArInfo .= sprintf('<Duedate>%s</Duedate>', $invoice->getDateDue()); // due date
         $apArInfo .= sprintf('<BacsId>%s</BacsId>', $invoice->getStructuredCommunication()); // gestructureerde mededeling
         $apArInfo .= sprintf('<PayMethod>%s</PayMethod>', $invoice->getPayMethod() ?: 'BB'); // paymethod

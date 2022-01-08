@@ -428,7 +428,7 @@ class Invoice
     {
         $type = $this->isCreditNote() ? 'Creditnota' : 'Factuur';
         return $this->getId()
-            ? sprintf('%s %06u', $type, $this->getNumber())
+            ? sprintf('%s %s', $type, $this->getNumber())
             : sprintf('Nieuwe %s', $type)
         ;
     }
