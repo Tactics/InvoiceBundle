@@ -140,6 +140,7 @@ class InvoiceConverter
         $glTransaction .= sprintf('<Dim6>%s</Dim6>', $this->getDim(6, $item));
         $glTransaction .= sprintf('<Dim7>%s</Dim7>', $this->getDim(7, $item));
         $glTransaction .= sprintf('<TaxCode>%s</TaxCode>', $item->getVatCode());
+        $glTransaction .= '<TaxSystem>BE</TaxSystem>';
         $glTransaction .= '</GLAnalysis>';
         
         $glTransaction .= $this->getApArInfo($invoice);
@@ -187,6 +188,7 @@ class InvoiceConverter
         ));
         $txTransaction .= sprintf('<Account>%s</Account>', $vat->getAccountCode());
         $txTransaction .= sprintf('<TaxCode>%s</TaxCode>', $vat->getCode());
+        $txTransaction .= '<TaxSystem>BE</TaxSystem>';
         $txTransaction .= '</GLAnalysis>';
         
         $txTransaction .= '<TaxTransInfo>';
