@@ -68,8 +68,9 @@ class CustomerConverter
         
         $xml = '<MasterFile>';        
         $xml .= sprintf('<ApArNo>%s</ApArNo>', $this->customer->getApArNo($schemeId));
-        $xml .= $this->getSupplierCustomer($this->customer);        
-        $xml .= $this->getAddressInfo($this->customer);
+        $xml .= $this->getSupplierCustomer();
+        $xml .= $this->getAddressInfo();
+        $xml .= $this->getRelation();
         $xml .= '</MasterFile>';
         
         return $xml;
@@ -84,7 +85,7 @@ class CustomerConverter
         $xml .= sprintf('<ApArGroup>%02u</ApArGroup>', $this->customer->getApArGroup());
         $xml .= sprintf('<ShortName>%s</ShortName>', $this->customer->getApArNo($schemeId));
         $xml .= sprintf('<CountryCode>%s</CountryCode>', $this->customer->getCountryCode());
-        $xml .= $this->getInvoiceInfo($this->customer);        
+        $xml .= $this->getInvoiceInfo();        
         $xml .= '</SupplierCustomer>';
         
         return $xml;
@@ -105,12 +106,27 @@ class CustomerConverter
     private function getAddressInfo()
     {
         $xml = '<AddressInfo>';
+        $xml .= '<UpdateFlag>1</UpdateFlag>';
+        $xml .= '<AddressType>1</AddressType>';
         $xml .= sprintf('<Address>%s</Address>', $this->customer->getAddress());
         $xml .= sprintf('<Place>%s</Place>', $this->customer->getPlace());
         $xml .= sprintf('<ZipCode>%s</ZipCode>', $this->customer->getZipCode());
         $xml .= sprintf('<CountryCode>%s</CountryCode>', $this->customer->getCountryCode());
         $xml .= '</AddressInfo>';
         
+        return $xml;
+    }
+
+    private function getRelation()
+    {
+        $schemeId = $this->invoice->getSchemeId();
+
+        $xml = '<Relation>';
+        $xml .= '<UpdateFlag>0</UpdateFlag>';
+        $xml .= '<RelAttrId>V019</RelAttrId>';
+        $xml .= sprintf('<RelValue>%s</RelValue>', $this->customer->getCustomerInfoValue($schemeId, 'ec_sectorcode'));
+        $xml .= '</Relation>';
+
         return $xml;
     }
 }
