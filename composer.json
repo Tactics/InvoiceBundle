@@ -9,12 +9,20 @@
             "email": "joris@tactics.be"
         }
     ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://satis.tactics.be"
+        }
+    ],
     "require": {
-        "tactics/formgoodness-bundle" : "1.0.*",
-        "phpunit/phpunit" : "4.*"
+        "tactics/formgoodness-bundle" : "1.0.*"
     },
     "autoload": {
         "psr-0": { "Tactics\\InvoiceBundle": "" }
     },
-    "target-dir": "Tactics/InvoiceBundle"
+    "target-dir": "Tactics/InvoiceBundle",
+    "require-dev": {
+        "phpunit/phpunit": "4.*"
+    }
 }
