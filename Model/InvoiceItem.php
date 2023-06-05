@@ -273,7 +273,7 @@ class InvoiceItem
     
     public function calculatePrices()
     {
-        $priceCalc = \sfContext::getInstance()->getContainer()->get('invoice_price_calculator');
+        $priceCalc = \ServiceContainer::service('invoice_price_calculator');
         $priceCalc->calculate($this);
     }
 }

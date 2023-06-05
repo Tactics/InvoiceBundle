@@ -5,11 +5,11 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">    
     
     <services>
-        <service id="invoice_number_generator" class="%invoice_number_generator.class%"/>
-        <service id="invoice_journal_generator" class="%invoice_journal_generator.class%">
+        <service id="invoice_number_generator" class="%invoice_number_generator.class%" public="true"/>
+        <service id="invoice_journal_generator" class="%invoice_journal_generator.class%" public="true">
             <argument type="service" id="journal_manager"/>
         </service>
-        <service id="pdf_generator" class="%pdf_generator.class%">
+        <service id="pdf_generator" class="%pdf_generator.class%" public="true">
             <argument type="service" id="scheme_customer_info_manager"/>
         </service>
 
@@ -18,7 +18,7 @@
             <argument>%vat_class%</argument>
         </service>
         
-        <service id="vat_manager" class="%vat_manager.class%">
+        <service id="vat_manager" class="%vat_manager.class%" public="true">
             <argument>%vat_class%</argument>
             <argument type="service" id="vat_transformer"/>            
         </service>
@@ -29,7 +29,7 @@
             <argument type="service" id="account_transformer"/>
         </service>
         
-        <service id="invoice_item_manager" class="%invoice_item_manager.class%">
+        <service id="invoice_item_manager" class="%invoice_item_manager.class%" public="true">
             <argument>%invoice_item_class%</argument>
             <argument type="service" id="invoice_item_transformer"/>
         </service>
@@ -39,7 +39,7 @@
             <argument type="service" id="invoice_item_transformer"/>
         </service>
         
-        <service id="invoice_manager" class="%invoice_manager.class%">
+        <service id="invoice_manager" class="%invoice_manager.class%" public="true">
             <argument>%invoice_class%</argument>
             <argument type="service" id="invoice_transformer"/>
             <argument type="service" id="invoice_number_generator"/>
@@ -53,7 +53,7 @@
             <argument>%accounting_scheme_class%</argument>
         </service>
         
-        <service id="accounting_scheme_manager" class="%accounting_scheme_manager.class%">
+        <service id="accounting_scheme_manager" class="%accounting_scheme_manager.class%" public="true">
             <argument>%accounting_scheme_class%</argument>
             <argument type="service" id="accounting_scheme_transformer"/>            
         </service>
@@ -63,7 +63,7 @@
             <argument type="service" id="accounting_scheme_transformer"/>
         </service>
         
-        <service id="account_manager" class="%account_manager.class%">
+        <service id="account_manager" class="%account_manager.class%" public="true">
             <argument>%account_class%</argument>
             <argument type="service" id="account_transformer"/>            
         </service>
@@ -72,7 +72,7 @@
             <argument>%product_configuration_class%</argument>
         </service>
         
-        <service id="product_configuration_manager" class="%product_configuration_manager.class%">
+        <service id="product_configuration_manager" class="%product_configuration_manager.class%" public="true">
             <argument>%product_configuration_class%</argument>
             <argument type="service" id="product_configuration_transformer"/>
         </service>
@@ -82,7 +82,7 @@
             <argument type="service" id="accounting_scheme_transformer"/>
         </service>
         
-        <service id="journal_manager" class="%journal_manager.class%">
+        <service id="journal_manager" class="%journal_manager.class%" public="true">
             <argument>%journal_class%</argument>
             <argument type="service" id="journal_transformer"/>            
         </service>
@@ -91,35 +91,35 @@
             <argument>%scheme_customer_info_class%</argument>
         </service>
         
-        <service id="scheme_customer_info_manager" class="%scheme_customer_info_manager.class%">
+        <service id="scheme_customer_info_manager" class="%scheme_customer_info_manager.class%" public="true">
             <argument>%scheme_customer_info_class%</argument>
             <argument type="service" id="scheme_customer_info_transformer"/>        
         </service>
         
-        <service id="customer_factory" class="%customer_factory.class%">
+        <service id="customer_factory" class="%customer_factory.class%" public="true">
           <argument>%customer.class%</argument>
           <argument type="service" id="scheme_customer_info_manager"/>
         </service>
         
-        <service id="customer_converter" class="%customer_converter.class%">
+        <service id="customer_converter" class="%customer_converter.class%" public="true">
           <argument type="service" id="customer_factory"/>
         </service>
         
-        <service id="invoice_converter" class="%invoice_converter.class%">
+        <service id="invoice_converter" class="%invoice_converter.class%" public="true">
             <argument type="service" id="customer_factory"/>
             <argument type="service" id="account_manager"/>
             <argument type="service" id="vat_manager"/>
             <argument type="service" id="journal_manager"/>
         </service>
         
-        <service id="payment_importer" class="%payment_importer.class%">
+        <service id="payment_importer" class="%payment_importer.class%" public="true">
             <argument type="service" id="invoice_manager"/>
             <argument type="service" id="event_dispatcher"/>
         </service>
         
-        <service id="options_generator" class="%options_generator.class%"/>
+        <service id="options_generator" class="%options_generator.class%" public="true"/>
 
-        <service id="invoice_price_calculator" class="%invoice_price_calculator.class%"/>
+        <service id="invoice_price_calculator" class="%invoice_price_calculator.class%" public="true"/>
         
     </services>
 </container>
