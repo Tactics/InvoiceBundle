@@ -166,7 +166,7 @@ class InvoiceConverter
      *
      * @todo: fix dependency on \Config::BOEKINGSPERIODE
      */
-    protected function getBoekingsperiode(Invoice $invoice)
+    protected function getBoekingsperiode(Invoice $invoice): string
     {
         // facturen en creditnota's met BTW afh van config val
         if ($invoice->withVat())
