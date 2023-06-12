@@ -83,7 +83,7 @@ final class PaymentImporter
         $this->invoiceMgr->save($invoice);
         
         $event = new Events\InvoicePaymentEvent($invoice, $amountPaid);
-        $this->eventDispatcher->dispatch(Events\InvoiceEvents::PAYMENT, $event);
+        $this->eventDispatcher->dispatch($event, Events\InvoiceEvents::PAYMENT);
 
     }
 }

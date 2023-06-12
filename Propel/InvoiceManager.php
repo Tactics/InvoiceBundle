@@ -76,7 +76,7 @@ class InvoiceManager extends ObjectManager
 
 
             $event = new InvoiceCreatedEvent($domainObject, $options);
-            $this->event_dispatcher->dispatch(InvoiceEvents::CREATED, $event);
+            $this->event_dispatcher->dispatch($event, InvoiceEvents::CREATED);
           
             return $result;
         }
