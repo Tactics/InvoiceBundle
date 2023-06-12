@@ -2,8 +2,8 @@
 
 namespace Tactics\InvoiceBundle\Events;
 
+use Symfony\Contracts\EventDispatcher\Event;
 use Tactics\InvoiceBundle\Model\Invoice;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Description of InvoiceCreatedEvent
@@ -14,24 +14,29 @@ class InvoiceCreatedEvent extends Event
 {
     private $invoice;
     private $options = array();
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param Invoice $invoice
      * @param float $amount
      */
-    public function __construct(Invoice $invoice, $options = array()) 
+    public function __construct(Invoice $invoice, $options = array())
     {
         $this->invoice = $invoice;
         $this->options = $options;
     }
-    
-    function getInvoice() {
-      return $this->invoice;
+
+    /**
+     * @return Invoice
+     */
+    function getInvoice()
+    {
+        return $this->invoice;
     }
 
-    function getOptions() {
-      return $this->options;
+    function getOptions()
+    {
+        return $this->options;
     }
 }

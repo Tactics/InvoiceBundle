@@ -16,7 +16,8 @@
         }
     ],
     "require": {
-        "tactics/formgoodness-bundle" : "1.0.*"
+        "tactics/formgoodness-bundle" : "1.0.*",
+        "symfony/event-dispatcher": "~6.3"
     },
     "autoload": {
         "psr-0": { "Tactics\\InvoiceBundle": "" }
