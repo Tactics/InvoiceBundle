@@ -135,7 +135,10 @@ class InvoiceConverter
      */
     private function getBlancos($options)
     {
-        $rangeAA = array_map(create_function('$object', 'return "A{$object}";'), range('A', isset($options['inovant']) && $options['inovant'] ? 'O' : 'M'));
+        $prefixWithA = function (string $letter) {
+            return "A" . $letter;
+        };
+        $rangeAA = array_map($prefixWithA, range('A', isset($options['inovant']) && $options['inovant'] ? 'O' : 'M'));
         $range = array_merge(range('A', 'Z'), $rangeAA);
         return array_combine($range, array_fill(0, count($range), '0'));
     }
