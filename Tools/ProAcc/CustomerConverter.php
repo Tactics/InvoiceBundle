@@ -84,9 +84,15 @@ class CustomerConverter
      */
     private function createBlancos()
     {
-        $rangeAAToAZ = array_map(create_function('$object', 'return "A{$object}";'), range('A', 'Z'));
-        $rangeBAtoBC = array_map(create_function('$object', 'return "B{$object}";'), range('A', 'C'));
-        $rangeAtoBC = array_merge(range('A', 'Z'), $rangeAAToAZ, $rangeBAtoBC);
+        $prefixWith = function ($prefix) {
+            return function (string $letter) use ($prefix) {
+                return $prefix . $letter;
+            };
+        };
+        $rangeAAtoAZ = array_map($prefixWith("A"), range('A', 'Z'));
+        $rangeBAtoBC = array_map($prefixWith("B"), range('A', 'C'));
+        $rangeAtoBC = array_merge(range('A', 'Z'), $rangeAAtoAZ, $rangeBAtoBC);
+
         return array_combine($rangeAtoBC, array_fill(0, count($rangeAtoBC), ''));
     }
 }
