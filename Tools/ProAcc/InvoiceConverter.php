@@ -210,9 +210,9 @@ class InvoiceConverter
                 'I' => 'EUR',
                 'J' => 1,
                 'K' => $customer->getBtwStatus(),
-                'L' => '', // vertegenwoordiger?
+                'L' => 'PLAN', // vertegenwoordiger?
                 'M' => 30, // code betalingswijze
-                'N' => $invoice->getDateDue('d/m/Y'),
+                'N' => '', // vervaldatum
                 'O' => '', // globale korting %
                 'P' => '', // fin. korting %
                 'Q' => '', // kredietbeperking korting %
@@ -229,16 +229,16 @@ class InvoiceConverter
                 'AB' => '', // levertijd ?
                 'AC' => '', // leveringsvoorwaarden
                 'AD' => '', // voorschot
-                'AE' => substr($customer->getNaam(), 0, 30), // max 30 , naam 1
-                'AF' => '', // max 30 , naam 2
-                'AG' => '', // max 30 , naam 3
-                'AH' => substr($customer->getStraatNummerBus(), 0, 30),
-                'AI' => $customer->getPostcode(),
-                'AJ' => $customer->getGemeente(),
-                'AK' => $customer->getLandcode(),
-                'AL' => $customer->getLandnaam(),
-                'AM' => 1, // prijzen btw in
-                'AN' => 0,  // document geprint
+                'AE' => '', // max 30 , leveringsadres naam 1
+                'AF' => '', // max 30 , leveringsadres naam 2
+                'AG' => '', // max 30 , leveringsadres naam 3
+                'AH' => '', // leveringsadres straat + nummer
+                'AI' => '', // leveringsadres postcode
+                'AJ' => '', // leveringsadres gemeente
+                'AK' => '', // leveringsadres landcode
+                'AL' => '', // leveringsadres landnaam
+                'AM' => '', // prijzen btw in
+                'AN' => '', // document geprint
                 'AO' => $item->getAnalytical2AccountCode() // actienummer
             );
 
