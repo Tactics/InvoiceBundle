@@ -192,7 +192,7 @@ class InvoiceConverter
             $line = array(
                 'A' => $first ? '1' : '3',
                 'B' => $isCreditNote ? 'C' : 'F',
-                'C' => $isCreditNote ? 'CRED' : 'FACT',
+                'C' => $this->getDocumentType($isCreditNote),
                 'D' => $invoice->getNumber(),
                 'E' => $this->getKlantcode($invoice),
                 'F' => $invoice->getDate('d/m/Y'),
@@ -238,6 +238,11 @@ class InvoiceConverter
         }
 
         return $lines;
+    }
+
+    protected function getDocumentType(bool $isCreditNote = false)
+    {
+        return $isCreditNote ? 'CRED' : 'FACT';
     }
 
     /**
