@@ -5,9 +5,9 @@ namespace Tactics\InvoiceBundle\Tools\ProAcc;
 use Facturatie\Customer\ProAccCustomer;
 use Tactics\InvoiceBundle\Model\Invoice;
 use Tactics\InvoiceBundle\Model\InvoiceItem;
-use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
 use Tactics\InvoiceBundle\Propel\ObjectManager;
 use Tactics\InvoiceBundle\Tools\ConverterResult;
+use Tactics\InvoiceBundle\Tools\CustomerFactoryInterface;
 
 class InvoiceConverter
 {
@@ -34,24 +34,19 @@ class InvoiceConverter
     public function convert($invoices, $options = array())
     {
         $data = array();
-        foreach ($invoices as $invoice)
-        {
-            foreach ($this->getProAccVerkoopLijnen($invoice, $options) as $verkoopLijn)
-            {
-               $data[] = implode("\t", $verkoopLijn);
+        foreach ($invoices as $invoice) {
+            foreach ($this->getProAccVerkoopLijnen($invoice, $options) as $verkoopLijn) {
+                $data[] = implode("\t", $verkoopLijn);
             }
         }
         $data[] = "99"; // add last line
         $result = (new ConverterResult())->add('verkopen.txt', 'text/csv', implode("\r\n", $data));
 
         // indien facturatie in proacc, aparte import in facturatiemodule
-        if (isset($options['proacc_facturatie']) && $options['proacc_facturatie'])
-        {
+        if (isset($options['proacc_facturatie']) && $options['proacc_facturatie']) {
             $data2 = [];
-            foreach ($invoices as $invoice)
-            {
-                foreach ($this->getProAccFacturatieLijnen($invoice, $options) as $facturatieLijn)
-                {
+            foreach ($invoices as $invoice) {
+                foreach ($this->getProAccFacturatieLijnen($invoice, $options) as $facturatieLijn) {
                     $data2[] = implode("\t", $facturatieLijn);
                 }
             }
@@ -81,43 +76,41 @@ class InvoiceConverter
 
         $lines = array();
         $first = true;
-        foreach ($invoice->getItems() as $cnt => $item)
-        {
+        foreach ($invoice->getItems() as $cnt => $item) {
             if ($item->getType() == 'text') continue;
 
             $line = array_merge($blancos, array(
-              'A' => $first ? ($isCreditNote ? '2' : '1') : '3',
-              'B' => $this->getKlantcode($invoice),
-              'C' => $invoice->getJournalCode(),
-              'D' => $invoice->getNumber(),
-              'E' => $invoice->getDate('d/m/Y'),
-              'F' => $boekingsPeriode,
-              'G' => '',
-              'H' => $invoice->getDateDue('d/m/Y'),
-              'I' => 'EUR',
-              'J' => 1,
-              'K' => number_format($total + $vat, 2, ',', ''),
-              'L' => number_format($total + $vat, 2, ',', ''),
-              'M' => number_format($total, 2, ',', ''),
-              'N' => $withVat ? number_format($vat, 2, ',', '') : 0,
-              'O' => 0,
-              'X' => $withVat ? number_format($this->getMvh($invoice, '21'), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
-              'Z' => $omschrijving,
-              'AA' => $item->getGlAccountCode(),
-              'AB' => $item->getAnalytical1AccountCode() ?: '',
-              'AC' => number_format(abs($item->getPriceExVat()), 2, ',', ''),
-              'AD' => $item->getVatPercentage() ? number_format(abs($item->getPriceExVat()), 2, ',', '') : 0, // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
-              'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
-              'AG' => substr($item->getDescription(), 0, 50), // omschrijving, voor inovant moet hier de opleidingscode inkomen
-              'AI' => $item->getAnalytical2AccountCode() ?: '',
-              'AK' => '',
-              'AL' => $invoice->getDatePaid() ? '1' : '0',
-              'AM' => ''
+                'A' => $first ? ($isCreditNote ? '2' : '1') : '3',
+                'B' => $this->getKlantcode($invoice),
+                'C' => $invoice->getJournalCode(),
+                'D' => $invoice->getNumber(),
+                'E' => $invoice->getDate('d/m/Y'),
+                'F' => $boekingsPeriode,
+                'G' => '',
+                'H' => $invoice->getDateDue('d/m/Y'),
+                'I' => 'EUR',
+                'J' => 1,
+                'K' => number_format($total + $vat, 2, ',', ''),
+                'L' => number_format($total + $vat, 2, ',', ''),
+                'M' => number_format($total, 2, ',', ''),
+                'N' => $withVat ? number_format($vat, 2, ',', '') : 0,
+                'O' => 0,
+                'X' => $withVat ? number_format($this->getMvh($invoice, '21'), 2, ',', '') : 0, // maatstaf heffing 21% BTW hele dossier
+                'Z' => $omschrijving,
+                'AA' => $item->getGlAccountCode(),
+                'AB' => $item->getAnalytical1AccountCode() ?: '',
+                'AC' => number_format(abs($item->getPriceExVat()), 2, ',', ''),
+                'AD' => $item->getVatPercentage() ? number_format(abs($item->getPriceExVat()), 2, ',', '') : 0, // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
+                'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
+                'AG' => substr($item->getDescription(), 0, 50), // omschrijving, voor inovant moet hier de opleidingscode inkomen
+                'AI' => $item->getAnalytical2AccountCode() ?: '',
+                'AK' => '',
+                'AL' => $invoice->getDatePaid() ? '1' : '0',
+                'AM' => ''
             ));
 
-            if (isset($options['inovant']) && $options['inovant'])
-            {
-              $line['AO'] = $invoice->getRef();
+            if (isset($options['inovant']) && $options['inovant']) {
+                $line['AO'] = $invoice->getRef();
             }
 
             $lines[] = $line;
@@ -172,8 +165,7 @@ class InvoiceConverter
     protected function getBoekingsperiode(Invoice $invoice): string
     {
         // facturen en creditnota's met BTW afh van config val
-        if ($invoice->withVat())
-        {
+        if ($invoice->withVat()) {
             $ns = \sfContext::getInstance()->getUser()->getBedrijf()->getVarNaam();
             return \ConfigPeer::get(\Config::BOEKINGSPERIODE, '', $ns);
         }
@@ -194,8 +186,7 @@ class InvoiceConverter
         $customer = $this->customerFactory->getCustomer($invoice);
         $withVat = $invoice->withVat();
 
-        foreach ($invoice->getItems() as $cnt => $item)
-        {
+        foreach ($invoice->getItems() as $cnt => $item) {
             if ($item->getType() == 'text') continue;
 
             $line = array(
@@ -249,16 +240,16 @@ class InvoiceConverter
         return $lines;
     }
 
-  /**
-   * @param Invoice $invoice
-   * @param string $percentage
-   * @return float
-   */
-  private function getMvh(Invoice $invoice, $percentage)
-  {
-    return array_reduce($invoice->getItems(), function($carry, InvoiceItem $item) use ($percentage) {
-      return $item->getVatPercentage() === $percentage ? bcadd($carry, abs($item->getPriceExVat()), 2) : $carry;
-    }, 0);
-  }
+    /**
+     * @param Invoice $invoice
+     * @param string $percentage
+     * @return float
+     */
+    private function getMvh(Invoice $invoice, $percentage)
+    {
+        return array_reduce($invoice->getItems(), function ($carry, InvoiceItem $item) use ($percentage) {
+            return $item->getVatPercentage() === $percentage ? bcadd($carry, abs($item->getPriceExVat()), 2) : $carry;
+        }, 0);
+    }
 }
 
