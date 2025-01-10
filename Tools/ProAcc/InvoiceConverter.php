@@ -186,8 +186,11 @@ class InvoiceConverter
         $customer = $this->customerFactory->getCustomer($invoice);
         $withVat = $invoice->withVat();
 
+
         foreach ($invoice->getItems() as $cnt => $item) {
             if ($item->getType() == 'text') continue;
+
+            $unitPriceExVat = bcdiv($item->getPriceExVat(), $item->getQuantity(), 4);
 
             $line = array(
                 'A' => $first ? '1' : '3',
@@ -210,7 +213,7 @@ class InvoiceConverter
                 'R' => '', // artikelcode of *1, *2 of M + => omschrijving in volgend veld
                 'S' => $item->getDescription(), // max 300
                 'T' => $item->getQuantity(),
-                'U' => number_format($item->getUnitPrice(), 2, ',', ''),
+                'U' => number_format($unitPriceExVat, 4, ',', ''),
                 'V' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
                 'W' => '', // lijnkorting%
                 'X' => $item->getGlAccountCode(), // Algemene rekening
