@@ -191,6 +191,9 @@ class InvoiceConverter
             if ($item->getType() == 'text') continue;
 
             $unitPriceExVat = bcdiv($item->getPriceExVat(), $item->getQuantity(), 4);
+            if ($isCreditNote) {
+                $unitPriceExVat = $unitPriceExVat[0] === '-' ? substr($unitPriceExVat, 1) : $unitPriceExVat;
+            }
 
             $line = array(
                 'A' => $first ? '1' : '3',
