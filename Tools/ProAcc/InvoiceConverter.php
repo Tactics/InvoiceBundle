@@ -102,7 +102,7 @@ class InvoiceConverter
                 'AC' => number_format(abs($item->getPriceExVat()), 2, ',', ''),
                 'AD' => $item->getVatPercentage() ? number_format(abs($item->getPriceExVat()), 2, ',', '') : 0, // idem als AC - fin.korting, maar fin.korting wordt niet gebruikt
                 'AE' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
-                'AG' => substr($item->getDescription(), 0, 50), // omschrijving, voor inovant moet hier de opleidingscode inkomen
+                'AG' => substr(preg_replace('/[ \t]+/', ' ', $item->getDescription()), 0, 50), // omschrijving, voor inovant moet hier de opleidingscode inkomen
                 'AI' => $item->getAnalytical2AccountCode() ?: '',
                 'AK' => '',
                 'AL' => $invoice->getDatePaid() ? '1' : '0',
@@ -211,7 +211,7 @@ class InvoiceConverter
                 'P' => '', // fin. korting %
                 'Q' => '', // kredietbeperking korting %
                 'R' => '', // artikelcode of *1, *2 of M + => omschrijving in volgend veld
-                'S' => $item->getDescription(), // max 300
+                'S' => preg_replace('/[ \t]+/', ' ', $item->getDescription()), // max 300
                 'T' => $item->getQuantity(),
                 'U' => number_format($unitPriceExVat, 4, ',', ''),
                 'V' => $withVat ? number_format($item->getVatPercentage(), 2, ',', '') : 0,
